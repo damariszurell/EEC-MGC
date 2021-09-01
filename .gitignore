@@ -1,0 +1,9 @@
+data/*.grd
+data/*.gri
+data/*.txt
+data/*.RData
+spatial_thin_log.txt
+data/IUCN_Sorex_alpinus.shx
+data/IUCN_Sorex_alpinus.shp
+data/IUCN_Sorex_alpinus.prj
+data/IUCN_Sorex_alpinus.dbf

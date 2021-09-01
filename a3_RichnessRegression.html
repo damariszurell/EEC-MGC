@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Species richness gradients</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Macroecology and global change</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="schedule.html">Schedule</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Pracs: macroecological analyses
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="a0_setup.html">0. Getting started</a>
+    </li>
+    <li>
+      <a href="a1_SpatialData.html">1. Spatial data in R</a>
+    </li>
+    <li>
+      <a href="a2_RichnessGradients.html">2. Species richness gradients</a>
+    </li>
+    <li>
+      <a href="a3_RichnessRegression.html">3. Species richness regression</a>
+    </li>
+    <li>
+      <a href="a4_RangeMaps.html">4. Species range maps</a>
+    </li>
+    <li>
+      <a href="a5_SpeciesThreats.html">5. Species threats</a>
+    </li>
+    <li>
+      <a href="a6_BiodivChanges.html">6. Analysing biodiversity changes</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Pracs: species distribution modelling
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="b1_SpeciesData.html">1. Species data</a>
+    </li>
+    <li>
+      <a href="b2_EnvData.html">2. Environmental data</a>
+    </li>
+    <li>
+      <a href="b3_SDM_intro.html">3. SDMs: simple model fitting</a>
+    </li>
+    <li>
+      <a href="b4_SDM_eval.html">4. SDMs: assessment and prediction</a>
+    </li>
+    <li>
+      <a href="b5_pseudoabsence.html">5. Pseudo-absence and background data</a>
+    </li>
+    <li>
+      <a href="b6_SDM_algorithms.html">6. SDMs: algorithms</a>
+    </li>
+    <li>
+      <a href="b7_SDM_ensembles.html">7. SDMs: ensembles</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://www.uni-potsdam.de/en/ibb-macroecology/index">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://twitter.com/ZurellLab">
+    <span class="fa fa-twitter"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Species richness gradients</h1>
+
+</div>
+
+
+<hr />
+<div class="alert alert-info">
+<p><strong>RStudio project</strong></p>
+<p>Open the RStudio project that we created in the first session. I recommend to use this RStudio project for the entire course and within the RStudio project create separate R scripts for each session.</p>
+<ul>
+<li>Create a new empty R script by going to the tab “File”, select “New File” and then “R script”</li>
+<li>In the new R script, type <code># Session a3: Species richness regression</code> and save the file in your folder “scripts” within your project folder, e.g. as “a3_RichnessRegression.R”</li>
+</ul>
+</div>
+<p>In the last session, we have explored the species richness gradients in UK breeding birds. We continue with these and now try to explain statistically which environmental variables are driving species richness.</p>
+<div id="data-on-breeding-bird-richness" class="section level1">
+<h1><span class="header-section-number">1</span> Data on breeding bird richness</h1>
+<p>We will work with the dataset of British breeding and wintering birds from <span class="citation">Gillings et al. (2019)</span>, more specifically with the bird records from Britain at 10 km resolution during the breeding seasons 2008-2011. The original data are available through the British Trust of Ornithology (www.bto.org; direct download <a href="https://www.bto.org/sites/default/files/atlas_open_data_files.zip">here</a>). In the last session, we have already calculated species richness and extracted bioclimatic variables from worldclim for all Britain.</p>
+<p>We can load the data into R and inspect them.</p>
+<pre class="r"><code># We load the R object from last session (using the function load()) and assign it to a new object name (using the function get())
+UK_birdrichness_clim &lt;- get(load(&#39;data/UK_bird_richness_clim.RData&#39;))
+
+# Inspect the data
+summary(UK_birdrichness_clim)</code></pre>
+<pre><code>##     EASTING          NORTHING          richness           bio1       
+##  Min.   :  5000   Min.   :   5000   Min.   :  1.00   Min.   : 35.72  
+##  1st Qu.:255000   1st Qu.: 235000   1st Qu.: 44.00   1st Qu.: 76.90  
+##  Median :345000   Median : 435000   Median : 58.00   Median : 86.68  
+##  Mean   :349494   Mean   : 483881   Mean   : 55.05   Mean   : 85.25  
+##  3rd Qu.:435000   3rd Qu.: 725000   3rd Qu.: 68.00   3rd Qu.: 95.65  
+##  Max.   :655000   Max.   :1215000   Max.   :102.00   Max.   :112.00  
+##                                                      NA&#39;s   :53      
+##       bio2            bio3            bio4           bio5      
+##  Min.   :41.00   Min.   :30.00   Min.   :3060   Min.   :134.0  
+##  1st Qu.:62.95   1st Qu.:34.00   1st Qu.:4224   1st Qu.:175.3  
+##  Median :69.15   Median :35.31   Median :4474   Median :188.9  
+##  Mean   :67.36   Mean   :35.17   Mean   :4397   Mean   :188.8  
+##  3rd Qu.:72.23   3rd Qu.:36.33   3rd Qu.:4684   3rd Qu.:205.9  
+##  Max.   :82.64   Max.   :40.00   Max.   :5322   Max.   :231.6  
+##  NA&#39;s   :53      NA&#39;s   :53      NA&#39;s   :53     NA&#39;s   :53     
+##       bio6                bio7            bio8             bio9       
+##  Min.   :-55.48918   Min.   :129.8   Min.   :-12.40   Min.   : 35.62  
+##  1st Qu.: -5.35973   1st Qu.:179.7   1st Qu.: 40.14   1st Qu.: 60.21  
+##  Median :  0.92337   Median :192.2   Median : 52.08   Median : 87.55  
+##  Mean   : -0.07503   Mean   :188.9   Mean   : 57.61   Mean   : 87.15  
+##  3rd Qu.:  7.38717   3rd Qu.:201.4   3rd Qu.: 68.72   3rd Qu.:104.36  
+##  Max.   : 43.00000   Max.   :228.9   Max.   :162.73   Max.   :152.06  
+##  NA&#39;s   :53          NA&#39;s   :53      NA&#39;s   :53       NA&#39;s   :53      
+##      bio10           bio11            bio12            bio13       
+##  Min.   :102.2   Min.   :-23.40   Min.   : 537.6   Min.   : 52.00  
+##  1st Qu.:131.8   1st Qu.: 25.80   1st Qu.: 702.6   1st Qu.: 72.06  
+##  Median :144.3   Median : 33.46   Median : 902.6   Median : 98.05  
+##  Mean   :143.1   Mean   : 31.16   Mean   : 984.3   Mean   :109.14  
+##  3rd Qu.:156.0   3rd Qu.: 38.34   3rd Qu.:1184.3   3rd Qu.:136.27  
+##  Max.   :173.6   Max.   : 70.00   Max.   :2050.5   Max.   :258.60  
+##  NA&#39;s   :53      NA&#39;s   :53       NA&#39;s   :53       NA&#39;s   :53      
+##      bio14            bio15            bio16           bio17      
+##  Min.   : 31.00   Min.   : 7.513   Min.   :148.0   Min.   :106.3  
+##  1st Qu.: 45.09   1st Qu.:14.217   1st Qu.:205.2   1st Qu.:147.2  
+##  Median : 54.50   Median :19.805   Median :284.1   Median :174.3  
+##  Mean   : 57.20   Mean   :19.630   Mean   :313.3   Mean   :182.8  
+##  3rd Qu.: 67.17   3rd Qu.:25.000   3rd Qu.:392.8   3rd Qu.:209.8  
+##  Max.   :104.93   Max.   :32.000   Max.   :711.8   Max.   :329.4  
+##  NA&#39;s   :53       NA&#39;s   :53       NA&#39;s   :53      NA&#39;s   :53     
+##      bio18           bio19      
+##  Min.   :139.6   Min.   :121.5  
+##  1st Qu.:169.4   1st Qu.:180.1  
+##  Median :200.3   Median :250.9  
+##  Mean   :213.8   Mean   :277.4  
+##  3rd Qu.:246.3   3rd Qu.:346.1  
+##  Max.   :378.0   Max.   :660.2  
+##  NA&#39;s   :53      NA&#39;s   :53</code></pre>
+<p>There seem to be some missing values in our data frame and we remove these as they could cause problems in modelling.</p>
+<pre class="r"><code>UK_birdrichness_clim &lt;- na.omit(UK_birdrichness_clim)</code></pre>
+<p>We map species richness.</p>
+<pre class="r"><code># Map species richness
+library(raster)</code></pre>
+<pre><code>## Loading required package: sp</code></pre>
+<pre class="r"><code>plot(rasterFromXYZ(UK_birdrichness_clim[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)]))</code></pre>
+<p><img src="a3_RichnessRegression_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>We had already plotted species-energy relationships. In the next step, we aim to describe these statistically.</p>
+<pre class="r"><code>library(ggplot2)
+library(ggpubr)
+
+# Plot species-energy relationships
+p1 &lt;- ggplot(data = UK_birdrichness_clim, mapping = aes(x = bio10/10, y = richness)) + 
+  geom_point() + 
+  geom_smooth(method=&quot;loess&quot;) + 
+  xlab(&#39;Summer temperature [°C]&#39;) + 
+  ylab(&#39;Species richness&#39;)
+
+p2 &lt;- ggplot(data = UK_birdrichness_clim, mapping = aes(x = bio4, y = richness)) + 
+  geom_point() + 
+  geom_smooth(method=&quot;loess&quot;) + 
+  xlab(&#39;Temperature seasonality&#39;) + 
+  ylab(&#39;Species richness&#39;)
+
+p3 &lt;- ggplot(data = UK_birdrichness_clim, mapping = aes(x = bio12, y = richness)) + 
+  geom_point() + 
+  geom_smooth(method=&quot;loess&quot;) + 
+  xlab(&#39;Annual precipitation [mm]&#39;) + 
+  ylab(&#39;Species richness&#39;)
+
+ggarrange(p1, p2, p3, ncol = 3)</code></pre>
+<p><img src="a3_RichnessRegression_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div id="richness-regression" class="section level1">
+<h1><span class="header-section-number">2</span> Richness regression</h1>
+<p>We will build regression models using Generalised Linear Models (GLMs).</p>
+<div id="generalised-linear-models-glms" class="section level2">
+<h2><span class="header-section-number">2.1</span> Generalised linear models (GLMs)</h2>
+<p>Why do we not simply use linear regression to fit our species-environment relationship? Well, strictly, ordinary least squares (OLS) linear regression is only valid if the response (or rather the error) is normally distributed and ranges (<span class="math inline">\(-\infty,\infty\)</span>). OLS regression looks like this</p>
+<p><span class="math display">\[E(Y|X)=\beta X+\epsilon\]</span></p>
+<p>where <span class="math inline">\(E(Y|X)\)</span> is the <em>conditional mean</em>, meaning the expected value of the response <span class="math inline">\(Y\)</span> given the environmental predictors <span class="math inline">\(X\)</span> <span class="citation">(Hosmer and Lemeshow 2013)</span>. <span class="math inline">\(X\)</span> is the matrix of predictors (including the intercept), <span class="math inline">\(\beta\)</span> are the coefficients for the predictors, and <span class="math inline">\(\epsilon\)</span> is the (normally distributed!) error term. <span class="math inline">\(\beta X\)</span> is referred to as the linear predictor.</p>
+<p>When we want to predict species richness based on environment, then the conditional mean <span class="math inline">\(E(Y|X)\)</span> is a count and bounded (<span class="math inline">\(0,\infty\)</span>). Thus, the assumptions of OLS regression are not met. GLMs are more flexible regression models that allow the response variable to follow other distributions. Similar to OLS regression, we also fit a linear predictor <span class="math inline">\(\beta X\)</span> and then relate this linear predictor to the mean of the response variable using a link function. The link function is used to transform the response to normality. In case of count data, we typically use the log link. The conditional mean is then given by:</p>
+<p><span class="math display">\[E(Y|X) = \lambda (X) = e^{\beta X+\epsilon}\]</span></p>
+<p>The log transformation is defined as: <span class="math display">\[g(X)  = ln \left( \lambda (X) \right) = \beta X+\epsilon\]</span></p>
+<p>The trick is that the log, g(X), is now linear in its parameters, is continuous and may range (<span class="math inline">\(-\infty,\infty\)</span>). GLMs with a log link are also called Poisson regression models.</p>
+</div>
+<div id="glms-in-r" class="section level2">
+<h2><span class="header-section-number">2.2</span> GLMs in <code>R</code></h2>
+<p>The <code>glm</code> function is contained in the R <em>stats</em> package. We need to specify a <em>formula</em> describing how the response should be related to the predictors, and the <em>data</em> specifying the data frame that contains the response and predictor variables, and a <em>family</em> argument specifying the type of response and the link function. In our case, we use the <em>log</em> link in the <em>poisson</em> family.</p>
+<p>There are also several standard functions for exploring the models and model fit, e.g. <code>summary()</code> for printing a compact summary of the coefficients, residuals and deviance to the console.</p>
+<pre class="r"><code># We first fit a GLM for the bio10 variable assuming a linear relationship:
+m1 &lt;- glm(richness ~ bio10, family=&quot;poisson&quot;, data= UK_birdrichness_clim)
+    
+# We can get a summary of the model:
+summary(m1) </code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = richness ~ bio10, family = &quot;poisson&quot;, data = UK_birdrichness_clim)
+## 
+## Deviance Residuals: 
+##      Min        1Q    Median        3Q       Max  
+## -11.1662   -1.1990    0.1333    1.3726    5.7605  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) 2.3273171  0.0264799   87.89   &lt;2e-16 ***
+## bio10       0.0117300  0.0001812   64.75   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for poisson family taken to be 1)
+## 
+##     Null deviance: 19623  on 2779  degrees of freedom
+## Residual deviance: 15328  on 2778  degrees of freedom
+## AIC: 31377
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p>As we expected from our initial plots, summer temperature (bio10) seems to have a significantly positive effect on bird species richness.</p>
+</div>
+<div id="deviance-and-aic" class="section level2">
+<h2><span class="header-section-number">2.3</span> Deviance and AIC</h2>
+<p>Additional to the slope values, there are a few interesting metrics printed in the output called deviance <span class="math inline">\(D\)</span> and AIC (the <em>Akaike Information Criterion</em>). These metrics tell us something about how closely the model fits the observed data. Both are derived from the log-likelihood <span class="math inline">\(L\)</span> and are related through the following equation:</p>
+<p><span class="math display">\[AIC = -2 \times L + 2 \times (p+1) = D + 2 \times (p+1)\]</span></p>
+<p>where <span class="math inline">\(p\)</span> is the number of regression coefficients in the model. AIC thus takes into account model complexity. A closer fit to the data leads to higher log-likelihood and thus higher deviance and lower AIC. Yet, higher numbers of predictors in the model will increase the AIC. Thus, the AIC helps us taking into account the bias-variance trade-off that states that too few predictors or too simple models can lead to systematic bias while too many predictors or too complex models can lead to overfitting and low generalisation (high variance when predicting to independent data).</p>
+<p>We can also use the deviance to calculate the <em>Explained deviance</em> <span class="math inline">\(D^2\)</span>, which is the amount of variation explained by the model compared to the null expectation: <span class="math display">\[D^2 = 1 - \frac{D(model)}{D(Null.model)}\]</span> The model output also provides the <code>Null deviance</code>, so we can easily calculate the explained deviance <span class="math inline">\(D^2\)</span>.</p>
+<div class="alert alert-info">
+<p><em><strong>Exercise:</strong></em></p>
+<p>What is the explained deviance of above model?</p>
+</div>
+</div>
+<div id="more-complex-glms" class="section level2">
+<h2><span class="header-section-number">2.4</span> More complex GLMs</h2>
+<p>We can also fit quadratic or higher polynomial terms (check <code>?poly</code>) and interactions between predictors:<br />
+- the term <code>I()</code>indicates that a variable should be transformed before being used as predictor in the formula<br />
+- <code>poly(x,n)</code> creates a polynomial of degree <span class="math inline">\(n\)</span>: <span class="math inline">\(x + x^2 + ... + x^n\)</span><br />
+- <code>x1:x2</code> creates a two-way interaction term between variables x1 and x2, the linear terms of x1 and x2 would have to be specified separately<br />
+- <code>x1*x2</code> creates a two-way interaction term between variables x1 and x2 plus their linear terms<br />
+- <code>x1*x2*x3</code> creates the linear terms of the three variables, all possible two-way interactions between these variables and the three-way interaction</p>
+<p>Try out different formulas:</p>
+<pre class="r"><code># Fit a quadratic relationship with bio10:
+summary( glm(richness ~ bio10 + I(bio10^2), family=&quot;poisson&quot;, data= UK_birdrichness_clim))
+    
+# Or use the poly() function:
+summary( glm(richness ~ poly(bio10,2) , family=&quot;poisson&quot;, data= UK_birdrichness_clim) )
+
+# Fit two linear variables:
+summary( glm(richness ~ bio10 + bio12, family=&quot;poisson&quot;, data= UK_birdrichness_clim) )
+
+# Fit two variables with linear and quadratic terms:
+summary( glm(richness ~ poly(bio10,2) + poly(bio12,2), family=&quot;poisson&quot;, data= UK_birdrichness_clim) )</code></pre>
+<div class="alert alert-info">
+<p><em><strong>Exercise:</strong></em></p>
+<p>Compare the AIC of these models. Which model is the best in terms of AIC?</p>
+</div>
+</div>
+<div id="collinearity-and-variable-selection" class="section level2">
+<h2><span class="header-section-number">2.5</span> Collinearity and variable selection</h2>
+<p>GLMs (and many other statistical models) have problems to fit stable parameters if two or more predictor variables are highly correlated, resulting in so-called multicollinearity issues <span class="citation">(Dormann et al. 2013)</span>. To avoid these problems here, we start by checking for multi-collinearity and by selecting an initical set of predictor variables. Then, we can fit our GLM including multiple predictors and with differently complex response shapes. This model can then be further simplified by removing “unimportant” predictors.</p>
+<div id="correlation-among-predictors" class="section level3">
+<h3><span class="header-section-number">2.5.1</span> Correlation among predictors</h3>
+<p>We first check for pairwise correlations among predictors. Generally, correlations below |r|&lt;0.7 are considered unproblematic (or below |r|&lt;0.5 as more conservative threshold).</p>
+<pre class="r"><code>library(corrplot)
+
+# We first estimate a correlation matrix from the predictors. 
+# We use Spearman rank correlation coefficient, as we do not know 
+# whether all variables are normally distributed.
+cor_mat &lt;- cor(UK_birdrichness_clim[,-c(1:3)], method=&#39;spearman&#39;)
+
+# We can visualise this correlation matrix. For better visibility, 
+# we plot the correlation coefficients as percentages.
+corrplot.mixed(cor_mat, tl.pos=&#39;lt&#39;, tl.cex=0.6, number.cex=0.5, addCoefasPercent=T)</code></pre>
+<p><img src="a3_RichnessRegression_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Several predictor variables are highly correlated. One way to deal with this issue is to remove the “less important” variable from the highly correlated pairs. For this, we either need some prior knowledge on the system and strong assumptions, which predictors are more important, or we need to assess variable importance from the data.</p>
+</div>
+<div id="variable-selection-removing-highly-correlated-variables" class="section level3">
+<h3><span class="header-section-number">2.5.2</span> Variable selection: removing highly correlated variables</h3>
+<p>If no prior knowledge is available on the importance of different predictors, then <span class="citation">Dormann et al. (2013)</span> suggest to assess univariate variable importance in terms of AIC (Akaike information criterion) or explained deviance. In practice, this means that we fit a GLM separately for each predictor, assess the importance and then rank the variables according to their univariate importance. Earlier, we already fitted GLMs with linear and quadratic terms and compared AIC. Which one was better?</p>
+<p>However, it’s getting a bit more complicated when we want to compare all variables. First, we need to identify all pairs of variables that have correlation |r|&gt;0.7 and remove the less important variable. <span class="citation">Dormann et al. (2013)</span> call this the <em>select07</em> method.</p>
+<p>A <code>select07()</code> function is implemented in the package <code>mecofun</code> along with some other useful functions for the entire <em>MGC</em> module. We first have to install the package from the Univ. Potsdam gitlab:</p>
+<pre class="r"><code>library(devtools)
+devtools::install_git(&quot;https://gitup.uni-potsdam.de/macroecology/mecofun.git&quot;)</code></pre>
+<p>Now, you can load the package and try out the function. Also, check out the help pages for <code>?select07</code>.</p>
+<pre class="r"><code>library(mecofun)
+
+# Run select07()
+var_sel &lt;- select07(X=UK_birdrichness_clim[,-c(1:3)], 
+                    y=UK_birdrichness_clim$richness, 
+                    threshold=0.7, family=&#39;poisson&#39;)
+
+# Check out the structure of the resulting object:
+str(var_sel)</code></pre>
+<pre><code>## List of 3
+##  $ AIC     : Named num [1:19] 29616 30786 31140 31282 31522 ...
+##   ..- attr(*, &quot;names&quot;)= chr [1:19] &quot;bio5&quot; &quot;bio10&quot; &quot;bio15&quot; &quot;bio7&quot; ...
+##  $ cor_mat : num [1:19, 1:19] 1 0.265 -0.224 0.412 0.857 ...
+##   ..- attr(*, &quot;dimnames&quot;)=List of 2
+##   .. ..$ : chr [1:19] &quot;bio1&quot; &quot;bio2&quot; &quot;bio3&quot; &quot;bio4&quot; ...
+##   .. ..$ : chr [1:19] &quot;bio1&quot; &quot;bio2&quot; &quot;bio3&quot; &quot;bio4&quot; ...
+##  $ pred_sel: chr [1:6] &quot;bio5&quot; &quot;bio15&quot; &quot;bio9&quot; &quot;bio6&quot; ...</code></pre>
+<pre class="r"><code># We extract the names of the weakly correlated predictors ordered by the univariate variable importance in terms of AIC:
+(pred_sel &lt;- var_sel$pred_sel)</code></pre>
+<pre><code>## [1] &quot;bio5&quot;  &quot;bio15&quot; &quot;bio9&quot;  &quot;bio6&quot;  &quot;bio8&quot;  &quot;bio3&quot;</code></pre>
+<p>So, we have now reduced our set of 19 bioclimatic variables to 6 predictors that are only weakly correlated. Now, we need to decide whether all of these should be included in the final model, or if we select only a few, for example the two most important variables in terms of univariate AIC. As a rule of thumb, we should have ten data points per parameter fitted in the model <span class="citation">(Guisan, Thuiller, and Zimmermann 2017)</span>. We have a large data set and should have no sample size problems.</p>
+<pre class="r"><code># How many data points do we have?
+nrow(UK_birdrichness_clim)</code></pre>
+<pre><code>## [1] 2780</code></pre>
+</div>
+</div>
+<div id="model-selection" class="section level2">
+<h2><span class="header-section-number">2.6</span> Model selection</h2>
+<p>Now that we have selected a set of weakly correlated variables, we can fit the full model and then simplify it by stepwise variable selection using the <code>step()</code>function. This stepwise selection tests whether the model in terms of AIC is improved by removing predictors. We consider linear and quadratic terms using <code>poly()</code> function. This means that the linear and quadratic terms are not separated in stepwise variable selection.</p>
+<pre class="r"><code># Fit the full model:
+m_full &lt;- glm( richness ~ poly(bio5,2) + poly(bio15,2) + poly(bio9,2) + poly(bio6,2) + poly(bio8,2) + poly(bio3,2), 
+               family=&#39;poisson&#39;, data=UK_birdrichness_clim)
+
+# Inspect the model:
+summary(m_full)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = richness ~ poly(bio5, 2) + poly(bio15, 2) + poly(bio9, 
+##     2) + poly(bio6, 2) + poly(bio8, 2) + poly(bio3, 2), family = &quot;poisson&quot;, 
+##     data = UK_birdrichness_clim)
+## 
+## Deviance Residuals: 
+##      Min        1Q    Median        3Q       Max  
+## -10.9035   -1.1743    0.0535    1.2752    6.0976  
+## 
+## Coefficients:
+##                  Estimate Std. Error  z value Pr(&gt;|z|)    
+## (Intercept)      3.994756   0.002613 1528.587  &lt; 2e-16 ***
+## poly(bio5, 2)1   8.967130   0.288784   31.051  &lt; 2e-16 ***
+## poly(bio5, 2)2  -3.422984   0.162151  -21.110  &lt; 2e-16 ***
+## poly(bio15, 2)1 -3.372765   0.296072  -11.392  &lt; 2e-16 ***
+## poly(bio15, 2)2 -1.552706   0.175435   -8.851  &lt; 2e-16 ***
+## poly(bio9, 2)1   0.875024   0.227061    3.854 0.000116 ***
+## poly(bio9, 2)2  -0.520402   0.163329   -3.186 0.001441 ** 
+## poly(bio6, 2)1  -1.069775   0.289479   -3.696 0.000219 ***
+## poly(bio6, 2)2  -2.924088   0.184149  -15.879  &lt; 2e-16 ***
+## poly(bio8, 2)1   0.094253   0.201563    0.468 0.640061    
+## poly(bio8, 2)2  -0.548031   0.225642   -2.429 0.015151 *  
+## poly(bio3, 2)1  -0.712709   0.160908   -4.429 9.45e-06 ***
+## poly(bio3, 2)2   1.106964   0.146619    7.550 4.35e-14 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for poisson family taken to be 1)
+## 
+##     Null deviance: 19623  on 2779  degrees of freedom
+## Residual deviance: 12585  on 2767  degrees of freedom
+## AIC: 28655
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p>How much deviance is explained by our model? As explained earlier, we can calculate explained deviance by quantifying how closely the model predictions fit the data in relation to the null model predictions. Conveniently, the deviance and null deviance can be extracted from the model output.</p>
+<pre class="r"><code># Explained deviance:
+1 - deviance(m_full)/m_full$null.deviance</code></pre>
+<pre><code>## [1] 0.3586898</code></pre>
+<p>We now simplify the model by using AIC-based stepwise variable selection.</p>
+<p>In this case, the full model seems to be the best.</p>
+</div>
+<div id="model-diagnostics" class="section level2">
+<h2><span class="header-section-number">2.7</span> Model diagnostics</h2>
+<p>As in ordinary regression we should check whether our model assumptions are met. In GLMs, one important assumption is that the dispersion parameter is taken to be one. The Poisson distribution assumes that mean and variance are equal. The dispersion factor indicates whether the variance is larger than the mean (overdispersion) or smaller than the mean (underdispersion). We can calculate the dispersion factor from the model output by dividing the residual deviance by the residual degrees of freedom.</p>
+<pre class="r"><code># Dispersion factor
+deviance(m_full)/m_full$df.residual</code></pre>
+<pre><code>## [1] 4.548156</code></pre>
+<p>The dispersion factor is clearly above 1 and, thus, our model is overdispersed. A potential problem with overdispersion is that the estimated standard errors around the parameter values are often too small resulting in misleading significance levels <span class="citation">(Dormann 2013)</span>.</p>
+<p>One way to deal with this is to use a different error distribution. For example, the negative binomial distribution also adequately describes count data, but allows a variable dispersion factor to be fitted.</p>
+<pre class="r"><code># Fit the full model with nbinom family:
+library(MASS)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;MASS&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:raster&#39;:
+## 
+##     area, select</code></pre>
+<pre class="r"><code>m_full2 &lt;- glm.nb( richness ~ poly(bio5,2) + poly(bio15,2) + poly(bio9,2) + poly(bio6,2) + poly(bio8,2) + poly(bio3,2), 
+               data=UK_birdrichness_clim)
+
+# Inspect the model:
+summary(m_full2)</code></pre>
+<pre><code>## 
+## Call:
+## glm.nb(formula = richness ~ poly(bio5, 2) + poly(bio15, 2) + 
+##     poly(bio9, 2) + poly(bio6, 2) + poly(bio8, 2) + poly(bio3, 
+##     2), data = UK_birdrichness_clim, init.theta = 12.76749105, 
+##     link = log)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -6.2531  -0.5093   0.0234   0.5351   2.7493  
+## 
+## Coefficients:
+##                  Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)      3.995069   0.005916 675.319  &lt; 2e-16 ***
+## poly(bio5, 2)1   8.471286   0.628526  13.478  &lt; 2e-16 ***
+## poly(bio5, 2)2  -3.018986   0.341431  -8.842  &lt; 2e-16 ***
+## poly(bio15, 2)1 -3.882181   0.676843  -5.736 9.71e-09 ***
+## poly(bio15, 2)2 -1.317920   0.402853  -3.271  0.00107 ** 
+## poly(bio9, 2)1   1.267221   0.546102   2.320  0.02031 *  
+## poly(bio9, 2)2  -0.478158   0.387045  -1.235  0.21668    
+## poly(bio6, 2)1  -0.843270   0.670900  -1.257  0.20878    
+## poly(bio6, 2)2  -3.082774   0.390676  -7.891 3.00e-15 ***
+## poly(bio8, 2)1   0.109203   0.482220   0.226  0.82084    
+## poly(bio8, 2)2  -0.691247   0.540166  -1.280  0.20065    
+## poly(bio3, 2)1  -0.961191   0.374073  -2.570  0.01018 *  
+## poly(bio3, 2)2   1.316443   0.334830   3.932 8.44e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for Negative Binomial(12.7675) family taken to be 1)
+## 
+##     Null deviance: 4550.0  on 2779  degrees of freedom
+## Residual deviance: 3140.6  on 2767  degrees of freedom
+## AIC: 23780
+## 
+## Number of Fisher Scoring iterations: 1
+## 
+## 
+##               Theta:  12.767 
+##           Std. Err.:  0.465 
+## 
+##  2 x log-likelihood:  -23751.706</code></pre>
+<p>The negative binomial distribution leads to much lower overdispersion and seems to more adequately describe the data. Also, several coefficients have lower significance levels (higher p values) than previously. We thus repeat the stepwise variable selection.</p>
+<pre class="r"><code>m_step2 &lt;- step(m_full2)</code></pre>
+<pre><code>## Start:  AIC=23777.71
+## richness ~ poly(bio5, 2) + poly(bio15, 2) + poly(bio9, 2) + poly(bio6, 
+##     2) + poly(bio8, 2) + poly(bio3, 2)
+## 
+##                  Df Deviance   AIC
+## - poly(bio8, 2)   2   3142.6 23776
+## &lt;none&gt;                3140.6 23778
+## - poly(bio9, 2)   2   3146.9 23780
+## - poly(bio3, 2)   2   3165.6 23799
+## - poly(bio15, 2)  2   3187.9 23821
+## - poly(bio6, 2)   2   3215.6 23849
+## - poly(bio5, 2)   2   3390.3 24023
+## 
+## Step:  AIC=23775.66
+## richness ~ poly(bio5, 2) + poly(bio15, 2) + poly(bio9, 2) + poly(bio6, 
+##     2) + poly(bio3, 2)
+## 
+##                  Df Deviance   AIC
+## &lt;none&gt;                3140.5 23776
+## - poly(bio9, 2)   2   3146.8 23778
+## - poly(bio3, 2)   2   3165.1 23796
+## - poly(bio15, 2)  2   3188.2 23819
+## - poly(bio6, 2)   2   3219.0 23850
+## - poly(bio5, 2)   2   3393.7 24025</code></pre>
+<p>This time, a reduced model without bio8 seems to be most adequate.</p>
+</div>
+<div id="model-assessment" class="section level2">
+<h2><span class="header-section-number">2.8</span> Model assessment</h2>
+<p>We assess model response to understand the richness-energy relationships, and predictive accuracy.</p>
+<div id="response-curves" class="section level3">
+<h3><span class="header-section-number">2.8.1</span> Response curves</h3>
+<p>We plot the response along each climatic gradient while keeping all other gradients constant at their mean. We call this <strong><em>partial response plots</em></strong>. For simplicity, we can use the function <code>partial_response()</code> from the <code>mecofun</code> package for plotting.</p>
+<pre class="r"><code># Names of predictors
+my_preds &lt;- c(&#39;bio5&#39;,&#39;bio15&#39;,&#39;bio9&#39;,&#39;bio6&#39;,&#39;bio3&#39;)
+
+par(mfrow=c(2,3))
+partial_response(m_step2, predictors = UK_birdrichness_clim[,my_preds],ylim=c(0,100))</code></pre>
+<p><img src="a3_RichnessRegression_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p>We also plot predicted richness against observed richness. Often, richness regressions pull the response towards the mean and by that overpredict low species richness sites and underpredict high species richness sites <span class="citation">(Zurell et al. 2016, 2020)</span>.</p>
+<pre class="r"><code>plot(UK_birdrichness_clim$richness, m_step2$fitted.values, pch=19, col=&#39;grey55&#39;,xlab=&#39;Observed richness&#39;, ylab=&#39;Predicted richness&#39;, xlim=c(0,100), ylim=c(0,100))
+abline(0,1, lty=&#39;dashed&#39;,lwd=2)
+abline(lm(m_step2$fitted.values ~ UK_birdrichness_clim$richness), col=&#39;darkgreen&#39;, lwd=2)</code></pre>
+<p><img src="a3_RichnessRegression_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+</div>
+<div id="prediction-accuracy" class="section level3">
+<h3><span class="header-section-number">2.8.2</span> Prediction accuracy</h3>
+<p>We calculate the C-index, which is a generalisation of the AUC and quantifies the probability that the ranking of pairs of predictions matches the rankings of the observations used for testing <span class="citation">(Briscoe et al. 2021)</span>.</p>
+<p>The C-index is calculated for both training data and 5-fold cross-validated data.</p>
+<pre class="r"><code># We create 5 folds for our data
+folds &lt;- dismo::kfold(UK_birdrichness_clim, k = 5)
+
+# Make cross-validated predictions
+preds_cv &lt;- crossvalSDM(m_step2, traindat = UK_birdrichness_clim, colname_species = &#39;richness&#39;, colname_pred = my_preds, kfold=folds)
+
+# Calculate C-index
+library(Hmisc)
+# On training data
+rcorr.cens(m_step2$fitted.values, UK_birdrichness_clim$richness)[1]</code></pre>
+<pre><code>##   C Index 
+## 0.7044003</code></pre>
+<pre class="r"><code># On cross-validated data
+rcorr.cens(preds_cv, UK_birdrichness_clim$richness)[1]</code></pre>
+<pre><code>##  C Index 
+## 0.702669</code></pre>
+<p>The C-index looks very similar between predictions on training data and on cross-validation folds. It indicates that if we take two random observations from our data, then in 70% of the cases we would correctly predict a higher abundance (rank) for the larger observed count.</p>
+</div>
+</div>
+<div id="model-predictions" class="section level2">
+<h2><span class="header-section-number">2.9</span> Model predictions</h2>
+<p>Finally, we make predictions in space. For this, we first load the climate layers from last session and then make predictions to these layers.</p>
+<pre class="r"><code>library(raster)
+
+# Load climate data
+clim &lt;- stack(&#39;data/UK_bioclim.grd&#39;)</code></pre>
+<pre><code>## Warning in showSRID(uprojargs, format = &quot;PROJ&quot;, multiline = &quot;NO&quot;, prefer_proj =
+## prefer_proj): Discarded datum OSGB 1936 in Proj4 definition</code></pre>
+<pre class="r"><code># Prepare climate data frames
+clim_df &lt;- data.frame(rasterToPoints(clim))
+
+# Make predictions
+# Make continuous predictions:
+clim_df$pred_richness &lt;- predict(m_step2, newdata= clim_df, type=&quot;response&quot;)
+head(clim_df)</code></pre>
+<pre><code>##        x       y     bio1     bio2     bio3     bio4     bio5     bio6     bio7
+## 1 455000 1215000 63.00000 41.00000 31.00000 3367.000 134.0000 2.000000 132.0000
+## 2 465000 1215000 63.76865 41.00000 30.00000 3402.992 135.7686 1.953570 133.8151
+## 3 445000 1205000 64.95471 42.00000 31.95471 3273.186 136.6508 5.605549 131.0453
+## 4 455000 1205000 64.31345 41.42402 30.53458 3353.422 136.2029 3.737462 132.4654
+## 5 465000 1205000 65.24146 41.00000 30.00000 3396.689 137.4272 4.106619 133.3206
+## 6 435000 1195000 67.31149 43.00000 33.00000 3205.951 138.1557 8.311492 129.8443
+##       bio8     bio9    bio10    bio11    bio12    bio13    bio14 bio15    bio16
+## 1 30.00000 95.00000 109.0000 23.00000 1234.000 146.0000 59.00000    31 427.0000
+## 2 30.81508 97.58372 110.5837 23.81508 1227.833 144.2314 59.00000    31 423.4627
+## 3 33.65084 95.69612 109.0000 26.65084 1212.535 144.3492 58.34916    31 419.0928
+## 4 31.73746 96.77887 109.8894 25.62690 1215.405 143.7971 58.11057    31 420.8154
+## 5 42.48606 99.20234 112.2023 26.06750 1209.067 142.7585 58.17396    31 418.2247
+## 6 37.31149 96.31149 110.1557 30.31149 1193.508 142.6885 56.84425    31 413.2213
+##      bio17    bio18    bio19 pred_richness
+## 1 186.0000 206.0000 383.0000      23.51940
+## 2 186.0000 206.0000 379.6012      26.23575
+## 3 184.3492 204.0000 378.0475      23.35154
+## 4 183.3317 203.3317 377.7048      25.32457
+## 5 182.2413 201.6010 374.4496      27.01552
+## 6 180.5328 200.5328 373.2213      22.77379</code></pre>
+<pre class="r"><code># Make raster of predictions to current environment:
+r_pred_richness &lt;- rasterFromXYZ(clim_df[,c(&#39;x&#39;,&#39;y&#39;,&#39;pred_richness&#39;)])
+plot(r_pred_richness, axes=F, main=&#39;Predicted species richness&#39;)</code></pre>
+<p><img src="a3_RichnessRegression_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<div class="alert alert-info">
+<p><em><strong>Exercise:</strong></em></p>
+<p>Use the data <em>UK_BBatlas_1968_2008.csv</em> from last session and calculate a richness regression model for another time period (60s or 80s). Compare response curves and predictions.</p>
+</div>
+</div>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references">
+<div id="ref-Briscoe2021">
+<p>Briscoe, N. J., D. Zurell, J. Elith, C. Koenig, G. Fandos, A.-K. Malchow, M. Kéry, H. Schmid, and G. Guillera-Arroita. 2021. “Can Dynamic Occupancy Models Improve Predictions of Species’ Range Dynamics? A Test Using Swiss Birds.” <em>Global Change Biology</em>, May. <a href="https://doi.org/10.1111/gcb.15723">https://doi.org/10.1111/gcb.15723</a>.</p>
+</div>
+<div id="ref-Dormann2013a">
+<p>Dormann, C. F. 2013. <em>Parametrische Statistik</em>. Springer.</p>
+</div>
+<div id="ref-Dormann2013">
+<p>Dormann, C. F., J. Elith, S. Bacher, C. Buchmann, G. Carl, G. Carre, J. R. Garcia Marquez, et al. 2013. “Collinearity: A Review of Methods to Deal with It and a Simulation Study Evaluating Their Performance.” <em>Ecography</em> 36: 27–46.</p>
+</div>
+<div id="ref-Gillings2019">
+<p>Gillings, S., D. E. Balmer, B. J. Caffrey, I. S. Downie, D. W. Gibbons, P. C. Lack, J. B. Reid, J. T. R. Sharrock, R. L. Swann, and R. J. Fuller. 2019. “Breeding and Wintering Bird Distributions in Britain and Ireland from Citizen Science Bird Atlases.” <em>Global Ecology and Biogeography</em> 28 (7): 866–74. <a href="https://doi.org/10.1111/geb.12906">https://doi.org/10.1111/geb.12906</a>.</p>
+</div>
+<div id="ref-Guisan2017">
+<p>Guisan, A., W. Thuiller, and N. E. Zimmermann. 2017. <em>Habitat Suitability and Distribution Models with Applications in R</em>. Cambride University Press.</p>
+</div>
+<div id="ref-Hosmer2013">
+<p>Hosmer, D. W., and S. Lemeshow. 2013. <em>Applied Logistic Regression</em>. 3rd ed. John Wiley &amp; Sons, Inc.</p>
+</div>
+<div id="ref-Zurell2020">
+<p>Zurell, D., N. E. Zimmermann, H. Gross, A. Baltensweiler, T. Sattler, and R. O. Wüest. 2020. “Testing Species Assemblage Predictions from Stacked and Joint Species Distribution Models.” <em>Journal of Biogeography</em> 47 (1): 101–13. <a href="https://doi.org/10.1111/jbi.13608">https://doi.org/10.1111/jbi.13608</a>.</p>
+</div>
+<div id="ref-Zurell2016a">
+<p>Zurell, D., N. E. Zimmermann, T. Sattler, M. P. Nobis, and B. Schröder. 2016. “Effects of Functional Traits on the Prediction Accuracy of Species Richness Models.” <em>Diversity and Distributions</em> 22 (8): 905–17. <a href="https://doi.org/10.1111/ddi.12450">https://doi.org/10.1111/ddi.12450</a>.</p>
+</div>
+</div>
+</div>
+
+<!DOCTYPE html>
+<html>
+
+<br>
+<hr />
+<div id="footer">
+<p>Damaris Zurell 2021 <a href="http://creativecommons.org/licenses/by/4.0/" >(CC BY 4.0)</a>.  </p>
+</div>
+
+</html>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
