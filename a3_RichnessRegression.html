@@ -11,7 +11,7 @@
 
 
 
-<title>Species richness gradients</title>
+<title>Species richness regression</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -407,7 +407,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Species richness gradients</h1>
+<h1 class="title toc-ignore">Species richness regression</h1>
 
 </div>
 
@@ -825,8 +825,8 @@ rcorr.cens(m_step2$fitted.values, UK_birdrichness_clim$richness)[1]</code></pre>
 ## 0.7044003</code></pre>
 <pre class="r"><code># On cross-validated data
 rcorr.cens(preds_cv, UK_birdrichness_clim$richness)[1]</code></pre>
-<pre><code>##  C Index 
-## 0.702669</code></pre>
+<pre><code>##   C Index 
+## 0.7022783</code></pre>
 <p>The C-index looks very similar between predictions on training data and on cross-validation folds. It indicates that if we take two random observations from our data, then in 70% of the cases we would correctly predict a higher abundance (rank) for the larger observed count.</p>
 </div>
 </div>
