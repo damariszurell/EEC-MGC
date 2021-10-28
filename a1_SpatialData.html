@@ -426,7 +426,7 @@ div.tocify {
 <pre class="r"><code>install.packages(c(&#39;sp&#39;,&#39;raster&#39;,&#39;dismo&#39;), dep=T)</code></pre>
 <div id="introduction-to-spatial-data" class="section level1">
 <h1><span class="header-section-number">1</span> Introduction to spatial data</h1>
-<p>Spatial data are typically stored as either vector data or raster data <span class="citation">(<span class="citeproc-not-found" data-reference-id="With2019"><strong>???</strong></span>)</span>. Discrete objects with clear boundaries are usually represented by vector data (e.g. individual trees, roads, countries) while continuous phenomena without clear boundaries are usually represented by raster data (e.g. elevation, temperature).</p>
+<p>Spatial data are typically stored as either vector data or raster data <span class="citation">(With 2019)</span>. Discrete objects with clear boundaries are usually represented by vector data (e.g. individual trees, roads, countries) while continuous phenomena without clear boundaries are usually represented by raster data (e.g. elevation, temperature).</p>
 <p><strong>Vector data</strong> can be mapped a points, lines, and polygons:</p>
 <ul>
 <li><strong>Points</strong> occur at discrete locations and are represented by a coordinate pair (x,y). Each point may carry additional informaton, the so-called attributes, e.g. the species name of the individual captured at the location along with date.</li>
@@ -445,23 +445,20 @@ div.tocify {
 <pre class="r"><code># We set a seed for the random number generator, so that we all obtain the same results
 set.seed(12345)
 
-coords = cbind(
-  x=rnorm(10, sd=2),
-  y=rnorm(10, sd=2)
+coords &lt;- cbind(
+  x &lt;- rnorm(10, sd=2),
+  y &lt;- rnorm(10, sd=2)
 )
 
 str(coords)</code></pre>
-<pre><code>##  num [1:10, 1:2] 1.171 1.419 -0.219 -0.907 1.212 ...
-##  - attr(*, &quot;dimnames&quot;)=List of 2
-##   ..$ : NULL
-##   ..$ : chr [1:2] &quot;x&quot; &quot;y&quot;</code></pre>
+<pre><code>##  num [1:10, 1:2] 1.171 1.419 -0.219 -0.907 1.212 ...</code></pre>
 <pre class="r"><code>plot(coords)</code></pre>
 <p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>We now convert the random points into a <code>SpatialPoints</code> object and inspect it.</p>
 <pre class="r"><code>library(sp)
 
 # Convert into SpatialPoints
-sp = SpatialPoints(coords)
+sp &lt;- SpatialPoints(coords)
 
 # Check out the object
 class(sp)</code></pre>
@@ -472,7 +469,7 @@ class(sp)</code></pre>
 showDefault(sp)</code></pre>
 <pre><code>## An object of class &quot;SpatialPoints&quot;
 ## Slot &quot;coords&quot;:
-##                x          y
+##        coords.x1  coords.x2
 ##  [1,]  1.1710576 -0.2324956
 ##  [2,]  1.4189320  3.6346241
 ##  [3,] -0.2186066  0.7412557
@@ -485,9 +482,9 @@ showDefault(sp)</code></pre>
 ## [10,] -1.8386440  0.5974474
 ## 
 ## Slot &quot;bbox&quot;:
-##         min      max
-## x -3.635912 1.418932
-## y -1.772715 3.634624
+##                 min      max
+## coords.x1 -3.635912 1.418932
+## coords.x2 -1.772715 3.634624
 ## 
 ## Slot &quot;proj4string&quot;:
 ## CRS arguments: NA</code></pre>
@@ -499,7 +496,7 @@ sp</code></pre>
 ## extent      : -3.635912, 1.418932, -1.772715, 3.634624  (xmin, xmax, ymin, ymax)
 ## crs         : NA</code></pre>
 <p>The slot <code>bbox</code> describes the bounding box around the known coordinates and the slot <code>proj4string</code> stores the coordinate reference system (“CRS”). In our case, no CRS was provided. We can explicitly add a CRS when creating the <code>SpatialPoints</code> object:</p>
-<pre class="r"><code>sp = SpatialPoints(coords, proj4string=CRS(&#39;+proj=longlat +datum=WGS84&#39;))
+<pre class="r"><code>sp &lt;- SpatialPoints(coords, proj4string=CRS(&#39;+proj=longlat +datum=WGS84&#39;))
 sp</code></pre>
 <pre><code>## class       : SpatialPoints 
 ## features    : 10 
@@ -507,7 +504,7 @@ sp</code></pre>
 ## crs         : +proj=longlat +datum=WGS84 +no_defs</code></pre>
 <p>Next, we can generate a <code>SpatialPointsDataFrame</code> containing additional information (or attributes) for each point. Let’s assume the spatial points are trees, either of three species.</p>
 <pre class="r"><code># Create attribute table
-(data=data.frame(ID=1:10,species=sample(c(&#39;beech&#39;,&#39;oak&#39;,&#39;birch&#39;),10,replace=T)))</code></pre>
+(data &lt;- data.frame(ID=1:10,species=sample(c(&#39;beech&#39;,&#39;oak&#39;,&#39;birch&#39;),10,replace=T)))</code></pre>
 <pre><code>##    ID species
 ## 1   1     oak
 ## 2   2     oak
@@ -520,7 +517,7 @@ sp</code></pre>
 ## 9   9   beech
 ## 10 10   birch</code></pre>
 <pre class="r"><code># Create SpatialPointsDataFrame
-(spdf = SpatialPointsDataFrame(sp, data))</code></pre>
+(spdf &lt;- SpatialPointsDataFrame(sp, data))</code></pre>
 <pre><code>## class       : SpatialPointsDataFrame 
 ## features    : 10 
 ## extent      : -3.635912, 1.418932, -1.772715, 3.634624  (xmin, xmax, ymin, ymax)
@@ -539,10 +536,10 @@ str(spdf)</code></pre>
 ##   ..@ coords     : num [1:10, 1:2] 1.171 1.419 -0.219 -0.907 1.212 ...
 ##   .. ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. .. ..$ : NULL
-##   .. .. ..$ : chr [1:2] &quot;x&quot; &quot;y&quot;
+##   .. .. ..$ : chr [1:2] &quot;coords.x1&quot; &quot;coords.x2&quot;
 ##   ..@ bbox       : num [1:2, 1:2] -3.64 -1.77 1.42 3.63
 ##   .. ..- attr(*, &quot;dimnames&quot;)=List of 2
-##   .. .. ..$ : chr [1:2] &quot;x&quot; &quot;y&quot;
+##   .. .. ..$ : chr [1:2] &quot;coords.x1&quot; &quot;coords.x2&quot;
 ##   .. .. ..$ : chr [1:2] &quot;min&quot; &quot;max&quot;
 ##   ..@ proj4string:Formal class &#39;CRS&#39; [package &quot;sp&quot;] with 1 slot
 ##   .. .. ..@ projargs: chr &quot;+proj=longlat +datum=WGS84 +no_defs&quot;</code></pre>
@@ -564,7 +561,7 @@ plot(pols, border=&#39;blue&#39;,col=&#39;yellow&#39;,add=T)</code></pre>
 </div>
 <div id="reading-vector-data-from-file" class="section level2">
 <h2><span class="header-section-number">2.3</span> Reading vector data from file</h2>
-<p>Most often, vector data are stored as shapefiles. Download the <a href="https://damariszurell.github.io/EEC-Macro/data/IUCN_Sorex_alpinus.zip">zip folder</a> containg IUCN range data of the Alpine Shrew to your data folder and unzip it. You will see that several files are contained in this folder. All of these are necessary parts of the shapefile and contain the different information on geometry and attributes.</p>
+<p>Most often, vector data are stored as shapefiles. Download the <a href="data/IUCN_Sorex_alpinus.zip">zip folder</a> containg IUCN range data of the Alpine Shrew to your data folder and unzip it. You will see that several files are contained in this folder. All of these are necessary parts of the shapefile and contain the different information on geometry and attributes.</p>
 <p>We use the <code>raster</code> package to read in the data:</p>
 <pre class="r"><code>(shrew &lt;- shapefile(&#39;data/IUCN_Sorex_alpinus.shp&#39;))</code></pre>
 <pre><code>## class       : SpatialPolygonsDataFrame 
@@ -622,7 +619,7 @@ values(r2) &lt;- 1:ncell(r2)
 <div id="read-in-raster-data" class="section level2">
 <h2><span class="header-section-number">3.1</span> Read in raster data</h2>
 <p>In most cases, we will read in raster data from file. For this we can use the same commands as above, <code>raster()</code> for reading in single-layer raster files and <code>stack()</code> or <code>brick()</code> for reading in multi-layer raster files.</p>
-<p>First, download the temperature map for UK <a href="https://damariszurell.github.io/EEC-Macro/data/UK_temp.tif">here</a> to your data folder and read it in. The raster layer represents the mean annual in temperature [°C * 10].</p>
+<p>First, download the temperature map for UK <a href="data/UK_temp.tif">here</a> to your data folder and read it in. The raster layer represents the mean annual in temperature [°C * 10].</p>
 <pre class="r"><code>(temp &lt;- raster(&#39;data/UK_temp.tif&#39;))</code></pre>
 <pre><code>## Warning in showSRID(SRS_string, format = &quot;PROJ&quot;, multiline = &quot;NO&quot;, prefer_proj =
 ## prefer_proj): Discarded datum OSGB 1936 in Proj4 definition</code></pre>
@@ -636,7 +633,7 @@ values(r2) &lt;- 1:ncell(r2)
 ## values     : 35.71785, 112  (min, max)</code></pre>
 <pre class="r"><code>plot(temp)</code></pre>
 <p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<p>Second, download the <a href="https://damariszurell.github.io/EEC-Macro/data/UK_bioclim.zip">zip folder</a> containing multi-layer raster data for 19 bioclimatic variables of UK, and unzip in your data folder. It contains two files. The file ending “*.grd” represents the natural file ending for files created using the <code>raster</code> package. It needs to be accompanied by a file ending on “*.gri”, which contains all the cell attributes. The bioclimatic variables are explained <a href="">here</a><a href="https://www.worldclim.org/data/bioclim.html" class="uri">https://www.worldclim.org/data/bioclim.html</a>.</p>
+<p>Second, download the <a href="data/UK_bioclim.zip">zip folder</a> containing multi-layer raster data for 19 bioclimatic variables of UK, and unzip in your data folder. It contains two files. The file ending “*.grd” represents the natural file ending for files created using the <code>raster</code> package. It needs to be accompanied by a file ending on “*.gri”, which contains all the cell attributes. The bioclimatic variables are explained <a href="">here</a><a href="https://www.worldclim.org/data/bioclim.html" class="uri">https://www.worldclim.org/data/bioclim.html</a>.</p>
 <pre class="r"><code>(bioclim &lt;- stack(&#39;data/UK_bioclim.grd&#39;))</code></pre>
 <pre><code>## Warning in showSRID(uprojargs, format = &quot;PROJ&quot;, multiline = &quot;NO&quot;, prefer_proj =
 ## prefer_proj): Discarded datum OSGB 1936 in Proj4 definition</code></pre>
@@ -688,7 +685,7 @@ plot(temp_eur_twodeg)</code></pre>
 <p>There are different ways for extracting information from raster layers. We have already worked with <code>values()</code>. If we have coordinate data, we can use these coordinates to “pierce” through raster layers. That’s one of the easiest ways to extract relevant environmental data for specific locations. For illustration, we create some random locations and then extract the climate data from our raster layers.</p>
 <pre class="r"><code># Generate random locations
 library(dismo)
-lonlat = randomPoints(temp_eur,10)
+lonlat &lt;- randomPoints(temp_eur,10)
 
 # Map temperature and locations
 plot(temp_eur)
@@ -715,6 +712,9 @@ raster::extract(temp_eur, lonlat)</code></pre>
 <div id="refs" class="references">
 <div id="ref-Hijmans2005">
 <p>Hijmans, R. J., S. E. Cameron, J. L. Parra, P. G. Jones, and A. Jarvis. 2005. “Very High Resolution Interpolated Climate Surfaces for Global Land Areas.” <em>International Journal of Climatology</em> 25 (15): 1965–78. <a href="https://doi.org/10.1002/joc.1276">https://doi.org/10.1002/joc.1276</a>.</p>
+</div>
+<div id="ref-With2019">
+<p>With, Kimberly A. 2019. <em>Essentials of Landscape Ecology</em>. Oxford University Press. <a href="https://doi.org/10.1093/oso/9780198838388.001.0001">https://doi.org/10.1093/oso/9780198838388.001.0001</a>.</p>
 </div>
 </div>
 </div>
