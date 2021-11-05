@@ -499,6 +499,12 @@ library(maps)
 map(&#39;world&#39;)
 plot(lynx_lynx, col=&#39;red&#39;, add=T)</code></pre>
 <p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<div class="alert alert-info">
+<p><em><strong>Exercise:</strong></em></p>
+<ul>
+<li>Select another mammal species and plot the range map.</li>
+</ul>
+</div>
 </div>
 <div id="bien-range-maps" class="section level2">
 <h2><span class="header-section-number">1.2</span> BIEN range maps</h2>
@@ -566,6 +572,12 @@ map(&#39;world&#39;,xlim = c(-100,-10),ylim = c(-60,15))
 plot(monkey_puzzle_SAm,col=&#39;red&#39;,add=T)
 plot(gCentroid(monkey_puzzle_SAm), col=&#39;blue&#39;,add=T,lwd=3)</code></pre>
 <p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<div class="alert alert-info">
+<p><em><strong>Exercise:</strong></em></p>
+<ul>
+<li>Use the range map of the mammal species you selected above, and calculate the range size and range centroid. Add the point location of your centroid to the range map that you have plotted previously.</li>
+</ul>
+</div>
 </div>
 <div id="rasterising-range-maps" class="section level2">
 <h2><span class="header-section-number">2.2</span> Rasterising range maps</h2>
@@ -641,6 +653,12 @@ map(&#39;world&#39;,xlim = c(-100,-10),ylim = c(-60,15))
 plot(monkey_puzzle_SAm,col=&#39;blue&#39;,add=T)
 plot(r_monkey_puzzle, add=T, alpha=0.6, legend=F)</code></pre>
 <p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<div class="alert alert-info">
+<p><em><strong>Exercise:</strong></em></p>
+<ul>
+<li>Rasterise the range map of the mammal species you selected above. Try both approaches using the <code>raster</code> package and the <code>letsR</code> package.</li>
+</ul>
+</div>
 </div>
 <div id="bulk-rasterising-multiple-species-range-maps-with-letsr" class="section level3">
 <h3><span class="header-section-number">2.2.3</span> Bulk-rasterising multiple species range maps with <code>letsR</code></h3>
