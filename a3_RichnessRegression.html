@@ -698,6 +698,10 @@ summary(m_full)</code></pre>
 <pre><code>## [1] 0.3586898</code></pre>
 <p>We now simplify the model by using AIC-based stepwise variable selection.</p>
 <p>In this case, the full model seems to be the best.</p>
+<div class="alert alert-info">
+<p><em><strong>Exercise:</strong></em></p>
+<p>Repeat the model selection using the <code>I()</code>specification of quadratic terms in the full model, meaning the formula should look like <code>richness ~ bio5 + I(bio5^2) + bio15 + I(bio15^2) +  ...</code></p>
+</div>
 </div>
 <div id="model-diagnostics" class="section level2">
 <h2><span class="header-section-number">2.7</span> Model diagnostics</h2>
@@ -826,7 +830,7 @@ rcorr.cens(m_step2$fitted.values, UK_birdrichness_clim$richness)[1]</code></pre>
 <pre class="r"><code># On cross-validated data
 rcorr.cens(preds_cv, UK_birdrichness_clim$richness)[1]</code></pre>
 <pre><code>##   C Index 
-## 0.7022783</code></pre>
+## 0.7023728</code></pre>
 <p>The C-index looks very similar between predictions on training data and on cross-validation folds. It indicates that if we take two random observations from our data, then in 70% of the cases we would correctly predict a higher abundance (rank) for the larger observed count.</p>
 </div>
 </div>
