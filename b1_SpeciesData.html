@@ -430,13 +430,13 @@ div.tocify {
 
 # Check out the number of occurrences found in GBIF:
 occ_count()</code></pre>
-<pre><code>## [1] 1890828399</code></pre>
+<pre><code>## [1] 1917011990</code></pre>
 <pre class="r"><code># number of observations:
 occ_count(basisOfRecord=&#39;OBSERVATION&#39;)</code></pre>
-<pre><code>## [1] 18483674</code></pre>
+<pre><code>## [1] 19888454</code></pre>
 <pre class="r"><code># number of occurrences reported for Germany:
 occ_count(country=isocodes[grep(&quot;Germany&quot;, isocodes$name), &quot;code&quot;])</code></pre>
-<pre><code>## [1] 44318783</code></pre>
+<pre><code>## [1] 46842810</code></pre>
 <pre class="r"><code># number of observations reported for Germany:
 occ_count(country=isocodes[grep(&quot;Germany&quot;, isocodes$name), &quot;code&quot;],basisOfRecord=&#39;OBSERVATION&#39;)</code></pre>
 <pre><code>## [1] 289572</code></pre>
@@ -455,14 +455,14 @@ name_suggest(q=&#39;Sorex alpinus&#39;, rank=&#39;species&#39;)</code></pre>
 ## 1 2435986 Sorex alpinus SPECIES</code></pre>
 <pre class="r"><code># Check number of records - here filtered to those with coordinate information
 occ_search(scientificName = &quot;Sorex alpinus&quot;, hasCoordinate=T, limit = 10)</code></pre>
-<pre><code>## Records found [1174] 
+<pre><code>## Records found [1180] 
 ## Records returned [10] 
 ## No. unique hierarchies [1] 
 ## No. media records [10] 
 ## No. facets [0] 
 ## Args [hasCoordinate=TRUE, limit=10, offset=0, scientificName=Sorex alpinus,
 ##      fields=all] 
-## # A tibble: 10 × 92
+## # A tibble: 10 × 86
 ##    key        scientificName  decimalLatitude decimalLongitude issues datasetKey
 ##    &lt;chr&gt;      &lt;chr&gt;                     &lt;dbl&gt;            &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;     
 ##  1 3117844078 Sorex alpinus …            46.2            11.3  &quot;cdro… 50c9509d-…
@@ -471,11 +471,11 @@ occ_search(scientificName = &quot;Sorex alpinus&quot;, hasCoordinate=T, limit = 
 ##  4 3321365464 Sorex alpinus …            47.1             9.38 &quot;&quot;     aa5a1c3c-…
 ##  5 3321353464 Sorex alpinus …            47.1             9.32 &quot;&quot;     aa5a1c3c-…
 ##  6 3321367470 Sorex alpinus …            46.4             8.51 &quot;&quot;     aa5a1c3c-…
-##  7 3121298750 Sorex alpinus …            46.1             8.96 &quot;&quot;     aa5a1c3c-…
-##  8 3031587707 Sorex alpinus …            46.3            12.1  &quot;cdro… 50c9509d-…
-##  9 3121312743 Sorex alpinus …            47.0             9.25 &quot;colm… aa5a1c3c-…
-## 10 3121314748 Sorex alpinus …            47.3             7.01 &quot;&quot;     aa5a1c3c-…
-## # … with 86 more variables: publishingOrgKey &lt;chr&gt;, installationKey &lt;chr&gt;,
+##  7 3383444669 Sorex alpinus …            47.7            13.3  &quot;bri&quot;  c1492854-…
+##  8 3355778524 Sorex alpinus …            47.9            13.6  &quot;cdro… 50c9509d-…
+##  9 3384008970 Sorex alpinus …            45.9            11.5  &quot;cdro… 50c9509d-…
+## 10 3384130345 Sorex alpinus …            46.2            11.4  &quot;cdro… 50c9509d-…
+## # … with 80 more variables: publishingOrgKey &lt;chr&gt;, installationKey &lt;chr&gt;,
 ## #   publishingCountry &lt;chr&gt;, protocol &lt;chr&gt;, lastCrawled &lt;chr&gt;,
 ## #   lastParsed &lt;chr&gt;, crawlId &lt;int&gt;, hostingOrganizationKey &lt;chr&gt;,
 ## #   basisOfRecord &lt;chr&gt;, occurrenceStatus &lt;chr&gt;, taxonKey &lt;int&gt;,
@@ -489,14 +489,14 @@ occ_search(scientificName = &quot;Sorex alpinus&quot;, hasCoordinate=T, limit = 
 <p>One of the most interesting items from the outputs is the “Records found” at the very top of the output. Please be aware that <code>occ_search()</code> will not allow to download more than 100’000 records. If the GBIF data contain more, then you can set additional filters (e.g. set time period with argument <code>year</code> or geographic extent with arguments <code>decimalLatitude</code> and <code>decimalLongitude</code>) or split the area into spatial tiles (by setting geographic extent) and download the tiles separately.</p>
 <p>GBIF data also contain a lot of extra information about observer, basis of record etc. Take a look at the arguments you can set in <code>?occ_search</code> to get an overview. For example, we can limit the data to those observations that were done by humans:</p>
 <pre class="r"><code>occ_search(scientificName = &quot;Sorex alpinus&quot;, hasCoordinate=T, basisOfRecord=&#39;HUMAN_OBSERVATION&#39;, limit = 10)</code></pre>
-<pre><code>## Records found [564] 
+<pre><code>## Records found [568] 
 ## Records returned [10] 
 ## No. unique hierarchies [1] 
 ## No. media records [10] 
 ## No. facets [0] 
 ## Args [hasCoordinate=TRUE, limit=10, offset=0, scientificName=Sorex alpinus,
 ##      basisOfRecord=HUMAN_OBSERVATION, fields=all] 
-## # A tibble: 10 × 89
+## # A tibble: 10 × 85
 ##    key        scientificName  decimalLatitude decimalLongitude issues datasetKey
 ##    &lt;chr&gt;      &lt;chr&gt;                     &lt;dbl&gt;            &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;     
 ##  1 3117844078 Sorex alpinus …            46.2            11.3  &quot;cdro… 50c9509d-…
@@ -504,12 +504,12 @@ occ_search(scientificName = &quot;Sorex alpinus&quot;, hasCoordinate=T, limit = 
 ##  3 3307202767 Sorex alpinus …            47.1             9.32 &quot;cdro… 50c9509d-…
 ##  4 3321353464 Sorex alpinus …            47.1             9.32 &quot;&quot;     aa5a1c3c-…
 ##  5 3321367470 Sorex alpinus …            46.4             8.51 &quot;&quot;     aa5a1c3c-…
-##  6 3121298750 Sorex alpinus …            46.1             8.96 &quot;&quot;     aa5a1c3c-…
-##  7 3031587707 Sorex alpinus …            46.3            12.1  &quot;cdro… 50c9509d-…
-##  8 3121314748 Sorex alpinus …            47.3             7.01 &quot;&quot;     aa5a1c3c-…
-##  9 3121541701 Sorex alpinus …            46.8             8.72 &quot;&quot;     aa5a1c3c-…
-## 10 3121324644 Sorex alpinus …            46.1             6.95 &quot;&quot;     aa5a1c3c-…
-## # … with 83 more variables: publishingOrgKey &lt;chr&gt;, installationKey &lt;chr&gt;,
+##  6 3355778524 Sorex alpinus …            47.9            13.6  &quot;cdro… 50c9509d-…
+##  7 3384008970 Sorex alpinus …            45.9            11.5  &quot;cdro… 50c9509d-…
+##  8 3384130345 Sorex alpinus …            46.2            11.4  &quot;cdro… 50c9509d-…
+##  9 3385066952 Sorex alpinus …            46.3            11.0  &quot;cdro… 50c9509d-…
+## 10 3121298750 Sorex alpinus …            46.1             8.96 &quot;&quot;     aa5a1c3c-…
+## # … with 79 more variables: publishingOrgKey &lt;chr&gt;, installationKey &lt;chr&gt;,
 ## #   publishingCountry &lt;chr&gt;, protocol &lt;chr&gt;, lastCrawled &lt;chr&gt;,
 ## #   lastParsed &lt;chr&gt;, crawlId &lt;int&gt;, hostingOrganizationKey &lt;chr&gt;,
 ## #   basisOfRecord &lt;chr&gt;, occurrenceStatus &lt;chr&gt;, taxonKey &lt;int&gt;,
@@ -549,7 +549,7 @@ cl_gbif_shrew &lt;- clean_coordinates(gbif_shrew, lon=&quot;decimalLongitude&quo
 <pre><code>## Flagged 0 records.</code></pre>
 <pre><code>## Testing duplicates</code></pre>
 <pre><code>## Flagged 194 records.</code></pre>
-<pre><code>## Flagged 212 of 564 records, EQ = 0.38.</code></pre>
+<pre><code>## Flagged 212 of 568 records, EQ = 0.37.</code></pre>
 <pre class="r"><code>plot(wrld_simpl,xlim=c(5,50), ylim=c(40,55))
 points(gbif_shrew$decimalLongitude, gbif_shrew$decimalLatitude, col=&#39;red&#39;,  pch=19)
 points(gbif_shrew$decimalLongitude[cl_gbif_shrew$.summary], gbif_shrew$decimalLatitude[cl_gbif_shrew$.summary], col=&#39;blue&#39;,  pch=18)</code></pre>
@@ -572,8 +572,9 @@ points(gbif_shrew$decimalLongitude[cl_gbif_shrew$.summary], gbif_shrew$decimalLa
 <li>Clean the data: how many geographic outliers did you find, how many duplicates?</li>
 </ul>
 </div>
-<div id="occurrence-data-for-marine-species-obis" class="section level2">
-<h2><span class="header-section-number">2.1</span> Occurrence data for marine species: OBIS</h2>
+</div>
+<div id="occurrence-data-for-marine-species-obis" class="section level1">
+<h1><span class="header-section-number">3</span> Occurrence data for marine species: OBIS</h1>
 <p>Although we will concentrate on terrestrial species in the practicals, I would at least like to mention that marine data are available from OBIS, the the Ocean Biodiversity Information System. Currently, the OBIS database holds more than 135 000 marine species. We can access the database using the package <code>robis</code>. This can be installed from github.</p>
 <pre class="r"><code>library(devtools)
 install_github(&quot;iobis/robis&quot;)</code></pre>
@@ -604,7 +605,6 @@ cl_otter &lt;- clean_coordinates(otter, lon=&quot;decimalLongitude&quot;, lat=&q
 <pre><code>## Flagged 2140 of 3261 records, EQ = 0.66.</code></pre>
 <pre class="r"><code># remove the flagged records
 otter2 &lt;- otter[cl_otter$.summary,]</code></pre>
-</div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1>References</h1>
