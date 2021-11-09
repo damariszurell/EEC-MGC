@@ -712,19 +712,19 @@ m_rf &lt;- randomForest( x=sp_train[,my_preds], y=sp_train$Turdus_torquatus,
 # Variable importance:
 importance(m_rf,type=1)</code></pre>
 <pre><code>##        %IncMSE
-## bio11 17.20485
-## bio8  21.40965</code></pre>
+## bio11 17.17648
+## bio8  20.17584</code></pre>
 <pre class="r"><code>varImpPlot(m_rf)</code></pre>
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <pre class="r"><code># Look at single trees:
 head(getTree(m_rf,1,T))</code></pre>
-<pre><code>##   left daughter right daughter split var split point status prediction
-## 1             2              3     bio11   22.450818     -3 0.08732394
-## 2             4              5      bio8   18.338962     -3 0.48888889
-## 3             6              7      bio8   35.989356     -3 0.02903226
-## 4             8              9     bio11    6.709225     -3 0.90909091
-## 5            10             11     bio11   20.733139     -3 0.35294118
-## 6            12             13     bio11   26.756099     -3 0.37500000</code></pre>
+<pre><code>##   left daughter right daughter split var split point status  prediction
+## 1             2              3      bio8    34.17421     -3 0.084507042
+## 2             4              5      bio8    11.86004     -3 0.562500000
+## 3             6              7      bio8    35.98936     -3 0.009771987
+## 4             0              0      &lt;NA&gt;     0.00000     -1 1.000000000
+## 5             8              9      bio8    30.85739     -3 0.522727273
+## 6            10             11     bio11    26.75610     -3 0.166666667</code></pre>
 <pre class="r"><code># Now, we plot the response surface:
 xyz$z &lt;- predict(m_rf, xyz, type=&#39;response&#39;)
 wireframe(z ~ bio11 + bio8, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
@@ -736,10 +736,10 @@ wireframe(z ~ bio11 + bio8, data = xyz, zlab = list(&quot;Occurrence prob.&quot;
 par(mfrow=c(1,2)) 
 partial_response(m_rf, predictors = sp_train[,my_preds], main=&#39;Random Forest&#39;)</code></pre>
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-14-3.png" width="672" /></p>
-<pre class="r"><code># Performance measures of GAM with spline-smoother 
+<pre class="r"><code># Performance measures of RF
 (perf_rf &lt;- evalSDM(sp_test$Turdus_torquatus, predict(m_rf, sp_test[,my_preds],  type=&#39;response&#39;) ))</code></pre>
 <pre><code>##         AUC       TSS     Kappa  Sens      Spec       PCC        D2 thresh
-## 1 0.9039522 0.7132353 0.4597156 0.875 0.8382353 0.8421053 0.2859066   0.13</code></pre>
+## 1 0.9028033 0.7132353 0.4597156 0.875 0.8382353 0.8421053 0.2308593   0.13</code></pre>
 <pre class="r"><code># Map predictions:
 r_rf_bin &lt;- r_rf_pred &lt;- rasterFromXYZ(cbind(bio_curr_df[,1:2],
                                  predict(m_rf, bio_curr_df,type=&#39;response&#39;)))
@@ -778,16 +778,16 @@ m_brt &lt;- gbm.step(data = sp_train,
 <pre class="r"><code># Variable importance:
 m_brt$contributions</code></pre>
 <pre><code>##         var  rel.inf
-## bio8   bio8 58.09067
-## bio11 bio11 41.90933</code></pre>
+## bio8   bio8 58.27601
+## bio11 bio11 41.72399</code></pre>
 <pre class="r"><code># Interactions (not very meaningful here with only 2 predictors):
 gbm.interactions(m_brt)$interactions</code></pre>
 <pre><code>##       bio11  bio8
-## bio11     0 34.15
+## bio11     0 28.34
 ## bio8      0  0.00</code></pre>
 <pre class="r"><code>gbm.interactions(m_brt)$rank.list</code></pre>
 <pre><code>##   var1.index var1.names var2.index var2.names int.size
-## 1          2       bio8          1      bio11    34.15
+## 1          2       bio8          1      bio11    28.34
 ## 2          3       &lt;NA&gt;          0                0.00</code></pre>
 <pre class="r"><code># dismo provides some build-in functions for plotting response:
 gbm.plot(m_brt, n.plots=2, write.title = FALSE)</code></pre>
@@ -805,10 +805,10 @@ wireframe(z ~ bio11 + bio8, data = xyz, zlab = list(&quot;Occurrence prob.&quot;
 par(mfrow=c(1,2)) 
 partial_response(m_brt, predictors = sp_train[,my_preds], main=&#39;BRT&#39;)</code></pre>
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-15-5.png" width="672" /></p>
-<pre class="r"><code># Performance measures of GAM with spline-smoother 
+<pre class="r"><code># Performance measures of BRT
 (perf_brt &lt;- evalSDM(sp_test$Turdus_torquatus, predict.gbm(m_brt, sp_test[,my_preds], n.trees=m_brt$gbm.call$best.trees, type=&#39;response&#39;) ))</code></pre>
-<pre><code>##         AUC       TSS     Kappa  Sens      Spec       PCC       D2 thresh
-## 1 0.9379596 0.7352941 0.5006258 0.875 0.8602941 0.8618421 0.396242  0.125</code></pre>
+<pre><code>##         AUC       TSS     Kappa  Sens      Spec       PCC        D2 thresh
+## 1 0.9400276 0.7352941 0.5006258 0.875 0.8602941 0.8618421 0.3948688   0.12</code></pre>
 <pre class="r"><code># Map predictions:
 r_brt_bin &lt;- r_brt_pred &lt;- rasterFromXYZ(cbind(bio_curr_df[,1:2],
                                   predict.gbm(m_brt, bio_curr_df,
@@ -842,10 +842,10 @@ wireframe(z ~ bio11 + bio8, data = xyz, zlab = list(&quot;Occurrence prob.&quot;
 par(mfrow=c(1,2)) 
 partial_response(m_maxent, predictors = sp_train[,my_preds], main=&#39;Maxent&#39;)</code></pre>
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-16-2.png" width="672" /></p>
-<pre class="r"><code># Performance measures of GAM with spline-smoother 
+<pre class="r"><code># Performance measures of Maxent
 (perf_maxent &lt;- evalSDM(sp_test$Turdus_torquatus, predict(m_maxent, sp_test[,my_preds],  type=&#39;logistic&#39;) ))</code></pre>
 <pre><code>##         AUC       TSS     Kappa   Sens      Spec       PCC        D2 thresh
-## 1 0.9384191 0.7610294 0.4656918 0.9375 0.8235294 0.8355263 0.3160077  0.265</code></pre>
+## 1 0.9402574 0.7683824 0.4782609 0.9375 0.8308824 0.8421053 0.2742087   0.29</code></pre>
 <pre class="r"><code># Map predictions:
 r_maxent_bin &lt;- r_maxent_pred &lt;- rasterFromXYZ(cbind(bio_curr_df[,1:2],
                                      predict(m_maxent, bio_curr_df, type=&quot;logistic&quot;)))
@@ -865,18 +865,18 @@ plot(stack(r_maxent_pred, r_maxent_bin),main=c(&#39;Maxent prob.&#39;,&#39;Maxen
 ## glm    0.9333640 0.7352941 0.5006258 0.8750 0.8602941 0.8618421  0.4607125
 ## gamS   0.9375000 0.7757353 0.4912689 0.9375 0.8382353 0.8486842  0.4586095
 ## cart   0.8244485 0.6323529 0.4751381 0.7500 0.8823529 0.8684211  0.2546056
-## rf     0.9039522 0.7132353 0.4597156 0.8750 0.8382353 0.8421053  0.2859066
-## brt    0.9379596 0.7352941 0.5006258 0.8750 0.8602941 0.8618421  0.3962420
-## maxent 0.9384191 0.7610294 0.4656918 0.9375 0.8235294 0.8355263  0.3160077
+## rf     0.9028033 0.7132353 0.4597156 0.8750 0.8382353 0.8421053  0.2308593
+## brt    0.9400276 0.7352941 0.5006258 0.8750 0.8602941 0.8618421  0.3948688
+## maxent 0.9402574 0.7683824 0.4782609 0.9375 0.8308824 0.8421053  0.2742087
 ##        thresh
-## bc      0.260
-## dom     0.680
-## glm     0.120
-## gamS    0.100
-## cart    0.320
-## rf      0.130
-## brt     0.125
-## maxent  0.265</code></pre>
+## bc       0.26
+## dom      0.68
+## glm      0.12
+## gamS     0.10
+## cart     0.32
+## rf       0.13
+## brt      0.12
+## maxent   0.29</code></pre>
 <pre class="r"><code># Adapt the file path to your folder structure
 write.table(data.frame(alg=row.names(comp_perf),comp_perf), 
             file=&#39;data/SDM_alg_performances.txt&#39;, row.names=F)</code></pre>
