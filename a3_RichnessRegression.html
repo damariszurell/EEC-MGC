@@ -804,7 +804,7 @@ summary(m_full2)</code></pre>
 my_preds &lt;- c(&#39;bio5&#39;,&#39;bio15&#39;,&#39;bio9&#39;,&#39;bio6&#39;,&#39;bio3&#39;)
 
 par(mfrow=c(2,3))
-partial_response(m_step2, predictors = UK_birdrichness_clim[,my_preds],ylim=c(0,100))</code></pre>
+partial_response(m_step2, predictors = UK_birdrichness_clim[,my_preds],ylim=c(0,100), ylab=&#39;Species richness&#39;)</code></pre>
 <p><img src="a3_RichnessRegression_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 <p>We also plot predicted richness against observed richness. Often, richness regressions pull the response towards the mean and by that overpredict low species richness sites and underpredict high species richness sites <span class="citation">(Zurell et al. 2016, 2020)</span>.</p>
 <pre class="r"><code>plot(UK_birdrichness_clim$richness, m_step2$fitted.values, pch=19, col=&#39;grey55&#39;,xlab=&#39;Observed richness&#39;, ylab=&#39;Predicted richness&#39;, xlim=c(0,100), ylim=c(0,100))
@@ -831,7 +831,7 @@ rcorr.cens(m_step2$fitted.values, UK_birdrichness_clim$richness)[1]</code></pre>
 <pre class="r"><code># On cross-validated data
 rcorr.cens(preds_cv, UK_birdrichness_clim$richness)[1]</code></pre>
 <pre><code>##   C Index 
-## 0.7013757</code></pre>
+## 0.7020232</code></pre>
 <p>The C-index looks very similar between predictions on training data and on cross-validation folds. It indicates that if we take two random observations from our data, then in 70% of the cases we would correctly predict a higher abundance (rank) for the larger observed count.</p>
 </div>
 </div>
