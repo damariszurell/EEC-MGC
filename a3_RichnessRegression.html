@@ -697,6 +697,7 @@ summary(m_full)</code></pre>
 1 - deviance(m_full)/m_full$null.deviance</code></pre>
 <pre><code>## [1] 0.3586898</code></pre>
 <p>We now simplify the model by using AIC-based stepwise variable selection.</p>
+<pre class="r"><code>m_step &lt;- step(m_full)</code></pre>
 <p>In this case, the full model seems to be the best.</p>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
@@ -830,7 +831,7 @@ rcorr.cens(m_step2$fitted.values, UK_birdrichness_clim$richness)[1]</code></pre>
 <pre class="r"><code># On cross-validated data
 rcorr.cens(preds_cv, UK_birdrichness_clim$richness)[1]</code></pre>
 <pre><code>##   C Index 
-## 0.7023728</code></pre>
+## 0.7013757</code></pre>
 <p>The C-index looks very similar between predictions on training data and on cross-validation folds. It indicates that if we take two random observations from our data, then in 70% of the cases we would correctly predict a higher abundance (rank) for the larger observed count.</p>
 </div>
 </div>
