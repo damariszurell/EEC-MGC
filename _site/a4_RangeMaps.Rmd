@@ -1,0 +1,308 @@
+---
+title: "Species range maps"
+output: 
+  html_document:
+    toc: yes
+    toc_float: true
+    number_sections: true
+bibliography: mgc.bib     
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+***
+
+<div class="alert alert-info">
+**RStudio project**
+
+Open the RStudio project that we created in the first session. I recommend to use this RStudio project for the entire course and within the RStudio project create separate R scripts for each session. 
+
+- Create a new empty R script by going to the tab "File", select "New File"  and then "R script"
+- In the new R script, type `# Session a4: Species range maps` and save the file in your folder "scripts" within your project folder, e.g. as "a4_RangeMaps.R"
+</div>
+
+
+We are living in an age of big data where biodiversity are becoming increasingly available in digital format and at a global scale [@W_est_2020]. Many different types of biodiversity data exist, e.g. from standardised monitoring schemes, citizen science platforms, or expert knowledge. Each of these data types comes with own challenges. Within this module, I want to provide some first impressions on how you can obtain and process typical types of species data. Specifically, in this session, we will work with range maps of terrestrial animals and plants, while  occurrence data for terrestrial species in [GBIF](https://www.gbif.org/) (the Global Biodiversity Information facility) and for marine species in [OBIS](https://obis.org/) (the Ocean Biodiversity Information System) will be covered later in the [*species distribution modelling* part](b1_SpeciesData.html). 
+
+
+# Obtaining range maps
+
+We rarely have detailed biodiversity data available over large geographic extents. At broad (continental to global) extents, expert-drawn range maps (also called extent-of-occurrence maps) are often the primary data source on species distributions. 
+
+## IUCN range maps
+
+The IUCN (the International Union for the Conservation of Nature) provides expert range maps for a large number of species including mammals, birds (through [BirdLife International](http://www.birdlife.org/)), amphibians, reptiles, and freshwater fishes. There are also some range maps on plants and marine species, but these are very limited taxonomically. Have a look for which taxa range maps are available: https://www.iucnredlist.org/resources/spatial-data-download.
+You can download them for free, but you should provide some information on your work to obtain the data. 
+
+Most of the IUCN data are provided in the form of shapefiles. In practical 2, we have already loaded the range map of the [Alpine shrew](https://damariszurell.github.io/EEC-Macro/data/IUCN_Sorex_alpinus.zip) and learned how to use the package `raster` for reading in the shapefiles. You may remember that the shapefile is recognized as SpatialPolygonsDataFrame. 
+
+```{r message=F}
+library(raster)
+
+# Load the shapefile
+(shrew <- shapefile('data/IUCN_Sorex_alpinus.shp'))
+
+# Plot the Central Europe
+library(maps)
+map('world',xlim=c(5,30), ylim=c(40,55))
+
+# Overlay the range of the Alpine Shrew
+plot(shrew, col='red', add=T)
+```
+
+Unfortunately, there is no API for the IUCN range maps. So, you need to register with IUCN and then you can download range maps for different taxonomic groups. The range maps for birds come as separate shape files per species, while the range maps of mammals are provided as single shapefile that contains all species. Course participants can download the mammal shapefile from the moodle course - of course, the license agreement by the IUCN apply!
+
+
+```{r echo=F}
+path <- '/Users/zurell/data/Projects/database/IUCN/mammals_terr/'
+mammals <- shapefile(paste0(path,'MAMMTERR.shp'))
+```
+
+```{r eval=F}
+# Read shapefile for all mammals using the raster package:
+mammals <- shapefile('data/MAMMTERR.shp')
+```
+
+The shapefile contains a SpatialPolygonsDataFrame with the range polygons for all described mammal species. The attribute table contains information on species' PRESENCE, ORIGIN, and SEASONALity. Please have a look at the metadata to understand the different values these attributes can be coded as. 
+
+```{r}
+mammals
+
+# Inspect attribute table
+head(mammals@data)
+```
+
+We can search for specific species or species groups in the attribute table in different ways:
+
+```{r eval=F}
+# Show all entries for the species 'Lynx lynx'
+subset(mammals@data, BINOMIAL=='Lynx lynx')
+
+# Show all entries for the species with the word 'Lynx' in their name
+grep('Lynx',mammals@data$BINOMIAL)
+mammals@data[grep('Lynx',mammals@data$BINOMIAL),]
+```
+
+We can use the attribute table subsets to select specific polygons that we want to look at.
+
+```{r}
+# Range map of the Eurasian lynx
+lynx_lynx <- mammals[mammals@data$BINOMIAL=='Lynx lynx',]
+
+# Map the range
+library(maps)
+map('world')
+plot(lynx_lynx, col='red', add=T)
+```
+
+<div class="alert alert-info">
+_**Exercise:**_
+
+- Select another mammal species and plot the range map.
+</div>
+
+
+## BIEN range maps
+
+The [BIEN](https://bien.nceas.ucsb.edu/bien/biendata/) database (Botanical Information and Ecology Network) contains many range maps on plants, but unfortunately only for the Americas. These can be accessed using the `BIEN` package. As illustrative example, we load the range map for the monkey puzzle tree (or Chilean pine - *Araucaria araucana*).
+
+```{r message=F}
+library(BIEN)
+library(sp)
+
+# Load the range map for the monkey puzzle
+(monkey_puzzle <- BIEN_ranges_load_species('Araucaria_araucana'))
+
+# Map
+map('world',xlim = c(-180,-20),ylim = c(-60,80))
+plot(monkey_puzzle,col='red',add=T)
+```
+
+The native range of the mokey puzzle is in the Chilean Andes, so clearly the range maps also show areas where the species naturalized.
+
+# Working with range maps
+
+## Range size and range centre
+
+The `raster` package allows us to easily calculate the area of the polygons, meaning the range size of our species. The function `area()` outputs the area in square meters (if the CRS is in long/lat format). 
+
+```{r}
+# Range area of alpine shrew in square meters:
+area(shrew)
+
+# Range area of alpine shrew in square kilometers:
+area(shrew)/1000000
+
+# Range area of monkey puzzle in square meters:
+area(monkey_puzzle)
+
+# Range area of monkey puzzle n square kilometers:
+area(monkey_puzzle)/1000000
+```
+
+We can also very easily calculate the centre of gravity or range centroid from the spatial polygons. 
+
+```{r}
+library(rgeos)
+
+# Range centroid:
+gCentroid(shrew)
+
+# Map the species range and add the centroid to the map
+map('world',xlim=c(5,30), ylim=c(40,55))
+plot(shrew, col='red', add=T)
+plot(gCentroid(shrew), col='blue',add=T,lwd=3)
+```
+
+We need to be careful how to interpret these centroids. They represent the centre of gravity, so losely the mean coordinates of the distribution (weighted by cell size) but obviously, if we have several patches, the centroid might not even fall within an occupied patch. 
+
+In case of the Monkey Puzzle, we have suspected that the range maps also contain non-native areas. We can clip the range maps to a desired spatial extent and then only calculate the range centroid for this (presumed) native range. 
+
+```{r message=F, warning=F}
+# Let's crop the range polygons to South America
+monkey_puzzle_SAm <- gIntersection(monkey_puzzle, as(extent(-85, -30, -55, 5),"SpatialPolygons"))
+
+# Map the range and range centroid
+map('world',xlim = c(-100,-10),ylim = c(-60,15))
+plot(monkey_puzzle_SAm,col='red',add=T)
+plot(gCentroid(monkey_puzzle_SAm), col='blue',add=T,lwd=3)
+```
+
+<div class="alert alert-info">
+_**Exercise:**_
+
+- Use the range map of the mammal species you selected above, and calculate the range size and range centroid. Add the point location of your centroid to the range map that you have plotted previously.
+</div>
+
+
+## Rasterising range maps
+For many applications in macroecology, we need to rasterise the polygons. The problem is that it is unclear at which spatial resolution the range maps accurately represent species occurrences. @Hurlbert2007 and @Jetz2012a define the minimum spatial resolution as 100-200km (1-2°), although also resolutions of 50km (0.5°) and finer have been used [@Krosby2015; @Zurell2018c]. 
+
+### Rasterising range maps with `raster`
+Rasterising polgyon data is made very easy in the *raster* package. We first have to define a raster grid of the desired resolution, and then transfer the polgyon data to the raster cells. 
+
+```{r}
+# By default, raster() will create a 1° resolution map in the *WGS 84* coordinate system (lon/lat).
+(r_1deg <- raster())
+
+(shrew_1deg <- rasterize(shrew, r_1deg))
+
+map('world',xlim=c(5,30), ylim=c(40,55))
+plot(shrew, col='red', add=T)
+plot(shrew_1deg, add=T, alpha=0.6, legend=F)
+```
+
+Obviously, the margins of the range polgyon and the raster map differ at several places. 
+
+<div class="alert alert-info">
+_**Exercise:**_
+
+Find out what rule is being used to determine whether polygon data is transferred to a raster cell. Check out the help page `?rasterize` to answer this.
+</div>
+
+We look at a second example, the lynx:
+
+```{r}
+# Define an empty raster of the world at 2° spatial resolution
+(r_2deg <- raster(res=2))
+
+# Rasterize the eurasian lynx data
+lynx_lynx_2deg <- rasterize(lynx_lynx, r_2deg)
+
+# Map the occupied grid cells
+plot(lynx_lynx_2deg)
+```
+
+We see that the resulting raster contains values > 1. When you look back into the attribute table of the `lynx_lynx` SpatialPolygonsDataFrame, then you see that we had 48 polygons included. When rasterising, the `raster` package will assign the index of the attribute table row as the cell value. Thereby, some polygons may not be rasterised if they are too small for the desired spatial resolution. (If you have done above exercise and looked up the help pages of `?rasterize`, you should know the conditions when a cell is assigned to be within the range and when not.) Here, we need to make sure that all raster cell are set to a value of 1 so that we have a proper presence map in the end.
+
+```{r}
+values(lynx_lynx_2deg)[!is.na(values(lynx_lynx_2deg))] <- 1
+
+# Map the occupied cells
+map('world')
+plot(lynx_lynx_2deg, add=T, legend=F)
+```
+
+
+### Rasterising range maps with `letsR`
+
+There are also specific macroecological packages in R that facilitate working with range maps and rasterising them, for example the function `lets.presab()` in the `letsR` package.
+
+```{r warning=F}
+library(letsR)
+
+# The lets.presab() function expects specific column names in the Polygons data frame
+colnames(monkey_puzzle@data) <- "binomial"
+
+# We set the resolution to 1 degree (the default) and restrict the spatial extent to South America
+r_monkey_puzzle <- lets.presab(monkey_puzzle, resol=1, xmn = -100, xmx = -10, ymn = -57, ymx = 15)
+
+# Map the range and range centroid
+map('world',xlim = c(-100,-10),ylim = c(-60,15))
+plot(monkey_puzzle_SAm,col='blue',add=T)
+plot(r_monkey_puzzle, add=T, alpha=0.6, legend=F)
+```
+
+
+<div class="alert alert-info">
+_**Exercise:**_
+
+- Rasterise the range map of the mammal species you selected above. Try both approaches using the `raster` package and the `letsR` package.
+</div>
+
+
+### Bulk-rasterising multiple species range maps with `letsR`
+
+The `letsR` package also allows to bulk-download multiple species and rasterise them to form a richness map. As first example, we look at the *Pinus* genus in the Americas
+
+```{r warning=F}
+# Extract the available Pinus species names
+(pinus_names <- BIEN_ranges_genus("Pinus",match_names_only = T)[,1])
+
+# Download the range maps for all Pinus species
+pinus <- BIEN_ranges_load_species(pinus_names)
+
+# Format the column names and rasterise
+colnames(pinus@data) <- "binomial"
+r_pinus <- lets.presab(pinus, resol=1, xmn = -170, xmx = -10, ymn = -57, ymx = 60)
+
+# Plot species richness
+plot(r_pinus)
+```
+
+In the `lets.presab()` function, we can also specify which PRESENCE, ORIGIN and SEASONAL information should be used and which not (see IUCN metadata on moodle). Let's look at Neotropical fruit bats (**Artibeus**) as example. Here, we set `presence=1` meaning that we only consider extant species, `origin=1` meaning only native species, and `seasonal=1` meaning only resident species.
+
+```{r}
+# Subset the SpatialPolygonsDataFrame
+artibeus_spp <- mammals[grep('Artibeus',mammals@data$BINOMIAL),]
+
+# Rasterize the ranges using the letsR package
+r_artibeus_spp <- lets.presab(artibeus_spp, resol=2, 
+                              presence = 1, origin = 1, seasonal = 1)
+
+# Map the species richness
+plot(r_artibeus_spp)
+
+# Map single species - here, just the first two
+par(mfrow=c(1,2))
+plot(r_artibeus_spp, name = "Artibeus amplus")
+plot(r_artibeus_spp, name = "Artibeus anderseni")
+
+# Look at structure of the object and at the presence-absence matrix
+str(r_artibeus_spp, 1)
+head(r_artibeus_spp$Presence_and_Absence_Matrix)
+```
+
+
+<div class="alert alert-info">
+_**Exercise:**_
+
+- Select another genus of plants or mammals, and follow the workflow to rasterise ranges and map species richness of the species within that genus.
+- Plot the latitudinal species richness gradient for this genus. Interpret in light of previously discussed patterns.
+- Download climate data at the correct resolution, and extract the climate information for your species richness data. Plot the species-energy relationship for the genus. Interpret in light of previously discussed patterns.
+</div>
+
+
+# References

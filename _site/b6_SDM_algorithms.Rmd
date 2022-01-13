@@ -1,0 +1,436 @@
+---
+title: "SDM algorithms"
+output: 
+  html_document:
+    toc: yes
+    toc_float: true
+    number_sections: true
+bibliography: mgc.bib   
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error=TRUE)
+```
+
+<div class="alert alert-info">
+**RStudio project**
+
+Open the RStudio project that we created in the first session. I recommend to use this RStudio project for the entire course and within the RStudio project create separate R scripts for each session. 
+
+- Create a new empty R script by going to the tab "File", select "New File"  and then "R script"
+- In the new R script, type `# Session b6: SDM algorithms` and save the file in your folder "scripts" within your project folder, e.g. as "b6_SDM_algorithms.R"
+</div>
+
+
+# Introduction
+So far, we have learnt to fit GLMs to species presence-absence data. GLMs are only one, very simple parametric method for fitting SDMs. There are many more algorithms out there [@elith2006; @Thuiller2009; @Guisan2017]. Here, we will get to know a few of them. Remember the five general model building steps: (i) conceptualisation, (ii) data preparation, (iii) model fitting, (iv) assessment and (v) predictions [@Zurell2020a]. These are the same for all SDMs independent of the particular algorithm used. In this tutorial, we will concentrate on model fitting again but will also run model assessments and make predictions in order to compare the different algorithms.
+
+## Recap of last session: data and model building steps
+I will illustrate the different algorithms using the Ring Ouzel example of sessions 3-4, based on data from the British breeding and wintering birds citizen science atlas [@Gillings2019]. The species presense/absence data and the bioclimatic variables at these locations are available from file. Also, remember that we have already tested the data for multicollinearity and identified bio11 and bio8 as weakly correlated variables with high univariate variable importance.
+
+```{r message=F}
+library(raster)
+bg <- raster('data/Prac3_UK_mask.grd')
+sp_dat <- read.table('data/Prac3_RingOuzel.txt',header=T)
+
+my_preds <- c('bio11','bio8')
+```
+
+In session 4 on model assessment, we learned that the models should be validated on indepedent validation data and we have learned how to run a 5-fold cross-validation. The `crossvalSDM()` function could also be used with the algorithms introduced in this practical. However, to simplfy matters let's rather split the data into training data and testing data once. For a proper validation this split-sample should be repeated many times. Nevertheless, this unique split-sample will still give us an idea of model performance and will allow us to compare the different algorithms.
+
+```{r eval=F}
+# First, we randomly select 70% of the rows that will be used as training data
+train_i <- sample(seq_len(nrow(sp_dat)), size=round(0.7*nrow(sp_dat)))
+
+# Then, we can subset the training and testing data
+sp_train <- sp_dat[train_i,]
+sp_test <- sp_dat[-train_i,]
+
+# We store the split information for later:
+write(train_i, file='data/indices_traindata.txt')
+```
+
+```{r echo=F}
+train_i <- scan('data/indices_traindata.txt')
+sp_train <- sp_dat[train_i,]
+sp_test <- sp_dat[-train_i,]
+```
+
+For making predictions in space, we also load the current climate layers that we downloaded and processed previously. Please remember that the worldclim layers come in geographic projection in lon/lat format while the bird data are sampled on the British National Grid. To harmonise these data, we reproject the climate data onto the National Grid.
+
+```{r message=F, warning=F}
+library(raster)
+
+bio_curr <- stack('data/Prac4_UK_bio_curr.grd')
+```
+
+# Model algorithms
+Typically, you should decide on appropriate modelling algorithms during the conceptualisation phase. Let's assume our study objectives were to compare species-environment relationships and predicted species distributions across several SDM algorithms, for example to quantify the uncertainty due to the model class [@araujo2007; @Thuiller2009; @BUISSON2010]. We will test several different SDM algorithms that can be broadly classified into profile (envelope and distance-based) methods, regression-based methods and non-parametric machine-learning methods [@Guisan2017](http://rspatial.org/sdm/rst/6_sdm_methods.html). The list of models we treat here is not exhaustive but should give you a rough overview of what concepts and methods are out there. Most of the methods used here are available in the package `dismo`.
+
+## Profile (envelope and distance-based) methods
+Profile methods constitute the oldest family of SDM algorithms and are the only "true" presence-only methods that do not need any absence or background data. We can distinguish the classical envelope approach and distance-based methods. 
+
+### BIOCLIM
+BIOCLIM is a pioneering envelope approach [@Booth2014]. It defines the niche as an *n*-dimensional, rectangular bounding box, which is similar to Hutchinson's view of the *n*-dimensional hyperspace [@hutchinson1957]. To reduce sensitivity to outliers, the bounding box can be limited by only considering a certain percentile range (e.g. 5-95%) of the species records along each environmental gradient. In `dismo`, the BIOCLIM algorithm is implemented such that it will produce continuous probabilities between 0 and 1, indicating how similar/close the environmental conditions are to the median conditions.
+
+```{r message=F, warning=F}
+library(dismo)
+
+# Fit BIOCLIM model
+m_bc <- bioclim(bio_curr[[my_preds]], 
+                sp_train[sp_train$Turdus_torquatus==1,c('EASTING','NORTHING')])
+plot(m_bc)
+```
+
+The resulting plot shows the bounding box (5-95% percentile range). The red cross within the box is the median. We can also visualise this a response surface to get a better idea what BIOCLIM is predicting.
+
+```{r message=F, warning=F}
+# For the response surface, we first prepare the 3D-grid with environmental gradient and predictions
+xyz <- expand.grid(
+	seq(min(sp_train[,my_preds[1]]),max(sp_train[,my_preds[1]]),length=50),
+	seq(min(sp_train[,my_preds[2]]),max(sp_train[,my_preds[2]]),length=50))
+names(xyz) <- my_preds
+# Make predictions to gradients:
+xyz$z <- predict(m_bc, xyz)
+
+# Define colour palette:
+library(RColorBrewer)
+cls <- colorRampPalette(rev(brewer.pal(11, 'RdYlBu')))(100)
+
+# Plot response surface:
+library(lattice)
+wireframe(z ~ bio11 + bio8, data = xyz, zlab = list("Occurrence prob.", rot=90), 
+          drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
+          zlim = c(0, 1), main='BIOCLIM', xlab='bio11', ylab='bio8', 
+          screen=list(z = -120, x = -70, y = 3))
+```	
+
+We nicely see the median as the peak of the surface, representing the median environmental conditions in presence locations. Let's look at the corresponding partial response plots.
+
+```{r message=F, warning=F}
+library(mecofun)
+
+# Plot partial response curves:
+par(mfrow=c(1,2)) 
+partial_response(m_bc, predictors = sp_train[,my_preds], main='BIOCLIM')
+```
+
+Last, we validate model performance on the hold-out test data. 
+
+```{r message=F,warning=F}	
+# We use the default MaxSens+Spec threshold:
+(perf_bc <- evalSDM(sp_test$Turdus_torquatus, predict(m_bc, sp_test[,my_preds])))
+```
+
+Finally, let's map the predicted occurrence probabilities across Britain and the predicted presence/absence.
+```{r}
+# Map predictions:
+r_bc_pred <- r_bc_bin <- predict(m_bc,bio_curr)
+
+# Threshold predictions using the maxTSS threshold (max sens+spec)
+values(r_bc_bin) <- ifelse(values(r_bc_pred)>=perf_bc$thresh, 1, 0)
+
+# plot the maps
+plot(stack(r_bc_pred, r_bc_bin),main=c('BIOCLIM prob.','BIOCLIM bin.'), axes=F)	
+``` 
+
+### Domain
+Instead of drawing rectangular envelopes, distance-based methods such as the *Domain* evaluate the environmental similarity between a "new" site and sites with known presences. *Domain* uses the Gower distance for assessing similarity.
+
+```{r warning=F}
+# Fit Domain model
+m_dom <- domain(bio_curr[[my_preds]], 
+                sp_train[sp_train$Turdus_torquatus==1,c('EASTING','NORTHING')])
+
+# Now, we plot the response surface:
+xyz$z <- predict(m_dom, xyz)
+
+wireframe(z ~ bio11 + bio8, data = xyz, zlab = list("Occurrence prob.", rot=90), 
+          drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
+          zlim = c(0, 1), main='Domain', xlab='bio11', ylab='bio8', 
+          screen=list(z = -120, x = -70, y = 3))
+
+	
+# Plot partial response curves:
+par(mfrow=c(1,2)) 
+partial_response(m_dom, predictors = sp_train[,my_preds], main='DOMAIN')
+
+# Performance measures
+(perf_dom <- evalSDM(sp_test$Turdus_torquatus, predict(m_dom, sp_test[,my_preds])))
+
+# Map predictions:
+r_dom_pred <- r_dom_bin <- predict(m_dom,bio_curr[[my_preds]])
+values(r_dom_bin) <- ifelse(values(r_dom_pred)>=perf_dom$thresh, 1, 0)
+plot(stack(r_dom_pred, r_dom_bin),main=c('Domain prob.','Domain bin.'), axes=F)	
+``` 
+
+## Regression-based methods
+### Generalised linear models (GLMs)
+We already know GLMs from the previous tutorials. We can fit linear, quadratic or higher polynomial terms (check `poly()`) and interactions between predictors.
+
+```{r warning=F}
+# Fit GLM
+m_glm <- step(glm( Turdus_torquatus ~ bio11 + I(bio11^2) + bio8 + I(bio8^2),
+	family='binomial', data=sp_train))
+
+# Now, we plot the response surface:
+xyz$z <- predict(m_glm, xyz, type='response')
+
+wireframe(z ~ bio11 + bio8, data = xyz, zlab = list("Occurrence prob.", rot=90), 
+          drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
+          zlim = c(0, 1), main='GLM', xlab='bio11', ylab='bio8', 
+          screen=list(z = -120, x = -70, y = 3))
+	
+# Plot partial response curves:
+par(mfrow=c(1,2)) 
+partial_response(m_glm, predictors = sp_train[,my_preds], main='GLM')
+
+# Performance measures
+(perf_glm <- evalSDM(sp_test$Turdus_torquatus, predict(m_glm, sp_test[,my_preds], type='response') ))
+
+# Map predictions:
+bio_curr_df <- data.frame(rasterToPoints(bio_curr[[my_preds]]))
+r_glm_bin <- r_glm_pred <- rasterFromXYZ(cbind(bio_curr_df[,1:2],
+                                  predict(m_glm, bio_curr_df, type='response')))
+values(r_glm_bin) <- ifelse(values(r_glm_pred)>=perf_glm$thresh, 1, 0)
+plot(stack(r_glm_pred, r_glm_bin),main=c('GLM prob.','GLM bin.'), axes=F)	
+``` 
+
+### Generalised additive models (GAMs)
+GAMs are a semi-parametric regression method that use data-defined, non-parametric smoothing functions to fit non-linear species-environment relationships. GAMs do not fit the response function to all data points at once, but use a moving-window approach to fit a local smoother to a proportion of the data. Small window sizes will yield highly flexible response shapes while large window sizes will produce less flexible response shapes that are closer to a parametric GLM. Two packages for fitting GAMs are available in R: *mgcv* and *gam*. Both allow fitting spline smoother `s()` while the package *gam* also allows fitting a loess function `lo()`. The *mgcv* package allows more control over model fitting and optimization, but here we use the package *gam* to illustrate differences between loess and splines. 
+
+```{r warning=F, message=F}
+library(gam)
+
+# Fit GAM with spline smoother
+m_gamS <- gam( Turdus_torquatus ~ s(bio11,df=4) + s(bio8, df=4),
+	family='binomial', data=sp_train)
+
+# Fit GAM with loess
+m_gamL <- gam( Turdus_torquatus ~ lo(bio11) + lo(bio8),
+	family='binomial', data=sp_train)
+
+
+# Now, we plot the response surface:
+xyz$z <- predict(m_gamS, xyz[,1:2], type='response')
+wireframe(z ~ bio11 + bio8, data = xyz, zlab = list("Occurrence prob.", rot=90), 
+          drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
+          zlim = c(0, 1), main='GAM (splines)', xlab='bio11', ylab='bio8', 
+          screen=list(z = -120, x = -70, y = 3))
+
+xyz$z <- predict(m_gamL, xyz[,1:2], type='response')
+wireframe(z ~ bio11 + bio8, data = xyz, zlab = list("Occurrence prob.", rot=90), 
+          drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
+          zlim = c(0, 1), main='GAM (loess)', xlab='bio11', ylab='bio8', 
+          screen=list(z = -120, x = -70, y = 3))
+
+	
+# Plot partial response curves:
+par(mfrow=c(2,2)) 
+partial_response(m_gamS, predictors = sp_train[,my_preds], main='GAM (splines)')
+partial_response(m_gamL, predictors = sp_train[,my_preds], main='GAM (loess)')
+
+# Performance measures
+(perf_gamS <- evalSDM(sp_test$Turdus_torquatus, predict(m_gamS, sp_test[,my_preds], type='response') ))
+(perf_gamL <- evalSDM(sp_test$Turdus_torquatus, predict(m_gamL, sp_test[,my_preds], type='response') ))
+
+# Map predictions:
+r_gamS_bin <- r_gamS_pred <- rasterFromXYZ(cbind(bio_curr_df[,1:2],
+                                   predict(m_gamS, bio_curr_df, type='response')))
+values(r_gamS_bin) <- ifelse(values(r_gamS_pred)>=perf_gamS$thresh, 1, 0)
+plot(stack(r_gamS_pred, r_gamS_bin),
+     main=c('GAM (splines) prob.','GAM (splines) bin.'), axes=F)	
+``` 
+
+## Machine-learning methods
+There are a number of different non-parametric machine-learning methods that are commonly used in SDMs, and new methods are constantly appearing. A few methods like Classification and Regression Trees (CART) and Artificial Neural Networks (ANN) have been around for some time, while other methods such as Boosted Regression Trees (BRTs), Random Forests (RFs) and Maximum Entropy (MaxEnt) have only become popular over the last decade.
+
+### Classification and regression trees (CART)
+CARTs are a recursive partitioning method that aim to divide the data into homogeneous subgroups [@Franklin2010; @Guisan2017]. They grow a decision tree by repeatedly splitting the data such that the splits help separating presences and absences. Thus, CARTs search along each environmental gradient for those splitting rules (nodes) that best separate the observations. Of course, we could perfectly fit all data by that procedure, which is rarely desirable as it will decrease the bias for the training data but increase the variance for a different sample (the *bias-variance tradeoff*). Thus, the procedure is basically to grow the tree, stop the tree and prune the tree to find the optimal tree size.
+
+Again, different packages are available for fitting CARTs, e.g. *rpart* and *tree*. The package *rpart* offers better control of model fitting and tree size optimization. It uses internal cross-validation (default `xval=10`) for evaluating bias-variance tradeoff and optimizing tree size. Another important control parameter is the minimum number of observations (default `minsplit=20`) that must be available to define a split. 
+
+```{r message=F, warning=F}
+library(rpart)
+
+# Fit CART
+m_cart <- rpart(Turdus_torquatus ~ bio11 + bio8,
+	data=sp_train, control=rpart.control(minsplit=20,xval=10))
+	
+# Have a look at the data splits:
+print(m_cart)
+plot(m_cart, margin=0.1)
+text(m_cart, cex = 0.8)
+
+# Now, we plot the response surface:
+xyz$z <- predict(m_cart, xyz)
+wireframe(z ~ bio11 + bio8, data = xyz, zlab = list("Occurrence prob.", rot=90), 
+          drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
+          zlim = c(0, 1), main='CART', xlab='bio11', ylab='bio8', 
+          screen=list(z = -120, x = -70, y = 3))
+	
+# Plot partial response curves:
+par(mfrow=c(1,2)) 
+partial_response(m_cart, predictors = sp_train[,my_preds], main='CART')
+
+# Performance measures of GAM with spline-smoother 
+(perf_cart <- evalSDM(sp_test$Turdus_torquatus, predict(m_cart, sp_test[,my_preds]) ))
+
+# Map predictions:
+r_cart_bin <- r_cart_pred <- rasterFromXYZ(cbind(bio_curr_df[,1:2],
+                                   predict(m_cart, bio_curr_df)))
+values(r_cart_bin) <- ifelse(values(r_cart_pred)>=perf_cart$thresh, 1, 0)
+plot(stack(r_cart_pred, r_cart_bin),main=c('CART prob.','CART bin.'), axes=F)	
+``` 
+
+### Random Forests (RFs)
+Regression models or classification models can be affected by local optima and noise in the data. They usually have low bias (fit the training data very well) but high variance (noisy/poorer performance when predicting to non-training data). Model averaging has been proposed as possible solution [@Hastie2009]. In recent years, so-called bagging and boosting methods have been developed for combining or averaging different models. Random Forests use a bagging procedure for averaging the outputs of a multitude of different CARTs. Bagging stands for "bootstrap aggregation". Basically, we fit many CARTs to bootstrapped samples of the training data and then either average the results in case of regression trees or make a simple vote in case of classification trees (committee averaging)[@Hastie2009; @Guisan2017]. An important feature of Random Forests are the out-of-bag samples, which means that the predictions/fit for a specific data point is only derived from averaging trees that did not include this data point during tree growing. Thus, the output of Random Forests is essentially cross-validated. Random Forests estimate variable importance by a permutation procedure, which measures for each variable the drop in mean accuracy when this variables is permutated.
+
+```{r message=F, warning=F}
+library(randomForest)
+
+# Fit RF
+m_rf <- randomForest( x=sp_train[,my_preds], y=sp_train$Turdus_torquatus, 
+	ntree=1000, importance =T)
+	
+# Variable importance:
+importance(m_rf,type=1)
+varImpPlot(m_rf)
+	
+# Look at single trees:
+head(getTree(m_rf,1,T))
+
+# Now, we plot the response surface:
+xyz$z <- predict(m_rf, xyz, type='response')
+wireframe(z ~ bio11 + bio8, data = xyz, zlab = list("Occurrence prob.", rot=90), 
+          drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
+          zlim = c(0, 1), main='Random Forest', xlab='bio11', ylab='bio8', 
+          screen=list(z = -120, x = -70, y = 3))
+
+	
+# Plot partial response curves:
+par(mfrow=c(1,2)) 
+partial_response(m_rf, predictors = sp_train[,my_preds], main='Random Forest')
+
+# Performance measures of RF
+(perf_rf <- evalSDM(sp_test$Turdus_torquatus, predict(m_rf, sp_test[,my_preds],  type='response') ))
+
+# Map predictions:
+r_rf_bin <- r_rf_pred <- rasterFromXYZ(cbind(bio_curr_df[,1:2],
+                                 predict(m_rf, bio_curr_df,type='response')))
+values(r_rf_bin) <- ifelse(values(r_rf_pred)>=perf_rf$thresh, 1, 0)
+plot(stack(r_rf_pred, r_rf_bin),main=c('RF prob.','RF bin.'), axes=F)	
+``` 
+
+### Boosted regression trees (BRTs)
+Boosting is another averaging/ensemble approach for improving the predictive performance of models [@Hastie2009; @Guisan2017]. Boosting of CARTS is known under different names including Gradient Boosting Machine (GBM), Generalised Boosted Regression Model (GBM) and Boosted Regression Trees (BRTs) among others. In R it is available in the package *gbm* with some additional functions from @elith2008 provided in the *dismo* package. @elith2008 also provide a working guide for using BRTs in species distribution modelling. Unlike Random Forests, BRTs iteratively fit relatively simple trees by putting emphasis on observations fitted poorly by the previous trees (by fitting the new tree to the residuals of the previous tree). The final BRT can be thought of as linear combination of all trees, similar to a regression model where each term is a single tree [@elith2008]. Thereby each tree is shrunk by the learning rate (the shrinkage parameter, typically <1), which determines how much weight is given to single trees. Generally, slower learning (meaning smaller learning rates) are preferable. Similarly to Random Forests, only a subset of the data (the *bag fraction*) is used for fitting consecutive trees (but in contrast to Random Forests, the subsets are sampled without replacement and thus constitute real data splits). This *bag fraction* should typically range 0.5-0.75 [@elith2008]. The tree complexity controls the interaction depth; `1` means only tree stumps (with two terminal nodes) are fitted, `2` means a model with up to two-way interactions etc. In the regular `gbm()`function, you have to define the maximum number of trees fitted. @elith2008 recommend fitting at least 1000 trees. However, you want to be careful not to overfit the model by fitting too many trees. The *dismo* package provides the function `gbm.step` that selects the optimum number of trees based on the reduction in deviance achieved by adding a tree while predicting to the hold-out data (1-`bag fraction`). If the optimal number of trees estimated by the model is below 1000, you should decrease your learning rate; if it is above 10000, you should increase your learning rate. A tutorial on BRTs is contained in the dismo package: `vignette('brt')`
+
+```{r message=F, warning=F}
+library(gbm)
+
+# Fit BRT
+m_brt <- gbm.step(data = sp_train, 
+	gbm.x = my_preds,
+	gbm.y = 'Turdus_torquatus', 
+	family = 'bernoulli',
+	tree.complexity = 2,
+	bag.fraction = 0.75,
+	learning.rate = 0.001,
+	verbose=F)
+	
+# Variable importance:
+m_brt$contributions
+
+# Interactions (not very meaningful here with only 2 predictors):
+gbm.interactions(m_brt)$interactions
+gbm.interactions(m_brt)$rank.list
+	
+# dismo provides some build-in functions for plotting response:
+gbm.plot(m_brt, n.plots=2, write.title = FALSE)
+gbm.plot.fits(m_brt)
+
+# Now, we plot the response surface:
+xyz$z <- predict.gbm(m_brt, xyz, n.trees=m_brt$gbm.call$best.trees, type="response")
+wireframe(z ~ bio11 + bio8, data = xyz, zlab = list("Occurrence prob.", rot=90), 
+          drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
+          zlim = c(0, 1), main='Boosted regression trees', xlab='bio11', 
+          ylab='bio8', screen=list(z = -120, x = -70, y = 3))
+	
+# Plot partial response curves:
+par(mfrow=c(1,2)) 
+partial_response(m_brt, predictors = sp_train[,my_preds], main='BRT')
+
+# Performance measures of BRT
+(perf_brt <- evalSDM(sp_test$Turdus_torquatus, predict.gbm(m_brt, sp_test[,my_preds], n.trees=m_brt$gbm.call$best.trees, type='response') ))
+
+# Map predictions:
+r_brt_bin <- r_brt_pred <- rasterFromXYZ(cbind(bio_curr_df[,1:2],
+                                  predict.gbm(m_brt, bio_curr_df,
+                                              n.trees=m_brt$gbm.call$best.trees, 
+                                              type="response")))
+values(r_brt_bin) <- ifelse(values(r_brt_pred)>=perf_brt$thresh, 1, 0)
+plot(stack(r_brt_pred, r_brt_bin),main=c('BRT prob.','BRT bin.'), axes=F)	
+``` 
+
+### Maxent
+In recent years, maximum entropy modelling of species distributions has become very popular and proved as one of the best-performing methods in model comparisons @elith2006. The implementation *Maxent* [@phillips2006; @Elith2011; @Merow2013] now constitutes the most widely used SDM algorithm. It was originally offered with a stand-alone Java package with user interface (possibly one reasons for its popularity). Since a couple of years, some packages like *dismo* have build-in functions to communicate with this Maxent programme. Very recently, Steven Phillips ("Mr. Maxent") introduced a true R version of Maxent, the *maxnet* package.
+
+Maxent is a presence-only method, but unlike profile methods it uses background data (where presence is unknown) against which it contrasts the observed presences. @Elith2011 provide a simplified explanation of Maxent (while the original paper by @phillips2006 focused on explanations from machine-learning perspective) stating that Maxent aims to minimise the relative entropy between the probability density of presences and the probability density of the environment estimated in environmental (not geographic!) space. The density of available background data in environmental/covariate space can be regarded as the null model that assumes that the species will occupy environmental conditions proportional to their relative availability in the landscape [@Guisan2017]. Maxent allows fitting very complex, highly non-linear response shapes [@Merow2013], defined by so-called feature classes. Maxent currently recognises six features classes, which are described in more detail by @Elith2011 and @Merow2013: linear, product, quadratic, hinge, threshold and categorical. We already know linear and quadratic features from GLMs. *Products* allow simple interactions between all possible pair-wise combinations of predictor variables. *Thresholds* allow a step in the fitted function (as we have seen in CARTs) and make a continuous predictor binary assigning 0 below the threshold and 1 above the threshold. *Hinge* features are similar to *thresholds* only that they do not fit abrupt steps but a change in the gradient of the response (a bit like piecewise linear splines). *Categorical* features split a predictor with $n$ categories (such as land cover) into $n$ binary features assigning 1 when the feature is expressed and 0 otherwise. If the data contain more than 80 presences, then Maxent will by default use all feature classes in model fitting (otherwise it will automatically determine the number of features based on the number of presences). This can easily lead to more features that are explored in the model than actual presences [@Merow2013]. Of course, users can also specify features themselves. Generally, the selection of features should be guided by ecological plausibility and be considered during model conceptualisation. During model fitting, Maxent will select features based on regularization (trading-off likelihood and model complexity) to avoid overfitting.
+
+As the density of presence points in environmental space is contrasted against all available environments, choosing the background data can be quite crucial in Maxent and should be guided by the spatial scale of the ecological question [@Merow2013]. For example, the geographic extent of background data should only encompass areas that are accessible by dispersal and which the species is equally likely to reach. If there is reason to assume that the presence data are spatially biased, then this should also be considered when deriving background data, for example by inducing the same spatial bias in the background [@Kramer-Schadt2013]. Here, we avoid the background data issue as we have true absence data available.
+
+```{r message=F, warning=F}
+library(maxnet)
+
+# Fit Maxent
+m_maxent <- maxnet(p=sp_train$Turdus_torquatus, data=sp_train[,my_preds],
+	maxnet.formula(p=sp_train$Turdus_torquatus, data=sp_train[,my_preds], classes="lh"))
+
+# HINT: try playing around with the classes="lqpht" argument
+
+# Now, we plot the response surface:
+xyz$z <- predict(m_maxent, xyz, type="logistic")
+wireframe(z ~ bio11 + bio8, data = xyz, zlab = list("Occurrence prob.", rot=90), 
+          drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
+          zlim = c(0, 1), main='Maxent', xlab='bio11', ylab='bio17', 
+          screen=list(z = -120, x = -70, y = 3))
+	
+
+# Plot partial response curves:
+par(mfrow=c(1,2)) 
+partial_response(m_maxent, predictors = sp_train[,my_preds], main='Maxent')
+
+# Performance measures of Maxent
+(perf_maxent <- evalSDM(sp_test$Turdus_torquatus, predict(m_maxent, sp_test[,my_preds],  type='logistic') ))
+
+# Map predictions:
+r_maxent_bin <- r_maxent_pred <- rasterFromXYZ(cbind(bio_curr_df[,1:2],
+                                     predict(m_maxent, bio_curr_df, type="logistic")))
+values(r_maxent_bin) <- ifelse(values(r_maxent_pred)>=perf_maxent$thresh, 1, 0)
+plot(stack(r_maxent_pred, r_maxent_bin),main=c('Maxent prob.','Maxent bin.'), axes=F)	
+``` 
+
+## Comparing all algorithms
+
+We can now compare the performance of all algorithms on our independent data. Also, we store this information for running the ensembles in the next tutorial.
+
+```{r message=F, warning=F}
+(comp_perf <- rbind(bc = perf_bc, dom = perf_dom, glm = perf_glm, gamS = perf_gamS,
+      cart = perf_cart, rf = perf_rf, brt = perf_brt, maxent = perf_maxent))
+
+# We add a column containing the names of the algorithm
+comp_perf <- data.frame(alg=row.names(comp_perf),comp_perf)
+
+# Adapt the file path to your folder structure
+write.table(comp_perf, 
+            file='data/SDM_alg_performances.txt', row.names=F)
+```
+
+<div class="alert alert-info">
+_**Exercise:**_
+
+Use the species-climate data that you prepared for your own species (from the previous practical b5) and fit SDMs using at least three different algorithms. Compare the models, which one performs best?
+</div>
+
+
+# References

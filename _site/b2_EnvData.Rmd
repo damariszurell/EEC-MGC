@@ -1,0 +1,129 @@
+---
+title: "Environmental data"
+output: 
+  html_document:
+    toc: yes
+    toc_float: true
+    number_sections: true
+bibliography: mgc.bib    
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+***
+
+<div class="alert alert-info">
+**RStudio project**
+
+Open the RStudio project that we created in the first session. I recommend to use this RStudio project for the entire course and within the RStudio project create separate R scripts for each session. 
+
+- Create a new empty R script by going to the tab "File", select "New File"  and then "R script"
+- In the new R script, type `# Session b2: Environmental data` and save the file in your folder "scripts" within your project folder, e.g. as "b2_EnvData.R"
+</div>
+
+
+In species distribution modelling, we aim to understand how species' occurrence arise related to environment. Thus, additional to our species data, we need environmental information. Many environmental data are now available at very high spatial resolution, e.g. lidar data [@Bakx2019]. However, often, high resolution data are not necessarily available globally - although the data are constantly improving. I can't give you a full overview over all available data sets. Rather, you should get an idea how you process the data to make best use of them for your biodiversity models. 
+
+# Climate data
+The `raster` package is offering direct access to some standard repositories; see the help pages `?getData`. We will use this for extracting climate data from the worldclim data (http://worldclim.org/)[@Hijmans2005,@Hijmans2019]. Please note that there are also newer climate data sets, e.g. the Chelsa climatologies (http://chelsa-climate.org/) [@Karger2017].
+
+Before we download the climate data, let's create a directory in today's folder for storing the climate data. 
+```{r eval=F}
+dir.create("clim_data")
+```
+
+Now, we download the 19 bioclimatic variables at a 10' resolution. Do you know what the 19 bioclimatic variables are? See here: https://www.worldclim.org/data/bioclim.html. Remember to think about your folder structure, where you want to store the climate data!
+```{r eval=F}
+library(raster)
+# You may have to adjust the path to your folder structure:
+clim <- getData("worldclim", var="bio", res=10, download=T, path="data/clim_data")
+```
+
+```{r echo=F}
+library(raster)
+clim <- getData("worldclim", var="bio", res=10, download=F, path="/Users/zurell/data/Lehre/HU_Bsc_Msc/HU_M8_GCIB/GCIB_2019/data/clim_data")
+```
+
+```{r}
+# Now, let's look at the data:
+clim
+# Can you explain, what a raster stack is?
+plot(clim)
+```
+
+The `raster` package offers different functionalities to manipulate the spatial data, for example aggregating the data to coarser resolutions (`aggregate`), cropping (`crop()`), stacking (`stack()`):  
+```{r eval=F}
+aggregate(clim[[1]], fact=6, fun=mean)
+```
+
+You can also write raster stacks to file:
+```{r eval=F}
+writeRaster(clim,filename='data/clim_data/bioclim.grd')
+```
+
+*\*.grd* is the native file format of the `raster` package. It consists of two files, a data file and a header file (*\*.gri*).
+
+Most standard GIS formats can be read in by `raster()` as well, for example data on land cover, other remote sensing-derived products, etc. 
+
+# Joining species and environmental data
+Last, we can join our species and environmental data. Such joined species-environment data later serve as input to our species distribution models.
+
+```{r}
+# Load our previously saved species data:
+load(file='data/gbif_shrew.RData')
+```
+
+When we have coordinate data, as we have in the GBIF data, we can use these coordinates to "pierce" through raster layers. That's one of the easiest ways to extract relevant environmental data for our species records. However, as a very first step we have to decide which GBIF information should be retained in our data set.
+```{r eval=F}
+# The GBIF data contain a lot of columns that we probably don't need:
+head(gbif_shrew)
+```
+
+```{r}
+# I suggest to keep the following columns for now:
+gbif_shrew2 <- gbif_shrew[,
+	c("key", "scientificName", "decimalLatitude", "decimalLongitude", "basisOfRecord", "speciesKey", "species", "year")]
+
+# Our environmental data are:
+clim
+
+# We can extract the environmental data for the GBIF coordinates.
+# Coordinates are always provided as x/y format, in our case lon/lat.
+# The command "extract" is used by several packages, so I tell R explicitly
+# that I want to use the extract function from the raster namespace.
+# We also extract the cellnumbers as this allows checking for duplicates later.
+head(raster::extract(x = clim, 
+	y = data.frame(gbif_shrew2[,c('decimalLongitude','decimalLatitude')]), cellnumbers=T ))
+
+# Our new data frame:
+gbif_shrew2 <- cbind(gbif_shrew2, raster::extract(x = clim, y = data.frame(gbif_shrew2[,c('decimalLongitude','decimalLatitude')]), cellnumbers=T ))
+```
+
+We now have to inspect the data again to see whether we have any missing values or any other issues.
+```{r eval=F}
+summary(gbif_shrew2)
+```
+
+Because we superimposed an arbitrary resolution now when joining the GBIF and environmental data, we could potentially have multiple records in a single raster cell. As we have extracted the cell numbers from the raster layer, checking for duplicates is very simple.
+
+```{r}
+# Check for duplicates
+duplicated(gbif_shrew2$cells)
+
+# Only retain non-duplicated cells:
+gbif_shrew_env <- gbif_shrew2[!duplicated(gbif_shrew2$cells),]
+```
+
+
+<div class="alert alert-info">
+_**Exercise:**_
+
+Merge the GBIF data for your own species (from practical b1) with the climate data. 
+</div>
+
+# References
+
+
+
