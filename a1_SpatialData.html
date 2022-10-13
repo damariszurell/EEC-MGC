@@ -13,7 +13,8 @@
 
 <title>Spatial data in R</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -61,6 +62,29 @@ if (window.hljs) {
 
 
 
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 
 
 
@@ -84,6 +108,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -309,7 +336,7 @@ div.tocify {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -321,11 +348,8 @@ div.tocify {
         <li>
   <a href="index.html">Home</a>
 </li>
-<li>
-  <a href="schedule.html">Schedule</a>
-</li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Pracs: macroecological analyses
      
     <span class="caret"></span>
@@ -355,7 +379,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Pracs: species distribution modelling
      
     <span class="caret"></span>
@@ -415,33 +439,75 @@ div.tocify {
 <hr />
 <div class="alert alert-info">
 <p><strong>RStudio project</strong></p>
-<p>Open the RStudio project that we created in the previous session. I recommend to use this RStudio project for the entire module and within the RStudio project create separate R scripts for each session.</p>
+<p>Open the RStudio project that we created in the previous session. I
+recommend to use this RStudio project for the entire module and within
+the RStudio project create separate R scripts for each session.</p>
 <ul>
-<li>Create a new empty R script by going to the tab “File”, select “New File” and then “R script”</li>
-<li>In the new R script, type <code># Session a1: Spatial data in R</code> and save the file in your folder “scripts” within your project folder, e.g. as “a1_SpatialData.R”</li>
+<li>Create a new empty R script by going to the tab “File”, select “New
+File” and then “R script”</li>
+<li>In the new R script, type
+<code># Session a1: Spatial data in R</code> and save the file in your
+folder “scripts” within your project folder, e.g. as
+“a1_SpatialData.R”</li>
 </ul>
 </div>
-<p>Nowadays, R offers a lot of GIS functionalities in different packages.</p>
-<p>We will use a number of such GIS packages in R. Remember that we can install new packages with the function <code>install.packages()</code>. Make sure also to install the dependencies.</p>
-<pre class="r"><code>install.packages(c(&#39;sp&#39;,&#39;raster&#39;,&#39;dismo&#39;), dep=T)</code></pre>
-<div id="introduction-to-spatial-data" class="section level1">
-<h1><span class="header-section-number">1</span> Introduction to spatial data</h1>
-<p>Spatial data are typically stored as either vector data or raster data <span class="citation">(With 2019)</span>. Discrete objects with clear boundaries are usually represented by vector data (e.g. individual trees, roads, countries) while continuous phenomena without clear boundaries are usually represented by raster data (e.g. elevation, temperature).</p>
-<p><strong>Vector data</strong> can be mapped a points, lines, and polygons:</p>
+<p>Nowadays, R offers a lot of GIS functionalities in different
+packages.</p>
+<p>We will use a number of such GIS packages in R. Remember that we can
+install new packages with the function <code>install.packages()</code>.
+Make sure also to install the dependencies.</p>
+<!-- ```{r eval=F} -->
+<!-- install.packages(c('sp','raster','dismo'), dep=T) -->
+<!-- ``` -->
+<pre class="r"><code>install.packages(c(&#39;terra&#39;), dep=T)</code></pre>
+<pre class="r"><code># load required package
+library(terra)</code></pre>
+<div id="introduction-to-spatial-data" class="section level1"
+number="1">
+<h1><span class="header-section-number">1</span> Introduction to spatial
+data</h1>
+<p>Spatial data are typically stored as either vector data or raster
+data <span class="citation">(With 2019)</span>. Discrete objects with
+clear boundaries are usually represented by vector data (e.g. individual
+trees, roads, countries) while continuous phenomena without clear
+boundaries are usually represented by raster data (e.g. elevation,
+temperature).</p>
+<p><strong>Vector data</strong> can be mapped as points, lines, and
+polygons:</p>
 <ul>
-<li><strong>Points</strong> occur at discrete locations and are represented by a coordinate pair (x,y). Each point may carry additional informaton, the so-called attributes, e.g. the species name of the individual captured at the location along with date.</li>
-<li><strong>Lines</strong> describe linear features and are defined by at least two coordinate pairs (x,y), the end points of the line. A line can also consistent of several line segments.</li>
-<li><strong>Polygons</strong> describe two-dimensional features in the landscapes and define a bounded area, enclosed by lines. Thus, a polygon needs to consist of at least three coordinate pairs (x,y.</li>
+<li><strong>Points</strong> occur at discrete locations and are
+represented by a coordinate pair (x,y). Each point may carry additional
+informaton, the so-called attributes, e.g. the species name of the
+individual captured at the location along with date.</li>
+<li><strong>Lines</strong> describe linear features and are defined by
+at least two coordinate pairs (x,y), the end points of the line. A line
+can also consistent of several line segments.</li>
+<li><strong>Polygons</strong> describe two-dimensional features in the
+landscapes and define a bounded area, enclosed by lines. Thus, a polygon
+needs to consist of at least three coordinate pairs (x,y.</li>
 </ul>
-<p>By contrast, <strong>Raster data</strong> represent the landscape as a regularly spaced grid and are used to represent data that vary continuously across space such as elevation, temperature or NDVI. Raster cells can contain numeric values (e.g. elevation) or categorical values (e.g. land cover type). The coordinate information is stored differently from vector data because storing the coordinates for each grid cell in the raster would use too much storage space. To define a raster, we only need to know the coordinates of one corner, the spatial extent and the spatial resolution to infer the coordinates of each cell.</p>
+<p>By contrast, <strong>Raster data</strong> represent the landscape as
+a regularly spaced grid and are used to represent data that vary
+continuously across space such as elevation, temperature or NDVI. Raster
+cells can contain numeric values (e.g. elevation) or categorical values
+(e.g. land cover type). The coordinate information is stored differently
+from vector data because storing the coordinates for each grid cell in
+the raster would use too much storage space. To define a raster, we only
+need to know the coordinates of one corner, the spatial extent and the
+spatial resolution to infer the coordinates of each cell.</p>
 </div>
-<div id="vector-data-in-r" class="section level1">
+<div id="vector-data-in-r" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Vector data in R</h1>
-<p>The package <code>sp</code> defines a set of classes to represent spatial vector data and perform spatial data analyses. In this package, the geometries of vector data are stored as <code>SpatialPoints</code>, <code>SpatialLines</code> and <code>SpatialPolygons</code>, and their attributes are stored within <code>SpatialPointsDataFrame</code>, <code>SpatialLinesDataFrame</code> and <code>SpatialPolgyonsDataFrame</code></p>
-<p>For more detailed tutorials see <a href="https://rspatial.org" class="uri">https://rspatial.org</a>.</p>
-<div id="spatialpoints" class="section level2">
+<!-- The package `sp` defines a set of classes to represent spatial vector data and perform spatial data analyses. In this package, the geometries of vector data are stored as `SpatialPoints`, `SpatialLines` and `SpatialPolygons`, and their attributes are stored within `SpatialPointsDataFrame`, `SpatialLinesDataFrame` and `SpatialPolgyonsDataFrame` -->
+<p>The package <code>terra</code> provides a set of classes and methods
+to carry out spatial data analysis with raster and vector data. For
+illustration, we will start by creating a few <code>SpatVector</code>
+objects.</p>
+<p>For more detailed tutorials see <a href="https://rspatial.org/terra/"
+class="uri">https://rspatial.org/terra/</a>.</p>
+<div id="spatialpoints" class="section level2" number="2.1">
 <h2><span class="header-section-number">2.1</span> SpatialPoints</h2>
-<p>For illustration, we will generate some random points data and convert them into <code>Spatial*</code> objects.</p>
+<p>First, we generate some random points data.</p>
 <pre class="r"><code># We set a seed for the random number generator, so that we all obtain the same results
 set.seed(12345)
 
@@ -453,56 +519,54 @@ coords &lt;- cbind(
 str(coords)</code></pre>
 <pre><code>##  num [1:10, 1:2] 1.171 1.419 -0.219 -0.907 1.212 ...</code></pre>
 <pre class="r"><code>plot(coords)</code></pre>
-<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<p>We now convert the random points into a <code>SpatialPoints</code> object and inspect it.</p>
-<pre class="r"><code>library(sp)
-
-# Convert into SpatialPoints
-sp &lt;- SpatialPoints(coords)
+<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>We now convert the random points into a <code>SpatVector</code>
+object and inspect it.</p>
+<pre class="r"><code># Convert into SpatVector
+sp &lt;- terra::vect(coords)
 
 # Check out the object
 class(sp)</code></pre>
-<pre><code>## [1] &quot;SpatialPoints&quot;
+<pre><code>## [1] &quot;SpatVector&quot;
 ## attr(,&quot;package&quot;)
-## [1] &quot;sp&quot;</code></pre>
-<pre class="r"><code># Inspect the (spatial) information in the object:
-showDefault(sp)</code></pre>
-<pre><code>## An object of class &quot;SpatialPoints&quot;
-## Slot &quot;coords&quot;:
-##        coords.x1  coords.x2
-##  [1,]  1.1710576 -0.2324956
-##  [2,]  1.4189320  3.6346241
-##  [3,] -0.2186066  0.7412557
-##  [4,] -0.9069943  1.0404329
-##  [5,]  1.2117749 -1.5010640
-##  [6,] -3.6359119  1.6337997
-##  [7,]  1.2601971 -1.7727150
-##  [8,] -0.5523682 -0.6631552
-##  [9,] -0.5683195  2.2414253
-## [10,] -1.8386440  0.5974474
-## 
-## Slot &quot;bbox&quot;:
-##                 min      max
-## coords.x1 -3.635912 1.418932
-## coords.x2 -1.772715 3.634624
-## 
-## Slot &quot;proj4string&quot;:
-## CRS arguments: NA</code></pre>
-<pre class="r"><code># The raster package also provides a nicer print summary, so we load it as well:
-library(raster)
+## [1] &quot;terra&quot;</code></pre>
+<pre class="r"><code># And the entries:
+sp </code></pre>
+<pre><code>##  class       : SpatVector 
+##  geometry    : points 
+##  dimensions  : 10, 0  (geometries, attributes)
+##  extent      : -3.635912, 1.418932, -1.772715, 3.634624  (xmin, xmax, ymin, ymax)
+##  coord. ref. :</code></pre>
+<pre class="r"><code>geom(sp)</code></pre>
+<pre><code>##       geom part          x          y hole
+##  [1,]    1    1  1.1710576 -0.2324956    0
+##  [2,]    2    1  1.4189320  3.6346241    0
+##  [3,]    3    1 -0.2186066  0.7412557    0
+##  [4,]    4    1 -0.9069943  1.0404329    0
+##  [5,]    5    1  1.2117749 -1.5010640    0
+##  [6,]    6    1 -3.6359119  1.6337997    0
+##  [7,]    7    1  1.2601971 -1.7727150    0
+##  [8,]    8    1 -0.5523682 -0.6631552    0
+##  [9,]    9    1 -0.5683195  2.2414253    0
+## [10,]   10    1 -1.8386440  0.5974474    0</code></pre>
+<p>We see that it is a vector data object with point geometries. An
+extent (the bounding box) was created automatically from the provided
+coordinates. The <code>coord. ref.</code> value is empty aswe haven’t
+provided a coordinate reference system (“CRS”) yet. We can explicitly
+add a CRS when creating the <code>SpatVector</code> object:</p>
+<pre class="r"><code>sp &lt;- terra::vect(coords, crs = &#39;+proj=longlat +datum=WGS84&#39;)
 sp</code></pre>
-<pre><code>## class       : SpatialPoints 
-## features    : 10 
-## extent      : -3.635912, 1.418932, -1.772715, 3.634624  (xmin, xmax, ymin, ymax)
-## crs         : NA</code></pre>
-<p>The slot <code>bbox</code> describes the bounding box around the known coordinates and the slot <code>proj4string</code> stores the coordinate reference system (“CRS”). In our case, no CRS was provided. We can explicitly add a CRS when creating the <code>SpatialPoints</code> object:</p>
-<pre class="r"><code>sp &lt;- SpatialPoints(coords, proj4string=CRS(&#39;+proj=longlat +datum=WGS84&#39;))
-sp</code></pre>
-<pre><code>## class       : SpatialPoints 
-## features    : 10 
-## extent      : -3.635912, 1.418932, -1.772715, 3.634624  (xmin, xmax, ymin, ymax)
-## crs         : +proj=longlat +datum=WGS84 +no_defs</code></pre>
-<p>Next, we can generate a <code>SpatialPointsDataFrame</code> containing additional information (or attributes) for each point. Let’s assume the spatial points are trees, either of three species.</p>
+<pre><code>##  class       : SpatVector 
+##  geometry    : points 
+##  dimensions  : 10, 0  (geometries, attributes)
+##  extent      : -3.635912, 1.418932, -1.772715, 3.634624  (xmin, xmax, ymin, ymax)
+##  coord. ref. : +proj=longlat +datum=WGS84 +no_defs</code></pre>
+<p>At the moment the <code>SpatVector</code> object only contains the
+point coordinates without any additional thematic information (or
+attributes) for each point. Let’s assume the spatial points are trees,
+either of three species. We can simply add these attributes to the
+existing object. To do so, we first need to create a data frame with the
+same number of rows as we have geometries (points in this case).</p>
 <pre class="r"><code># Create attribute table
 (data &lt;- data.frame(ID=1:10,species=sample(c(&#39;beech&#39;,&#39;oak&#39;,&#39;birch&#39;),10,replace=T)))</code></pre>
 <pre><code>##    ID species
@@ -516,205 +580,405 @@ sp</code></pre>
 ## 8   8   beech
 ## 9   9   beech
 ## 10 10   birch</code></pre>
-<pre class="r"><code># Create SpatialPointsDataFrame
-(spdf &lt;- SpatialPointsDataFrame(sp, data))</code></pre>
-<pre><code>## class       : SpatialPointsDataFrame 
-## features    : 10 
-## extent      : -3.635912, 1.418932, -1.772715, 3.634624  (xmin, xmax, ymin, ymax)
-## crs         : +proj=longlat +datum=WGS84 +no_defs 
-## variables   : 2
-## names       : ID, species 
-## min values  :  1,   beech 
-## max values  : 10,     oak</code></pre>
-<pre class="r"><code># To see what is inside
-str(spdf)</code></pre>
-<pre><code>## Formal class &#39;SpatialPointsDataFrame&#39; [package &quot;sp&quot;] with 5 slots
-##   ..@ data       :&#39;data.frame&#39;:  10 obs. of  2 variables:
-##   .. ..$ ID     : int [1:10] 1 2 3 4 5 6 7 8 9 10
-##   .. ..$ species: chr [1:10] &quot;oak&quot; &quot;oak&quot; &quot;birch&quot; &quot;beech&quot; ...
-##   ..@ coords.nrs : num(0) 
-##   ..@ coords     : num [1:10, 1:2] 1.171 1.419 -0.219 -0.907 1.212 ...
-##   .. ..- attr(*, &quot;dimnames&quot;)=List of 2
-##   .. .. ..$ : NULL
-##   .. .. ..$ : chr [1:2] &quot;coords.x1&quot; &quot;coords.x2&quot;
-##   ..@ bbox       : num [1:2, 1:2] -3.64 -1.77 1.42 3.63
-##   .. ..- attr(*, &quot;dimnames&quot;)=List of 2
-##   .. .. ..$ : chr [1:2] &quot;coords.x1&quot; &quot;coords.x2&quot;
-##   .. .. ..$ : chr [1:2] &quot;min&quot; &quot;max&quot;
-##   ..@ proj4string:Formal class &#39;CRS&#39; [package &quot;sp&quot;] with 1 slot
-##   .. .. ..@ projargs: chr &quot;+proj=longlat +datum=WGS84 +no_defs&quot;</code></pre>
+<p>Now, we combine the <code>SpatVector</code> object and the data frame
+and store it in a new <code>SpatVector</code> object.</p>
+<pre class="r"><code># in terra, you can simply add the additional information to the existing Spatial Vector
+sp_trees &lt;- sp
+terra:: values(sp_trees) &lt;- data
+
+# Inspect the new object
+sp_trees</code></pre>
+<pre><code>##  class       : SpatVector 
+##  geometry    : points 
+##  dimensions  : 10, 2  (geometries, attributes)
+##  extent      : -3.635912, 1.418932, -1.772715, 3.634624  (xmin, xmax, ymin, ymax)
+##  coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
+##  names       :    ID species
+##  type        : &lt;int&gt;   &lt;chr&gt;
+##  values      :     1     oak
+##                    2     oak
+##                    3   birch</code></pre>
 </div>
-<div id="spatiallines-and-spatialpolygons" class="section level2">
-<h2><span class="header-section-number">2.2</span> SpatialLines and SpatialPolygons</h2>
-<p>The structure of <code>SpatialLines</code> and <code>SpatialPolygons</code> objects is analogous to <code>SpatialPoints</code>. We use the functions <code>spLines()</code> and <code>spPolygons()</code> from the <code>raster</code> package to creates these objects.</p>
-<pre class="r"><code># Create SpatialLines through all oak trees in the data
-lns &lt;- spLines(subset(spdf,species==&#39;oak&#39;), crs=CRS(&#39;+proj=longlat +datum=WGS84&#39;))
+<div id="spatiallines-and-spatialpolygons" class="section level2"
+number="2.2">
+<h2><span class="header-section-number">2.2</span> SpatialLines and
+SpatialPolygons</h2>
+<p>Similarly, we can also create <code>SpatVector</code> of lines or
+polygons. First, we want to create a line vector object from the oaks -
+we could assume that it is an oak hedgerow.</p>
+<pre class="r"><code># prepare a subset of point geometries for oaks
+oak   &lt;- terra::subset(sp_trees, sp_trees$species == &#39;oak&#39;)
 
+# extract oak coordinates
+oak_coords &lt;- terra::crds(oak)
 
-# Create SpatialPolygons for all birch trees in the data
-pols &lt;- spPolygons(subset(spdf,species==&#39;birch&#39;), crs=CRS(&#39;+proj=longlat +datum=WGS84&#39;))</code></pre>
+# Create SpatVector lines through all oak trees in the data
+oak_hedge &lt;- terra::vect(oak_coords, type=&quot;lines&quot;, crs=&#39;+proj=longlat +datum=WGS84&#39;)
+
+# Inspect the object
+oak_hedge</code></pre>
+<pre><code>##  class       : SpatVector 
+##  geometry    : lines 
+##  dimensions  : 1, 0  (geometries, attributes)
+##  extent      : 1.171058, 1.418932, -1.772715, 3.634624  (xmin, xmax, ymin, ymax)
+##  coord. ref. : +proj=longlat +datum=WGS84 +no_defs</code></pre>
+<p>Next, we create a polygon vector from the birch data - we could
+assume that it is a birch woodland patch.</p>
+<pre class="r"><code># prepare a subset of point geometries for birch
+birch &lt;- terra::subset( sp_trees, sp_trees$species == &#39;birch&#39;)
+
+# extract birch coordinates
+birch_coords &lt;- terra::crds(birch)
+
+# Create SpatVector polygons 
+birch_patch &lt;- terra::vect(birch_coords, type = &quot;polygons&quot;, crs=&#39;+proj=longlat +datum=WGS84&#39;)
+
+# inspect the object
+birch_patch</code></pre>
+<pre><code>##  class       : SpatVector 
+##  geometry    : polygons 
+##  dimensions  : 1, 0  (geometries, attributes)
+##  extent      : -3.635912, -0.2186066, 0.5974474, 1.6338  (xmin, xmax, ymin, ymax)
+##  coord. ref. : +proj=longlat +datum=WGS84 +no_defs</code></pre>
 <p>Finally, let’s plot our point, line and polygon data.</p>
-<pre class="r"><code>plot(sp, axes=T, lwd=2)
-plot(lns, add=T, col=&#39;red&#39;, lwd=2)
-plot(pols, border=&#39;blue&#39;,col=&#39;yellow&#39;,add=T)</code></pre>
-<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code># We first plot the bird woodland patch but with the spatial extent of sp_trees (plus some buffer):
+plot(birch_patch, border=&#39;blue&#39;,col=&#39;YellowGreen&#39;, ext=ext(sp_trees)*1.1, lwd=2)
+
+# Add the oak hedge
+plot(oak_hedge, col=&#39;ForestGreen&#39;, lwd=2, add=T)
+
+# Add the trees
+plot(sp_trees, cex=2, add=T)</code></pre>
+<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 </div>
-<div id="reading-vector-data-from-file" class="section level2">
-<h2><span class="header-section-number">2.3</span> Reading vector data from file</h2>
-<p>Most often, vector data are stored as shapefiles. Download the <a href="data/IUCN_Sorex_alpinus.zip">zip folder</a> containg IUCN range data of the Alpine Shrew to your data folder and unzip it. You will see that several files are contained in this folder. All of these are necessary parts of the shapefile and contain the different information on geometry and attributes.</p>
-<p>We use the <code>raster</code> package to read in the data:</p>
-<pre class="r"><code>(shrew &lt;- shapefile(&#39;data/IUCN_Sorex_alpinus.shp&#39;))</code></pre>
-<pre><code>## class       : SpatialPolygonsDataFrame 
-## features    : 1 
-## extent      : 5.733728, 26.67935, 42.20601, 51.89984  (xmin, xmax, ymin, ymax)
-## crs         : +proj=longlat +datum=WGS84 +no_defs 
-## variables   : 27
-## names       : id_no,      binomial, presence, origin, seasonal, compiler, yrcompiled,                                              citation, source, dist_comm, island, subspecies, subpop,            legend, tax_comm, ... 
-## value       : 29660, Sorex alpinus,        1,      1,        1,     IUCN,       2008, IUCN (International Union for Conservation of Nature),     NA,        NA,     NA,         NA,     NA, Extant (resident),       NA, ...</code></pre>
+<div id="reading-vector-data-from-file" class="section level2"
+number="2.3">
+<h2><span class="header-section-number">2.3</span> Reading vector data
+from file</h2>
+<p>Most often, vector data are stored as shapefiles. Download the <a
+href="data/IUCN_Sorex_alpinus.zip">zip folder</a> containg IUCN range
+data of the Alpine Shrew to your data folder and unzip it. You will see
+that several files are contained in this folder. All of these are
+necessary parts of the shapefile and contain the different information
+on geometry and attributes.</p>
+<p>We use the <code>terra</code> package to read in the data:</p>
+<pre class="r"><code>(shrew &lt;- terra::vect(&#39;data/IUCN_Sorex_alpinus.shp&#39;))</code></pre>
+<pre><code>##  class       : SpatVector 
+##  geometry    : polygons 
+##  dimensions  : 1, 27  (geometries, attributes)
+##  extent      : 5.733728, 26.67935, 42.20601, 51.89984  (xmin, xmax, ymin, ymax)
+##  source      : IUCN_Sorex_alpinus.shp
+##  coord. ref. : lon/lat WGS 84 (EPSG:4326) 
+##  names       : id_no      binomial presence origin seasonal compiler yrcompiled
+##  type        : &lt;chr&gt;         &lt;chr&gt;    &lt;int&gt;  &lt;int&gt;    &lt;int&gt;    &lt;chr&gt;      &lt;int&gt;
+##  values      : 29660 Sorex alpinus        1      1        1     IUCN       2008
+##         citation source dist_comm (and 17 more)
+##            &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;              
+##  IUCN (Internat~</code></pre>
 <pre class="r"><code># Plot Central Europe
 library(maps)
 map(&#39;world&#39;,xlim=c(5,30), ylim=c(40,55))
 
 # Overlay the range of the Alpine Shrew
 plot(shrew, col=&#39;red&#39;, add=T)</code></pre>
-<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 </div>
 </div>
-<div id="raster-data-in-r" class="section level1">
+<div id="raster-data-in-r" class="section level1" number="3">
 <h1><span class="header-section-number">3</span> Raster data in R</h1>
-<p>We will use the <code>raster</code> package to represent and analyse raster data in R. The package contains different raster data classes, most important for this course are <code>RasterLayer</code>, <code>RasterStack</code> and <code>RasterBrick</code>. <code>RasterLayer</code> contain only a single layer of raster information while <code>RasterStack</code> and <code>RasterBrick</code> can contain multiple layers (from separate files or from a single multi-layer file, respectively).</p>
-<p>The function <code>raster()</code> can be used to create or read in <code>RasterLayer</code> objects.</p>
-<pre class="r"><code>(r1 &lt;- raster(ncol=10, nrow=10, xmx=-80, xmn=-150, ymn=20, ymx=60))</code></pre>
-<pre><code>## class      : RasterLayer 
-## dimensions : 10, 10, 100  (nrow, ncol, ncell)
-## resolution : 7, 4  (x, y)
-## extent     : -150, -80, 20, 60  (xmin, xmax, ymin, ymax)
-## crs        : +proj=longlat +datum=WGS84 +no_defs</code></pre>
-<p>We can access the attributes of each grid cell by using the function <code>values()</code>. Obviously, there are no values yet in the <code>RasterLayer</code> object and thus we assign some randomly.</p>
-<pre class="r"><code>summary(values(r1))</code></pre>
-<pre><code>##    Mode    NA&#39;s 
-## logical     100</code></pre>
-<pre class="r"><code>values(r1) &lt;- rnorm(ncell(r1))
+<p>We will use the <code>terra</code> package to represent and analyse
+raster data in R. The package contains raster data class
+<code>SpatRaster</code>, which can contain only a single layer of raster
+information or multiple layers (from separate files or from a single
+multi-layer file, respectively).</p>
+<p>The function <code>rast()</code> can be used to create or read in
+<code>SpatRaster</code> objects.</p>
+<pre class="r"><code># Create a SpatRaster object
+(r1 &lt;- terra::rast(ncol = 10, nrow = 10, xmax = -80, xmin = -150, ymax = 60, ymin = 20 ))</code></pre>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 10, 10, 1  (nrow, ncol, nlyr)
+## resolution  : 7, 4  (x, y)
+## extent      : -150, -80, 20, 60  (xmin, xmax, ymin, ymax)
+## coord. ref. : lon/lat WGS 84</code></pre>
+<p>We can access the attributes of each grid cell by using the function
+<code>values()</code>. Obviously, there are no values yet in the
+<code>RasterLayer</code> object and thus we assign some randomly.</p>
+<pre class="r"><code># Inspect value in SpatRaster:
+summary(terra::values(r1))</code></pre>
+<pre><code>##      lyr.1    
+##  Min.   : NA  
+##  1st Qu.: NA  
+##  Median : NA  
+##  Mean   :NaN  
+##  3rd Qu.: NA  
+##  Max.   : NA  
+##  NA&#39;s   :100</code></pre>
+<pre class="r"><code># Assign values (randomly drawn from normal distribution) to the SpatRaster object:
+terra::values(r1) &lt;- rnorm(ncell(r1))
 
 # plot the raster
 plot(r1)</code></pre>
-<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-<p>A <code>RasterStack</code> can be created or read in using the function <code>stack()</code>.</p>
+<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>We can easily create a multi-layer <code>SpatRaster</code> object
+using the <code>c()</code> (concatenate) function.</p>
 <pre class="r"><code># Create another RasterLayer and assign values
 r2 &lt;- r1
-values(r2) &lt;- 1:ncell(r2)
+terra::values(r2) &lt;- 1:ncell(r2)
 
-# Stack the raster layers
-(r &lt;- stack(r1,r2))</code></pre>
-<pre><code>## class      : RasterStack 
-## dimensions : 10, 10, 100, 2  (nrow, ncol, ncell, nlayers)
-## resolution : 7, 4  (x, y)
-## extent     : -150, -80, 20, 60  (xmin, xmax, ymin, ymax)
-## crs        : +proj=longlat +datum=WGS84 +no_defs 
-## names      :    layer.1,    layer.2 
-## min values :  -2.380358,   1.000000 
-## max values :   2.477111, 100.000000</code></pre>
-<pre class="r"><code>plot(r)</code></pre>
-<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-<div id="read-in-raster-data" class="section level2">
-<h2><span class="header-section-number">3.1</span> Read in raster data</h2>
-<p>In most cases, we will read in raster data from file. For this we can use the same commands as above, <code>raster()</code> for reading in single-layer raster files and <code>stack()</code> or <code>brick()</code> for reading in multi-layer raster files.</p>
-<p>First, download the temperature map for UK <a href="data/UK_temp.tif">here</a> to your data folder and read it in. The raster layer represents the mean annual in temperature [°C * 10].</p>
-<pre class="r"><code>(temp &lt;- raster(&#39;data/UK_temp.tif&#39;))</code></pre>
-<pre><code>## Warning in showSRID(SRS_string, format = &quot;PROJ&quot;, multiline = &quot;NO&quot;, prefer_proj =
-## prefer_proj): Discarded datum OSGB 1936 in Proj4 definition</code></pre>
-<pre><code>## class      : RasterLayer 
-## dimensions : 122, 66, 8052  (nrow, ncol, ncell)
-## resolution : 10000, 10000  (x, y)
-## extent     : 0, 660000, 0, 1220000  (xmin, xmax, ymin, ymax)
-## crs        : +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +units=m +no_defs 
-## source     : UK_temp.tif 
-## names      : UK_temp 
-## values     : 35.71785, 112  (min, max)</code></pre>
+# Create multi-layer SpatRaster object
+(r &lt;- c(r1, r2))</code></pre>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 10, 10, 2  (nrow, ncol, nlyr)
+## resolution  : 7, 4  (x, y)
+## extent      : -150, -80, 20, 60  (xmin, xmax, ymin, ymax)
+## coord. ref. : lon/lat WGS 84 
+## sources     : memory  
+##               memory  
+## names       :      lyr.1,      lyr.1 
+## min values  :  -2.380358,   1.000000 
+## max values  :   2.477111, 100.000000</code></pre>
+<pre class="r"><code>names(r) &lt;- c(&#39;Layer 1&#39;, &#39;Layer 2&#39;)
+plot(r)</code></pre>
+<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<div id="read-in-raster-data" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Read in raster
+data</h2>
+<p>In most cases, we will read in raster data from file. For this we can
+use the same commands as above, <code>rast()</code> for reading in both
+single-layer and multi-layer raster files.</p>
+<p>First, download the temperature map for UK <a
+href="data/UK_temp.tif">here</a> to your data folder and read it in. The
+raster layer represents the mean annual in temperature [°C * 10].</p>
+<pre class="r"><code># Read in SpatRaster object from file:
+(temp &lt;- terra::rast(&#39;data/UK_temp.tif&#39;))</code></pre>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 122, 66, 1  (nrow, ncol, nlyr)
+## resolution  : 10000, 10000  (x, y)
+## extent      : 0, 660000, 0, 1220000  (xmin, xmax, ymin, ymax)
+## coord. ref. : +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +units=m +no_defs 
+## source      : UK_temp.tif 
+## name        :  UK_temp 
+## min value   : 35.71785 
+## max value   :      112</code></pre>
 <pre class="r"><code>plot(temp)</code></pre>
-<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<p>Second, download the <a href="data/UK_bioclim.zip">zip folder</a> containing multi-layer raster data for 19 bioclimatic variables of UK, and unzip in your data folder. It contains two files. The file ending “*.grd” represents the natural file ending for files created using the <code>raster</code> package. It needs to be accompanied by a file ending on “*.gri”, which contains all the cell attributes. The bioclimatic variables are explained <a href="">here</a><a href="https://www.worldclim.org/data/bioclim.html" class="uri">https://www.worldclim.org/data/bioclim.html</a>.</p>
-<pre class="r"><code>(bioclim &lt;- stack(&#39;data/UK_bioclim.grd&#39;))</code></pre>
-<pre><code>## Warning in showSRID(uprojargs, format = &quot;PROJ&quot;, multiline = &quot;NO&quot;, prefer_proj =
-## prefer_proj): Discarded datum OSGB 1936 in Proj4 definition</code></pre>
-<pre><code>## class      : RasterStack 
-## dimensions : 122, 66, 8052, 19  (nrow, ncol, ncell, nlayers)
-## resolution : 10000, 10000  (x, y)
-## extent     : 0, 660000, 0, 1220000  (xmin, xmax, ymin, ymax)
-## crs        : +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +units=m +no_defs 
-## names      :       bio1,       bio2,       bio3,       bio4,       bio5,       bio6,       bio7,       bio8,       bio9,      bio10,      bio11,      bio12,      bio13,      bio14,      bio15, ... 
-## min values :   35.71785,   41.00000,   30.00000, 3060.24494,  134.00000,  -55.48918,  129.84425,  -12.39841,   35.62245,  102.15461,  -23.39841,  537.64811,   52.00000,   31.00000,    7.51282, ... 
-## max values :  112.00000,   82.64219,   40.00000, 5321.53380,  231.58053,   43.00000,  228.91180,  162.73290,  152.06476,  173.57946,   70.00000, 2050.48998,  258.60188,  104.93003,   32.00000, ...</code></pre>
+<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>Second, download the <a href="data/UK_bioclim.zip">zip folder</a>
+containing multi-layer raster data for 19 bioclimatic variables of UK,
+and unzip in your data folder. It contains two files. The file ending
+“*.grd” represents the natural file ending for files created using the
+<code>raster</code> package. It needs to be accompanied by a file ending
+on “*.gri”, which contains all the cell attributes. The bioclimatic
+variables are explained <a href="">here</a><a
+href="https://www.worldclim.org/data/bioclim.html"
+class="uri">https://www.worldclim.org/data/bioclim.html</a>.</p>
+<pre class="r"><code># Reading multi-layer SpatRaster data from file uses the same command as for single-layer data:
+(bioclim &lt;- terra::rast(&#39;data/UK_bioclim.grd&#39;))</code></pre>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 122, 66, 19  (nrow, ncol, nlyr)
+## resolution  : 10000, 10000  (x, y)
+## extent      : 0, 660000, 0, 1220000  (xmin, xmax, ymin, ymax)
+## coord. ref. : +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +towgs84=446.448,-125.157,542.06,0.1502,0.247,0.8421,-20.48939999999 +units=m +no_defs 
+## source      : UK_bioclim.grd 
+## names       :       bio1,       bio2,       bio3,       bio4,       bio5,       bio6, ... 
+## min values  :   35.71785,   41.00000,   30.00000, 3060.24494,  134.00000,  -55.48918, ... 
+## max values  :  112.00000,   82.64219,   40.00000, 5321.53380,  231.58053,   43.00000, ...</code></pre>
 <pre class="r"><code>plot(bioclim)</code></pre>
-<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
-</div>
-<div id="download-raster-data" class="section level2">
-<h2><span class="header-section-number">3.2</span> Download raster data</h2>
-<p>The <code>raster</code> package is offering direct access to some standard repositories using the function <code>getData()</code>, for example altitudinal data, data on the global administrative boundaries as well as current and future climates from <a href="http://worldclim.org/">WorldClim</a> <span class="citation">(Hijmans et al. 2005)</span>. For more information, see the help pages <code>?getData</code>.</p>
-<pre><code>## class      : RasterStack 
-## dimensions : 900, 2160, 1944000, 19  (nrow, ncol, ncell, nlayers)
-## resolution : 0.1666667, 0.1666667  (x, y)
-## extent     : -180, 180, -60, 90  (xmin, xmax, ymin, ymax)
-## crs        : +proj=longlat +datum=WGS84 +no_defs 
-## names      :  bio1,  bio2,  bio3,  bio4,  bio5,  bio6,  bio7,  bio8,  bio9, bio10, bio11, bio12, bio13, bio14, bio15, ... 
-## min values :  -269,     9,     8,    72,   -59,  -547,    53,  -251,  -450,   -97,  -488,     0,     0,     0,     0, ... 
-## max values :   314,   211,    95, 22673,   489,   258,   725,   375,   364,   380,   289,  9916,  2088,   652,   261, ...</code></pre>
-<pre class="r"><code># Download global bioclimatic data from worldclim:
-(clim &lt;- getData(&quot;worldclim&quot;, var=&quot;bio&quot;, res=10, download=T, path=&quot;data&quot;))</code></pre>
-<pre class="r"><code>plot(clim)</code></pre>
 <p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 </div>
-<div id="manipulate-raster-data" class="section level2">
-<h2><span class="header-section-number">3.3</span> Manipulate raster data</h2>
-<p>The <code>raster</code> package offers different functionalities to manipulate the spatial data, for example aggregating the data to coarser resolutions (<code>aggregate()</code>), or cropping to a specific extent (<code>crop()</code>).</p>
-<pre class="r"><code># Crop the temperature layer (bio1) to roughly European extent
-temp_eur &lt;- crop(clim[[1]], c(-15,45,35,72))
+<div id="download-raster-data" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Download raster
+data</h2>
+<p>The <code>geodata</code> package is offering direct access to some
+standard repositories. Check them out in the help page
+<code>?geodata</code>. The package provides access, for example, to
+elevation data, data on the global administrative boundaries (gadm) as
+well as current and future climates from <a
+href="http://worldclim.org/">WorldClim</a> <span
+class="citation">(Hijmans et al. 2005)</span>.</p>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 1080, 2160, 19  (nrow, ncol, nlyr)
+## resolution  : 0.1666667, 0.1666667  (x, y)
+## extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
+## coord. ref. : lon/lat WGS 84 (EPSG:4326) 
+## sources     : wc2.1_10m_bio_1.tif  
+##               wc2.1_10m_bio_2.tif  
+##               wc2.1_10m_bio_3.tif  
+##               ... and 16 more source(s)
+## names       : wc2.1~bio_1, wc2.1~bio_2, wc2.1~bio_3, wc2.1~bio_4, wc2.1~bio_5, wc2.1~bio_6, ... 
+## min values  :  -54.724354,    1.000000,    9.131122,    0.000000,  -29.686001,  -72.500252, ... 
+## max values  :    30.98764,    21.14754,   100.00000,  2363.84595,    48.08275,    26.30000, ...</code></pre>
+<pre class="r"><code>library(geodata)
 
-# Aggregate to one-degree and two-degree resolution
-temp_eur_onedeg &lt;- aggregate(temp_eur, 6)
-temp_eur_twodeg &lt;- aggregate(temp_eur, 12)
+# Download global bioclimatic data from worldclim (you may have to set argument &#39;download=T&#39; for first download, if &#39;download=F&#39; it will attempt to read from file:
+(clim &lt;- geodata::worldclim_global(var = &#39;bio&#39;, res = 10, download = F, path = &#39;data&#39;))</code></pre>
+<pre class="r"><code>plot(clim)</code></pre>
+<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+</div>
+<div id="manipulate-raster-data" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Manipulate raster
+data</h2>
+<p>The <code>terra</code> package offers functionality to manipulate the
+spatial data, for example aggregating the data to coarser resolutions
+(<code>aggregate()</code>), or cropping to a specific extent
+(<code>crop()</code>).</p>
+<pre class="r"><code># Rough coordinates of European extent
+ext_eur &lt;- c(-15,45,35,72)
 
+# Crop the temperature layer (bio1) to roughly European extent
+temp_eur &lt;- terra::crop(clim[[1]], ext_eur)
+
+# Aggregate to one-degree and two-degree resolution (from currently 10-min resolution)
+temp_eur_onedeg &lt;- terra::aggregate(temp_eur, fact=6)  
+temp_eur_twodeg &lt;- terra::aggregate(temp_eur, fact=12)
+
+# Plot the resultin maps
 par(mfrow=c(1,3))
 plot(temp_eur)
 plot(temp_eur_onedeg)
 plot(temp_eur_twodeg)</code></pre>
-<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<pre class="r"><code># Test other options like the na.rm argument:
+# Aggregate to one-degree and two-degree resolution (from currently 10-min resolution)
+temp_eur_onedeg &lt;- terra::aggregate(temp_eur, fact=6, na.rm=T)  
+temp_eur_twodeg &lt;- terra::aggregate(temp_eur, fact=12, na.rm=T)
+
+# Plot the resultin maps
+par(mfrow=c(1,3))
+plot(temp_eur)
+plot(temp_eur_onedeg)
+plot(temp_eur_twodeg)</code></pre>
+<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-20-2.png" width="672" /></p>
 </div>
-<div id="extract-raster-data" class="section level2">
-<h2><span class="header-section-number">3.4</span> Extract raster data</h2>
-<p>There are different ways for extracting information from raster layers. We have already worked with <code>values()</code>. If we have coordinate data, we can use these coordinates to “pierce” through raster layers. That’s one of the easiest ways to extract relevant environmental data for specific locations. For illustration, we create some random locations and then extract the climate data from our raster layers.</p>
-<pre class="r"><code># Generate random locations
-library(dismo)
-lonlat &lt;- randomPoints(temp_eur,10)
+<div id="extract-raster-data" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> Extract raster
+data</h2>
+<p>There are different ways for extracting information from raster
+layers. We have already worked with <code>values()</code>. If we have
+coordinate data, we can use these coordinates to “pierce” through raster
+layers. That’s one of the easiest ways to extract relevant environmental
+data for specific locations. Let’s first extract the climate data for
+Potsdam.</p>
+<pre class="r"><code># Potsdam coordinates - we need these as two-column matrix (or data.frame or SpatVector)
+lonlat_Potsdam &lt;- matrix( c(13.063561, 52.391842), ncol=2)
+
+# Extract temperature values for Potsdam:
+terra::extract(temp_eur, lonlat_Potsdam)</code></pre>
+<pre><code>##   wc2.1_10m_bio_1
+## 1        9.229239</code></pre>
+<pre class="r"><code># Extract climate values for Potsdam:
+terra::extract(clim, lonlat_Potsdam)</code></pre>
+<pre><code>##   wc2.1_10m_bio_1 wc2.1_10m_bio_2 wc2.1_10m_bio_3 wc2.1_10m_bio_4
+## 1        9.229239        8.012188        30.85883        687.4697
+##   wc2.1_10m_bio_5 wc2.1_10m_bio_6 wc2.1_10m_bio_7 wc2.1_10m_bio_8
+## 1         23.6355         -2.3285          25.964        17.79533
+##   wc2.1_10m_bio_9 wc2.1_10m_bio_10 wc2.1_10m_bio_11 wc2.1_10m_bio_12
+## 1        4.618125         17.79533          0.94125              546
+##   wc2.1_10m_bio_13 wc2.1_10m_bio_14 wc2.1_10m_bio_15 wc2.1_10m_bio_16
+## 1               65               34         20.14255              171
+##   wc2.1_10m_bio_17 wc2.1_10m_bio_18 wc2.1_10m_bio_19
+## 1              111              171              127</code></pre>
+<!-- For further illustration, we want to extract raster data for several locations. For this, we first create some random locations and then extract the climate data from our raster layers. -->
+<!-- ```{r} -->
+<!-- set.seed(8910) -->
+<!-- # Generate random locations -->
+<!-- lonlat <- terra::spatSample(ext(temp_eur), size = 10, lonlat=F) -->
+<!-- # Map temperature and locations -->
+<!-- plot(temp_eur) -->
+<!-- points(lonlat, cex=2, pch=19) -->
+<!-- # Extract temperature values at these locations -->
+<!-- terra::extract(temp_eur, lonlat) -->
+<!-- ``` -->
+<p>For further illustration, we want to extract raster data for several
+locations, specifically for different European capitols.</p>
+<pre class="r"><code>capitols &lt;- data.frame(lon=c(2.333333, -3.683333, -0.083333, 12.583333, 10.75, 21, 23.316667, 24.1, 0), 
+        lat=c(48.86666667, 40.4, 51.5, 55.66666667, 59.91666667, 52.25, 42.68333333, 56.95, 0), 
+        capitol=c(&#39;Paris&#39;, &#39;Madrid&#39;, &#39;London&#39;, &#39;Copenhagen&#39;, &#39;Oslo&#39;, &#39;Warsaw&#39;, &#39;Sofia&#39;, &#39;Riga&#39;,&#39;Oops&#39;))
+
 
 # Map temperature and locations
 plot(temp_eur)
-points(lonlat, cex=2, pch=19)</code></pre>
-<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+points(capitols[,1:2], cex=2, pch=19)</code></pre>
+<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
 <pre class="r"><code># Extract temperature values at these locations
-raster::extract(temp_eur, lonlat)</code></pre>
-<pre><code>##  [1] 111 167  -2  55 145 122  89 121 146  77</code></pre>
-<p>Note: if no environmental data are available for a specific location, e.g. no temperature values are available in the ocean, then these locations will receive an <code>NA</code> value. Hence, you should always check your resulting data for <code>NA</code>s.</p>
+terra::extract(temp_eur, capitols[,1:2])</code></pre>
+<pre><code>##   ID wc2.1_10m_bio_1
+## 1  1       11.604875
+## 2  2       14.344760
+## 3  3       10.485146
+## 4  4        8.415707
+## 5  5        5.774378
+## 6  6        8.199729
+## 7  7        9.835594
+## 8  8        6.548781
+## 9  9             NaN</code></pre>
+<pre class="r"><code># Combine data frames:
+(capitols_clim &lt;- cbind(capitols, terra::extract(temp_eur, capitols[,1:2])))</code></pre>
+<pre><code>##         lon      lat    capitol ID wc2.1_10m_bio_1
+## 1  2.333333 48.86667      Paris  1       11.604875
+## 2 -3.683333 40.40000     Madrid  2       14.344760
+## 3 -0.083333 51.50000     London  3       10.485146
+## 4 12.583333 55.66667 Copenhagen  4        8.415707
+## 5 10.750000 59.91667       Oslo  5        5.774378
+## 6 21.000000 52.25000     Warsaw  6        8.199729
+## 7 23.316667 42.68333      Sofia  7        9.835594
+## 8 24.100000 56.95000       Riga  8        6.548781
+## 9  0.000000  0.00000       Oops  9             NaN</code></pre>
+<p>Note: if no environmental data are available for a specific location,
+e.g. no temperature values are available in the ocean, then these
+locations will receive an <code>NA</code> value. Hence, you should
+always check your resulting data for <code>NA</code>s.</p>
+<pre class="r"><code># Remove NAs in resulting data frame
+na.exclude(capitols_clim)</code></pre>
+<pre><code>##         lon      lat    capitol ID wc2.1_10m_bio_1
+## 1  2.333333 48.86667      Paris  1       11.604875
+## 2 -3.683333 40.40000     Madrid  2       14.344760
+## 3 -0.083333 51.50000     London  3       10.485146
+## 4 12.583333 55.66667 Copenhagen  4        8.415707
+## 5 10.750000 59.91667       Oslo  5        5.774378
+## 6 21.000000 52.25000     Warsaw  6        8.199729
+## 7 23.316667 42.68333      Sofia  7        9.835594
+## 8 24.100000 56.95000       Riga  8        6.548781</code></pre>
+<!-- Additional note: in the above example, you could also use `spatSample()` directly for extracting climate data at random locations: -->
+<!-- ```{r} -->
+<!-- terra::spatSample(temp_eur, size = 10, method = 'random', replace = F, xy = T, values = T) -->
+<!-- ``` -->
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <ul>
-<li>Take a look at the description of <a href="https://rspatial.org/raster/spatial/6-crs.html#">Coordinate Reference Systems, CRS, by Robert Hijmans</a></li>
-<li>What are CRS? How can I extract the CRS information from a raster object?</li>
-<li>Which CRS is used in the <code>temp_eur</code> raster?</li>
-<li>Reproject <code>temp_eur</code> to a different CRS following instructions on above-mentioned website</li>
-<li>When is reprojection useful?</li>
+<li>Take the capitol locations and extract also the temperature values
+at the aggregated scales (<code>temp_eur_onedeg</code>,
+<code>temp_eur_twodeg</code>). Compare the temperature values.</li>
+<li>Take the capitol locations and extract all 19 bioclimatic variables
+for these (from the <code>SpatRaster</code>object
+<code>clim</code>)</li>
+<li>Find the coordinates of 10 cities in Australia (or another continent
+of your choice) and extract the climate values</li>
 </ul>
 </div>
+<!-- <div class="alert alert-info"> -->
+<!-- _**Exercise:**_ -->
+<!-- - Take a look at the description of [Coordinate Reference Systems, CRS, by Robert Hijmans](https://rspatial.org/spatial-terra/6-crs.html) -->
+<!-- - What are CRS? How can I extract the CRS information from a SpatRaster and SpatVector object? -->
+<!-- - Which CRS is used in the `temp_eur` raster? -->
+<!-- - Reproject `temp_eur` to a different CRS following instructions on above-mentioned website -->
+<!-- - When is reprojection useful? -->
+<!-- </div> -->
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">
-<h1>References</h1>
-<div id="refs" class="references">
-<div id="ref-Hijmans2005">
-<p>Hijmans, R. J., S. E. Cameron, J. L. Parra, P. G. Jones, and A. Jarvis. 2005. “Very High Resolution Interpolated Climate Surfaces for Global Land Areas.” <em>International Journal of Climatology</em> 25 (15): 1965–78. <a href="https://doi.org/10.1002/joc.1276">https://doi.org/10.1002/joc.1276</a>.</p>
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Hijmans2005" class="csl-entry">
+Hijmans, R. J., S. E. Cameron, J. L. Parra, P. G. Jones, and A. Jarvis.
+2005. <span>“Very High Resolution Interpolated Climate Surfaces for
+Global Land Areas.”</span> <em>International Journal of Climatology</em>
+25 (15): 1965–78. <a
+href="https://doi.org/10.1002/joc.1276">https://doi.org/10.1002/joc.1276</a>.
 </div>
-<div id="ref-With2019">
-<p>With, Kimberly A. 2019. <em>Essentials of Landscape Ecology</em>. Oxford University Press. <a href="https://doi.org/10.1093/oso/9780198838388.001.0001">https://doi.org/10.1093/oso/9780198838388.001.0001</a>.</p>
+<div id="ref-With2019" class="csl-entry">
+With, Kimberly A. 2019. <em>Essentials of Landscape Ecology</em>. Oxford
+University Press. <a
+href="https://doi.org/10.1093/oso/9780198838388.001.0001">https://doi.org/10.1093/oso/9780198838388.001.0001</a>.
 </div>
 </div>
 </div>
@@ -725,7 +989,7 @@ raster::extract(temp_eur, lonlat)</code></pre>
 <br>
 <hr />
 <div id="footer">
-<p>Damaris Zurell 2021 <a href="http://creativecommons.org/licenses/by/4.0/" >(CC BY 4.0)</a>.  </p>
+<p>Damaris Zurell 2022 <a href="http://creativecommons.org/licenses/by/4.0/" >(CC BY 4.0)</a>.  </p>
 </div>
 
 </html>

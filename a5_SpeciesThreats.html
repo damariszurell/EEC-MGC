@@ -13,7 +13,8 @@
 
 <title>Species threats</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -61,6 +62,29 @@ if (window.hljs) {
 
 
 
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 
 
 
@@ -84,6 +108,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -309,7 +336,7 @@ div.tocify {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -321,11 +348,8 @@ div.tocify {
         <li>
   <a href="index.html">Home</a>
 </li>
-<li>
-  <a href="schedule.html">Schedule</a>
-</li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Pracs: macroecological analyses
      
     <span class="caret"></span>
@@ -355,7 +379,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Pracs: species distribution modelling
      
     <span class="caret"></span>
@@ -415,29 +439,68 @@ div.tocify {
 <hr />
 <div class="alert alert-info">
 <p><strong>RStudio project</strong></p>
-<p>Open the RStudio project that we created in the first session. I recommend to use this RStudio project for the entire course and within the RStudio project create separate R scripts for each session.</p>
+<p>Open the RStudio project that we created in the first session. I
+recommend to use this RStudio project for the entire course and within
+the RStudio project create separate R scripts for each session.</p>
 <ul>
-<li>Create a new empty R script by going to the tab “File”, select “New File” and then “R script”</li>
-<li>In the new R script, type <code># Session a5: Species threats</code> and save the file in your folder “scripts” within your project folder, e.g. as “a5_SpeciesThreats.R”</li>
+<li>Create a new empty R script by going to the tab “File”, select “New
+File” and then “R script”</li>
+<li>In the new R script, type <code># Session a5: Species threats</code>
+and save the file in your folder “scripts” within your project folder,
+e.g. as “a5_SpeciesThreats.R”</li>
 </ul>
 </div>
-<p>The IUCN Red List of threatened species is a useful resource when analysing diversity changes, species range changes and population changes: www.iucnredlist.org <span class="citation">(IUCN 2019)</span>. It provides information on the global conservation status of species, specifically of animals, fungi and plant species. The IUCN has defined a set of criteria to evaluate the extinction risk of species. According to these criteria, species are classified into nine different categories although strictly only five categories describe the conservation status - from least concern to critically endangered <span class="citation">(Fig. 1; IUCN 2012)</span>.</p>
+<p>The IUCN Red List of threatened species is a useful resource when
+analysing diversity changes, species range changes and population
+changes: www.iucnredlist.org <span class="citation">(IUCN 2019)</span>.
+It provides information on the global conservation status of species,
+specifically of animals, fungi and plant species. The IUCN has defined a
+set of criteria to evaluate the extinction risk of species. According to
+these criteria, species are classified into nine different categories
+although strictly only five categories describe the conservation status
+- from least concern to critically endangered [Fig. 1; <span
+class="citation">IUCN (2012)</span>].</p>
 <p><img src="figures/redlist.png" title="**Figure 1. The IUCN red list categories. Adapted from [@IUCN2012].**" alt="**Figure 1. The IUCN red list categories. Adapted from [@IUCN2012].**" width="70%" /></p>
-<p>The IUCN distinguishes five criteria that are used to classify species into one of the three threatened categories (Fig. 1; <span class="citation">IUCN (2012)</span>):</p>
+<p>The IUCN distinguishes five criteria that are used to classify
+species into one of the three threatened categories (Fig. 1; <span
+class="citation">IUCN (2012)</span>):</p>
 <ul>
 <li>A. Population size reduction</li>
 <li>B. Extent of occurrence (B1) or Area of occupancy (B2)</li>
 <li>C. Small population size and decline</li>
 <li>D. Very small or restricted population</li>
-<li>E. Quantitative analysis (probability of extinction within next 100 years)</li>
+<li>E. Quantitative analysis (probability of extinction within next 100
+years)</li>
 </ul>
-<p>All of these information (the red list category, the relevant assessment criteria, the population trends, etc.) are provided by the IUCN. We can look at all these information online, e.g. for the <a href="https://www.iucnredlist.org/species/22728432/132658315#conservation-actions">Balearic Shearwater</a>.</p>
-<p>Of course, if you want to analyse your species data in light of these IUCN assessments, it can become very tedious to look up all information by hand. The IUCN red list team provides an API for this purpose, and the R package <code>rredlist</code> is a client to access this <a href="http://apiv3.iucnredlist.org/api/v3/docs">IUCN red list API</a>. It requires an <a href="http://apiv3.iucnredlist.org/api/v3/docs">API key / a token</a> to use the API. You have to indicate your research objectives for using the API.</p>
-<p>I have got permission to use some red list information for the UK breeding birds in class, but I am not allowed to post them. Thus, course participants can download the data (<em>UK_birds_redlist_status.csv</em> and <em>UK_birds_redlist_threats.csv</em>) in the secured moodle folder (but please be aware that the <a href="https://www.iucnredlist.org/terms/terms-of-use">IUCN terms of use</a> apply!). External readers are advised to generate an API token:</p>
+<p>All of these information (the red list category, the relevant
+assessment criteria, the population trends, etc.) are provided by the
+IUCN. We can look at all these information online, e.g. for the <a
+href="https://www.iucnredlist.org/species/22728432/132658315#conservation-actions">Balearic
+Shearwater</a>.</p>
+<p>Of course, if you want to analyse your species data in light of these
+IUCN assessments, it can become very tedious to look up all information
+by hand. The IUCN red list team provides an API for this purpose, and
+the R package <code>rredlist</code> is a client to access this <a
+href="http://apiv3.iucnredlist.org/api/v3/docs">IUCN red list API</a>.
+It requires an <a href="http://apiv3.iucnredlist.org/api/v3/docs">API
+key / a token</a> to use the API. You have to indicate your research
+objectives for using the API.</p>
+<p>I have got permission to use some red list information for the UK
+breeding birds in class, but I am not allowed to post them. Thus, course
+participants can download the data (<em>UK_birds_redlist_status.csv</em>
+and <em>UK_birds_redlist_threats.csv</em>) in the secured moodle folder
+(but please be aware that the <a
+href="https://www.iucnredlist.org/terms/terms-of-use">IUCN terms of
+use</a> apply!). External readers are advised to generate an API
+token:</p>
 <pre class="r"><code>library(rredlist)
 # Generate your personal API token
 rl_use_iucn()</code></pre>
-<p>We will work with the UK breeding bird data from practical 3 available <a href="https://damariszurell.github.io/EEC-Macro/data/UK_BBatlas_2008.csv">here</a>. If not already done so, please download the data and save them in an appropriate folder (e.g. in <em>data</em> folder).</p>
+<p>We will work with the UK breeding bird data from practical 3
+available <a
+href="https://damariszurell.github.io/EEC-Macro/data/UK_BBatlas_2008.csv">here</a>.
+If not already done so, please download the data and save them in an
+appropriate folder (e.g. in <em>data</em> folder).</p>
 <pre class="r"><code># Read in the distribution dataset:
 bird_dist &lt;- read.table(&#39;data/UK_BBatlas_2008.csv&#39;,header=T, sep=&#39;,&#39;, stringsAsFactors = F)
 
@@ -446,9 +509,11 @@ spp &lt;- names(bird_dist)[-c(1:3)]
 
 # For later usage, we need to remove the underscore in the names:
 spp &lt;- sub(&#39;_&#39;,&#39; &#39;,spp)</code></pre>
-<div id="iucn-red-list-categories" class="section level1">
-<h1><span class="header-section-number">1</span> IUCN Red list categories</h1>
-<p>If you have your own IUCN API key, you can easily download the information on species’ red list categories:</p>
+<div id="iucn-red-list-categories" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> IUCN Red list
+categories</h1>
+<p>If you have your own IUCN API key, you can easily download the
+information on species’ red list categories:</p>
 <pre class="r"><code># Download red list category for single species using your personal API token &quot;MY_IUCN_REDLIST_KEY&quot;
 (rl_search(&#39;Gavia stellata&#39;, key= MY_IUCN_REDLIST_KEY))</code></pre>
 <pre><code>## $name
@@ -469,9 +534,13 @@ spp &lt;- sub(&#39;_&#39;,&#39; &#39;,spp)</code></pre>
 ## 1           NA             NA</code></pre>
 <pre class="r"><code># Download red list categories for all species
 redlist_status &lt;- do.call(rbind,lapply(spp,FUN=function(sp){rl_search(sp, key= MY_IUCN_REDLIST_KEY)$result}))</code></pre>
-<p>Course participants can download the data from moodle and read it in:</p>
+<p>Course participants can download the data from moodle and read it
+in:</p>
 <pre class="r"><code>redlist_status &lt;- read.table(&#39;data/UK_birds_redlist_status.csv&#39;, header=T, sep=&#39;,&#39;)</code></pre>
-<p>Here is an example of the kind of information in the table. Compare this to the information given on the IUCN website, e.g. for the <a href="https://www.iucnredlist.org/species/22728432/132658315#conservation-actions">Balearic Shearwater</a>.</p>
+<p>Here is an example of the kind of information in the table. Compare
+this to the information given on the IUCN website, e.g. for the <a
+href="https://www.iucnredlist.org/species/22728432/132658315#conservation-actions">Balearic
+Shearwater</a>.</p>
 <pre class="r"><code>redlist_status[1:10,10:20]</code></pre>
 <pre><code>##              authority published_year assessment_date category
 ## 1  (Pontoppidan, 1763)           2018      2018-08-07       LC
@@ -506,16 +575,25 @@ redlist_status &lt;- do.call(rbind,lapply(spp,FUN=function(sp){rl_search(sp, key
 ## 8                TRUE BirdLife International              Westrip, J.
 ## 9                TRUE BirdLife International              Westrip, J.
 ## 10               TRUE BirdLife International               Hermes, C.</code></pre>
-<div id="iucn-population-trends" class="section level2">
-<h2><span class="header-section-number">1.1</span> IUCN population trends</h2>
-<p>We have seen that range size is an important factor for classifying species in a certain red list category. Here, we briefly analyse population trends and range sizes. The necessary information are contained in the red list status data frame. Of course, the extent of occurrance (eoo) specified in the table relates to the global range size of the species. Additionally, you can calculate the range sizes in UK from the available distribution data.</p>
-<p>Let’s first look at the relation between population trend and global range sizes (extent of occurrence, EOO).</p>
+<div id="iucn-population-trends" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> IUCN population
+trends</h2>
+<p>We have seen that range size is an important factor for classifying
+species in a certain red list category. Here, we briefly analyse
+population trends and range sizes. The necessary information are
+contained in the red list status data frame. Of course, the extent of
+occurrance (eoo) specified in the table relates to the global range size
+of the species. Additionally, you can calculate the range sizes in UK
+from the available distribution data.</p>
+<p>Let’s first look at the relation between population trend and global
+range sizes (extent of occurrence, EOO).</p>
 <pre class="r"><code>library(ggplot2)
 
 # area against trend
 ggplot(data = redlist_status, mapping = aes(x = population_trend, y = eoo_km2)) + geom_boxplot() + xlab(&#39;Population trend&#39;) + ylab(&#39;Extent of occurrence [km2]&#39;)</code></pre>
 <p><img src="a5_SpeciesThreats_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<p>If we want to plot the relation between (global) population trend and British range sizes, we first have to calculate these ranges sizes.</p>
+<p>If we want to plot the relation between (global) population trend and
+British range sizes, we first have to calculate these ranges sizes.</p>
 <pre class="r"><code># Calculate British range sizes from the distribution atlas
 area &lt;- data.frame(spp=spp, area=colSums(bird_dist[,-c(1:3)]))
 
@@ -525,17 +603,28 @@ ggplot(data = area, mapping = aes(x = population_trend, y = area*100)) + geom_bo
 <p><img src="a5_SpeciesThreats_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <div class="alert alert-info">
 <p><strong>Exercise:</strong></p>
-<p>The redlist table also contains information, for example on realm (marine, freshwater, terrestrial) or on elevation/depth.</p>
+<p>The redlist table also contains information, for example on realm
+(marine, freshwater, terrestrial) or on elevation/depth.</p>
 <ul>
-<li>Plot the relationship between population trend and range size separately for marine, freshwater, and terrestrial species.</li>
-<li>Plot the relationship between population trend and range size separately for lowland and highland species.</li>
+<li>Plot the relationship between population trend and range size
+separately for marine, freshwater, and terrestrial species.</li>
+<li>Plot the relationship between population trend and range size
+separately for lowland and highland species.</li>
 </ul>
 </div>
 </div>
-<div id="mapping-hotspots-of-threatened-species" class="section level2">
-<h2><span class="header-section-number">1.2</span> Mapping hotspots of threatened species</h2>
-<p>Next, I would like to analyse the distribution of threatened species. We can find the relevant red list information in the data frame on the red list status. Then, we need to combine this red list information with the distribution data. To this end, we will have to extract all species that belong to a specific threat category, then compute the species richness of these species per cell and map this.</p>
-<p>For example, we can extract all species that are classified as vulnerable:</p>
+<div id="mapping-hotspots-of-threatened-species" class="section level2"
+number="1.2">
+<h2><span class="header-section-number">1.2</span> Mapping hotspots of
+threatened species</h2>
+<p>Next, I would like to analyse the distribution of threatened species.
+We can find the relevant red list information in the data frame on the
+red list status. Then, we need to combine this red list information with
+the distribution data. To this end, we will have to extract all species
+that belong to a specific threat category, then compute the species
+richness of these species per cell and map this.</p>
+<p>For example, we can extract all species that are classified as
+vulnerable:</p>
 <pre class="r"><code>(subset(redlist_status,category==&#39;VU&#39;)$scientific_name)</code></pre>
 <pre><code>##  [1] &quot;Podiceps auritus&quot;            &quot;Anser erythropus&quot;           
 ##  [3] &quot;Branta ruficollis&quot;           &quot;Aythya ferina&quot;              
@@ -545,8 +634,11 @@ ggplot(data = area, mapping = aes(x = population_trend, y = area*100)) + geom_bo
 ## [11] &quot;Streptopelia turtur&quot;         &quot;Bubo scandiacus&quot;            
 ## [13] &quot;Emberiza rustica&quot;            &quot;Marmaronetta angustirostris&quot;
 ## [15] &quot;Branta sandvicensis&quot;         &quot;Syrmaticus reevesii&quot;</code></pre>
-<p>Using the red list information we can then map hotspots of species, meaning the species richness of species falling into different red list categories.</p>
-<pre class="r"><code>library(raster)
+<p>Using the red list information we can then map hotspots of species,
+meaning the species richness of species falling into different red list
+categories.</p>
+<pre class="r"><code>library(terra)
+library(raster)
 
 # Identify all vulnerable species 
 vu_spp &lt;- subset(redlist_status,category==&#39;VU&#39;)$scientific_name
@@ -558,24 +650,31 @@ lc_spp &lt;- subset(redlist_status,category==&#39;LC&#39;)$scientific_name
 lc_spp &lt;- sub(&#39; &#39;,&#39;_&#39;, intersect(lc_spp,spp))
 
 # Now, we extract the distribution data for the VU and LC species groups, make rasters, stack these and plot
-spplot( stack(
-  rasterFromXYZ(data.frame(bird_dist[,2:3],log_VU=log(rowSums(bird_dist[,vu_spp])))),
-  rasterFromXYZ(data.frame(bird_dist[,2:3],log_LC=log(rowSums(bird_dist[,lc_spp]))))), 
+spplot( c(
+  terra::rast(data.frame(bird_dist[,2:3], log_VU=log(rowSums(bird_dist[,vu_spp]))), type=&#39;xyz&#39;),
+  terra::rast(data.frame(bird_dist[,2:3], log_LC=log(rowSums(bird_dist[,lc_spp]))), type=&#39;xyz&#39;)),
   main=&#39;log( species richness)&#39;)</code></pre>
 <p><img src="a5_SpeciesThreats_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <div class="alert alert-info">
 <p><strong>Exercise:</strong></p>
-<p>Map species richness of all species belonging to the threatened categories (CR, EN, VU) and species richness of all species belonging to the non-threatened categories (NT, LC).</p>
+<p>Map species richness of all species belonging to the threatened
+categories (CR, EN, VU) and species richness of all species belonging to
+the non-threatened categories (NT, LC).</p>
 <ul>
 <li>Discuss the patterns. Where are hotspots of threatened species?</li>
 </ul>
 </div>
 </div>
 </div>
-<div id="red-list-threats" class="section level1">
+<div id="red-list-threats" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Red list threats</h1>
-<p>The IUCN also assesses the main threats per species as you saw in the <a href="https://www.iucnredlist.org/species/22728432/132658315#conservation-actions">Balearic Shearwater</a> example. The Threat Classification Scheme can be found <a href="https://www.iucnredlist.org/resources/threat-classification-scheme">here</a>.</p>
-<p>If you have your own IUCN API key, you can easily download the information on species’ red list threats:</p>
+<p>The IUCN also assesses the main threats per species as you saw in the
+<a
+href="https://www.iucnredlist.org/species/22728432/132658315#conservation-actions">Balearic
+Shearwater</a> example. The Threat Classification Scheme can be found <a
+href="https://www.iucnredlist.org/resources/threat-classification-scheme">here</a>.</p>
+<p>If you have your own IUCN API key, you can easily download the
+information on species’ red list threats:</p>
 <pre class="r"><code># Download red list threats for single species
 rl_threats(&#39;Gavia stellata&#39;, key= MY_IUCN_REDLIST_KEY)</code></pre>
 <pre><code>## $name
@@ -600,38 +699,61 @@ rl_threats(&#39;Gavia stellata&#39;, key= MY_IUCN_REDLIST_KEY)</code></pre>
 ## 7   Minority (&lt;50%) Slow, Significant Declines Low Impact: 5       NA</code></pre>
 <pre class="r"><code># Download red list threats for all species
 redlist_threats &lt;- do.call(rbind,lapply(seq_len(length(spp)),FUN=function(i){xi &lt;- rl_threats(spp[i], key= MY_IUCN_REDLIST_KEY); if(length(xi$result)) {data.frame(species=spp[i],speccode=speccodes[i],xi$result) }}))</code></pre>
-<p>Course participants can download the data from moodle and read it in:</p>
+<p>Course participants can download the data from moodle and read it
+in:</p>
 <pre class="r"><code>redlist_threats &lt;- read.table(&#39;data/UK_birds_redlist_threats.csv&#39;, header=T, sep=&#39;,&#39;)</code></pre>
-<p>The threats are ordered hierarchically from broad threat type to very detailed threat, e.g.:</p>
+<p>The threats are ordered hierarchically from broad threat type to very
+detailed threat, e.g.:</p>
 <ul>
-<li><em>2 Agriculture &amp; aquaculture</em> &gt; <em>2.2 Wood &amp; pulp plantations </em> &gt; <em>2.2.1 Small-holder plantations</em></li>
-<li><em>5 Biological resource use</em> &gt; <em>5.4 Fishing &amp; harvesting aquatic resources</em> &gt; <em>5.4.3 Unintentional effects: subsistence/small scale (species being assessed is not the target)[harvest]</em></li>
+<li><em>2 Agriculture &amp; aquaculture</em> &gt; <em>2.2 Wood &amp;
+pulp plantations </em> &gt; <em>2.2.1 Small-holder plantations</em></li>
+<li><em>5 Biological resource use</em> &gt; <em>5.4 Fishing &amp;
+harvesting aquatic resources</em> &gt; <em>5.4.3 Unintentional effects:
+subsistence/small scale (species being assessed is not the
+target)[harvest]</em></li>
 </ul>
-<p>Here is an example of the kind of information in the table. For more details, please have a look at the IUCN website, e.g. the <a href="https://www.iucnredlist.org/species/22728432/132658315#conservation-actions">Balearic Shearwater</a> example, and at the <a href="https://www.iucnredlist.org/resources/threat-classification-scheme">Threat Classification Scheme</a>.</p>
+<p>Here is an example of the kind of information in the table. For more
+details, please have a look at the IUCN website, e.g. the <a
+href="https://www.iucnredlist.org/species/22728432/132658315#conservation-actions">Balearic
+Shearwater</a> example, and at the <a
+href="https://www.iucnredlist.org/resources/threat-classification-scheme">Threat
+Classification Scheme</a>.</p>
 <pre class="r"><code>redlist_threats[sample(nrow(redlist_threats),10),-c(1:2)]</code></pre>
-<pre><code>##       code                                   title  timing             scope
-## 1438  11.1           Habitat shifting &amp; alteration  Future      Whole (&gt;90%)
-## 188  9.3.3               Herbicides and pesticides Ongoing   Minority (&lt;50%)
-## 373  5.1.1 Intentional use (species is the target) Ongoing   Minority (&lt;50%)
-## 580  5.1.3                     Persecution/control Ongoing Majority (50-90%)
-## 1096 2.2.3                Scale Unknown/Unrecorded Ongoing   Minority (&lt;50%)
-## 194    3.1                      Oil &amp; gas drilling Ongoing Majority (50-90%)
-## 475    3.3                        Renewable energy Ongoing   Minority (&lt;50%)
-## 758    4.1                       Roads &amp; railroads Ongoing   Minority (&lt;50%)
-## 41     1.1                   Housing &amp; urban areas Ongoing   Minority (&lt;50%)
-## 1333   2.3            Livestock farming &amp; ranching Ongoing   Minority (&lt;50%)
-##                        severity            score invasive
-## 1438                    Unknown             &lt;NA&gt;     &lt;NA&gt;
-## 188         Negligible declines    Low Impact: 4     &lt;NA&gt;
-## 373  Slow, Significant Declines    Low Impact: 5     &lt;NA&gt;
-## 580         Negligible declines    Low Impact: 5     &lt;NA&gt;
-## 1096 Slow, Significant Declines    Low Impact: 5     &lt;NA&gt;
-## 194  Slow, Significant Declines Medium Impact: 6     &lt;NA&gt;
-## 475         Negligible declines    Low Impact: 4     &lt;NA&gt;
-## 758  Slow, Significant Declines    Low Impact: 5     &lt;NA&gt;
-## 41          Negligible declines    Low Impact: 4     &lt;NA&gt;
-## 1333        Negligible declines    Low Impact: 4     &lt;NA&gt;</code></pre>
-<p>We can extract many useful information from this table, for example, when specific threats occurred.</p>
+<pre><code>##       code                                                          title
+## 1098 5.1.1                        Intentional use (species is the target)
+## 786    8.1 Invasive non-native/alien species/diseases (Crassostrea gigas)
+## 664    5.1                         Hunting &amp; trapping terrestrial animals
+## 13   9.2.1                                                     Oil spills
+## 1245   9.4                                          Garbage &amp; solid waste
+## 1214 8.1.2                                 Named species (Neovison vison)
+## 933   11.1                                  Habitat shifting &amp; alteration
+## 1414 5.1.1                        Intentional use (species is the target)
+## 773    2.1                            Annual &amp; perennial non-timber crops
+## 818  8.1.2                          Named species (Clostridium botulinum)
+##       timing             scope                   severity         score
+## 1098 Ongoing   Minority (&lt;50%) Slow, Significant Declines Low Impact: 5
+## 786  Ongoing   Minority (&lt;50%)                    Unknown       Unknown
+## 664  Ongoing   Minority (&lt;50%) Slow, Significant Declines Low Impact: 5
+## 13   Ongoing   Minority (&lt;50%) Slow, Significant Declines Low Impact: 5
+## 1245 Ongoing   Minority (&lt;50%)                    Unknown       Unknown
+## 1214 Ongoing   Minority (&lt;50%) Slow, Significant Declines Low Impact: 5
+## 933   Future      Whole (&gt;90%)                    Unknown       Unknown
+## 1414 Ongoing   Minority (&lt;50%) Slow, Significant Declines          &lt;NA&gt;
+## 773  Ongoing Majority (50-90%)                    Unknown       Unknown
+## 818   Future   Minority (&lt;50%)             Rapid Declines Low Impact: 4
+##                   invasive
+## 1098                  &lt;NA&gt;
+## 786      Crassostrea gigas
+## 664                   &lt;NA&gt;
+## 13                    &lt;NA&gt;
+## 1245                  &lt;NA&gt;
+## 1214        Neovison vison
+## 933                   &lt;NA&gt;
+## 1414                  &lt;NA&gt;
+## 773                   &lt;NA&gt;
+## 818  Clostridium botulinum</code></pre>
+<p>We can extract many useful information from this table, for example,
+when specific threats occurred.</p>
 <pre class="r"><code>table(redlist_threats$timing)</code></pre>
 <pre><code>## 
 ##                   Future                  Ongoing   Past, Likely to Return 
@@ -642,12 +764,18 @@ redlist_threats &lt;- do.call(rbind,lapply(seq_len(length(spp)),FUN=function(i){
 <p><strong>Exercise:</strong></p>
 <p>Explore the threats table. For example,</p>
 <ul>
-<li>Pick a species and identify which threats are causing rapid declines and slow declines.</li>
+<li>Pick a species and identify which threats are causing rapid declines
+and slow declines.</li>
 </ul>
 </div>
-<div id="mapping-hotspots-of-threats" class="section level2">
-<h2><span class="header-section-number">2.1</span> Mapping hotspots of threats</h2>
-<p>We can also analyse the spatial distribution of threats. To do so, we need to extract the species that are affected by a particular threat in a particular time period. Then we can extract the distribution data for these species, compute the species richness and map this in space.</p>
+<div id="mapping-hotspots-of-threats" class="section level2"
+number="2.1">
+<h2><span class="header-section-number">2.1</span> Mapping hotspots of
+threats</h2>
+<p>We can also analyse the spatial distribution of threats. To do so, we
+need to extract the species that are affected by a particular threat in
+a particular time period. Then we can extract the distribution data for
+these species, compute the species richness and map this in space.</p>
 <pre class="r"><code># Which ongoing threats are the most common ?
 sort(table(subset(redlist_threats, species %in% spp &amp; timing==&#39;Ongoing&#39;)$title), decreasing=T)[1:10]</code></pre>
 <pre><code>## 
@@ -677,29 +805,34 @@ spp_threat1 &lt;- sub(&#39; &#39;,&#39;_&#39;,subset(redlist_threats,title==&quo
 spp_threat2 &lt;- sub(&#39; &#39;,&#39;_&#39;,subset(redlist_threats,title==&quot;Industrial &amp; military effluents&quot; &amp; species %in% spp)$species)
 
 # Map species experiencing threats from hunting
-plot(rasterFromXYZ(data.frame(bird_dist[,2:3],rowSums(bird_dist[,spp_threat1]))), main=&quot;Hunting &amp; trapping terrestrial animals&quot;)</code></pre>
+plot(terra::rast(data.frame(bird_dist[,2:3],rowSums(bird_dist[,spp_threat1])), type=&#39;xyz&#39;), main=&quot;Hunting &amp; trapping terrestrial animals&quot;)</code></pre>
 <p><img src="a5_SpeciesThreats_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <pre class="r"><code># species experiencing threats from industry and military
-plot(rasterFromXYZ(data.frame(bird_dist[,2:3],rowSums(bird_dist[,spp_threat2]))), main=&quot;Industrial &amp; military effluents&quot;)</code></pre>
+plot(terra::rast(data.frame(bird_dist[,2:3],rowSums(bird_dist[,spp_threat2])), type=&#39;xyz&#39;), main=&quot;Industrial &amp; military effluents&quot;)</code></pre>
 <p><img src="a5_SpeciesThreats_files/figure-html/unnamed-chunk-18-2.png" width="672" /></p>
 <div class="alert alert-info">
 <p><strong>Exercise:</strong></p>
 <ul>
-<li>Pick two other ongoing threats and map the species richness of those breeding birds affected by these threats.</li>
-<li>Pick a future and a past threat and map the species richness of those breeding birds affected by these threats.</li>
+<li>Pick two other ongoing threats and map the species richness of those
+breeding birds affected by these threats.</li>
+<li>Pick a future and a past threat and map the species richness of
+those breeding birds affected by these threats.</li>
 </ul>
 <p>Interpret.</p>
 </div>
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">
-<h1>References</h1>
-<div id="refs" class="references">
-<div id="ref-IUCN2012">
-<p>IUCN. 2012. <em>IUCN Red List Categories and Criteria: Version 3.1.</em> Gland, Switzerland; Cambridge, UK: IUCN.</p>
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-IUCN2012" class="csl-entry">
+IUCN. 2012. <em>IUCN Red List Categories and Criteria: Version 3.1.</em>
+Gland, Switzerland; Cambridge, UK: IUCN.
 </div>
-<div id="ref-IUCN2019">
-<p>———. 2019. <em>The IUCN Red List of Threatened Species. Version 2019-2.</em> http://www.iucnredlist.org. Downloaded on 27 October 2019.</p>
+<div id="ref-IUCN2019" class="csl-entry">
+———. 2019. <em>The <span>IUCN</span> Red List of Threatened Species.
+Version 2019-2.</em> http://www.iucnredlist.org. Downloaded on 27
+October 2019.
 </div>
 </div>
 </div>
@@ -710,7 +843,7 @@ plot(rasterFromXYZ(data.frame(bird_dist[,2:3],rowSums(bird_dist[,spp_threat2])))
 <br>
 <hr />
 <div id="footer">
-<p>Damaris Zurell 2021 <a href="http://creativecommons.org/licenses/by/4.0/" >(CC BY 4.0)</a>.  </p>
+<p>Damaris Zurell 2022 <a href="http://creativecommons.org/licenses/by/4.0/" >(CC BY 4.0)</a>.  </p>
 </div>
 
 </html>

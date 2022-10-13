@@ -13,7 +13,8 @@
 
 <title>Species range maps</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -61,6 +62,29 @@ if (window.hljs) {
 
 
 
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 
 
 
@@ -84,6 +108,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -309,7 +336,7 @@ div.tocify {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -321,11 +348,8 @@ div.tocify {
         <li>
   <a href="index.html">Home</a>
 </li>
-<li>
-  <a href="schedule.html">Schedule</a>
-</li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Pracs: macroecological analyses
      
     <span class="caret"></span>
@@ -355,7 +379,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Pracs: species distribution modelling
      
     <span class="caret"></span>
@@ -415,31 +439,75 @@ div.tocify {
 <hr />
 <div class="alert alert-info">
 <p><strong>RStudio project</strong></p>
-<p>Open the RStudio project that we created in the first session. I recommend to use this RStudio project for the entire course and within the RStudio project create separate R scripts for each session.</p>
+<p>Open the RStudio project that we created in the first session. I
+recommend to use this RStudio project for the entire course and within
+the RStudio project create separate R scripts for each session.</p>
 <ul>
-<li>Create a new empty R script by going to the tab “File”, select “New File” and then “R script”</li>
-<li>In the new R script, type <code># Session a4: Species range maps</code> and save the file in your folder “scripts” within your project folder, e.g. as “a4_RangeMaps.R”</li>
+<li>Create a new empty R script by going to the tab “File”, select “New
+File” and then “R script”</li>
+<li>In the new R script, type
+<code># Session a4: Species range maps</code> and save the file in your
+folder “scripts” within your project folder, e.g. as
+“a4_RangeMaps.R”</li>
 </ul>
 </div>
-<p>We are living in an age of big data where biodiversity are becoming increasingly available in digital format and at a global scale <span class="citation">(Wüest et al. 2020)</span>. Many different types of biodiversity data exist, e.g. from standardised monitoring schemes, citizen science platforms, or expert knowledge. Each of these data types comes with own challenges. Within this module, I want to provide some first impressions on how you can obtain and process typical types of species data. Specifically, in this session, we will work with range maps of terrestrial animals and plants, while occurrence data for terrestrial species in <a href="https://www.gbif.org/">GBIF</a> (the Global Biodiversity Information facility) and for marine species in <a href="https://obis.org/">OBIS</a> (the Ocean Biodiversity Information System) will be covered later in the <a href="b1_SpeciesData.html"><em>species distribution modelling</em> part</a>.</p>
-<div id="obtaining-range-maps" class="section level1">
-<h1><span class="header-section-number">1</span> Obtaining range maps</h1>
-<p>We rarely have detailed biodiversity data available over large geographic extents. At broad (continental to global) extents, expert-drawn range maps (also called extent-of-occurrence maps) are often the primary data source on species distributions.</p>
-<div id="iucn-range-maps" class="section level2">
+<p>We are living in an age of big data where biodiversity are becoming
+increasingly available in digital format and at a global scale <span
+class="citation">(Wüest et al. 2020)</span>. Many different types of
+biodiversity data exist, e.g. from standardised monitoring schemes,
+citizen science platforms, or expert knowledge. Each of these data types
+comes with own challenges. Within this module, I want to provide some
+first impressions on how you can obtain and process typical types of
+species data. Specifically, in this session, we will work with range
+maps of terrestrial animals and plants, while occurrence data for
+terrestrial species in <a href="https://www.gbif.org/">GBIF</a> (the
+Global Biodiversity Information facility) and for marine species in <a
+href="https://obis.org/">OBIS</a> (the Ocean Biodiversity Information
+System) will be covered later in the <a
+href="b1_SpeciesData.html"><em>species distribution modelling</em>
+part</a>.</p>
+<div id="obtaining-range-maps" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Obtaining range
+maps</h1>
+<p>We rarely have detailed biodiversity data available over large
+geographic extents. At broad (continental to global) extents,
+expert-drawn range maps (also called extent-of-occurrence maps) are
+often the primary data source on species distributions.</p>
+<div id="iucn-range-maps" class="section level2" number="1.1">
 <h2><span class="header-section-number">1.1</span> IUCN range maps</h2>
-<p>The IUCN (the International Union for the Conservation of Nature) provides expert range maps for a large number of species including mammals, birds (through <a href="http://www.birdlife.org/">BirdLife International</a>), amphibians, reptiles, and freshwater fishes. There are also some range maps on plants and marine species, but these are very limited taxonomically. Have a look for which taxa range maps are available: <a href="https://www.iucnredlist.org/resources/spatial-data-download" class="uri">https://www.iucnredlist.org/resources/spatial-data-download</a>. You can download them for free, but you should provide some information on your work to obtain the data.</p>
-<p>Most of the IUCN data are provided in the form of shapefiles. In practical 2, we have already loaded the range map of the <a href="https://damariszurell.github.io/EEC-Macro/data/IUCN_Sorex_alpinus.zip">Alpine shrew</a> and learned how to use the package <code>raster</code> for reading in the shapefiles. You may remember that the shapefile is recognized as SpatialPolygonsDataFrame.</p>
-<pre class="r"><code>library(raster)
+<p>The IUCN (the International Union for the Conservation of Nature)
+provides expert range maps for a large number of species including
+mammals, birds (through <a href="http://www.birdlife.org/">BirdLife
+International</a>), amphibians, reptiles, and freshwater fishes. There
+are also some range maps on plants and marine species, but these are
+very limited taxonomically. Have a look for which taxa range maps are
+available: <a
+href="https://www.iucnredlist.org/resources/spatial-data-download"
+class="uri">https://www.iucnredlist.org/resources/spatial-data-download</a>.
+You can download them for free, but you should provide some information
+on your work to obtain the data.</p>
+<p>Most of the IUCN data are provided in the form of shapefiles. In
+practical 2, we have already loaded the range map of the <a
+href="https://damariszurell.github.io/EEC-Macro/data/IUCN_Sorex_alpinus.zip">Alpine
+shrew</a> and learned how to use the package <code>terra</code> for
+reading in the shapefiles. You may remember that the shapefile is
+recognized as <code>SpatVector</code> object.</p>
+<pre class="r"><code>library(terra)
 
 # Load the shapefile
-(shrew &lt;- shapefile(&#39;data/IUCN_Sorex_alpinus.shp&#39;))</code></pre>
-<pre><code>## class       : SpatialPolygonsDataFrame 
-## features    : 1 
-## extent      : 5.733728, 26.67935, 42.20601, 51.89984  (xmin, xmax, ymin, ymax)
-## crs         : +proj=longlat +datum=WGS84 +no_defs 
-## variables   : 27
-## names       : id_no,      binomial, presence, origin, seasonal, compiler, yrcompiled,                                              citation, source, dist_comm, island, subspecies, subpop,            legend, tax_comm, ... 
-## value       : 29660, Sorex alpinus,        1,      1,        1,     IUCN,       2008, IUCN (International Union for Conservation of Nature),     NA,        NA,     NA,         NA,     NA, Extant (resident),       NA, ...</code></pre>
+(shrew &lt;- terra::vect(&#39;data/IUCN_Sorex_alpinus.shp&#39;))</code></pre>
+<pre><code>##  class       : SpatVector 
+##  geometry    : polygons 
+##  dimensions  : 1, 27  (geometries, attributes)
+##  extent      : 5.733728, 26.67935, 42.20601, 51.89984  (xmin, xmax, ymin, ymax)
+##  source      : IUCN_Sorex_alpinus.shp
+##  coord. ref. : lon/lat WGS 84 (EPSG:4326) 
+##  names       : id_no      binomial presence origin seasonal compiler yrcompiled
+##  type        : &lt;chr&gt;         &lt;chr&gt;    &lt;int&gt;  &lt;int&gt;    &lt;int&gt;    &lt;chr&gt;      &lt;int&gt;
+##  values      : 29660 Sorex alpinus        1      1        1     IUCN       2008
+##         citation source dist_comm (and 17 more)
+##            &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;              
+##  IUCN (Internat~</code></pre>
 <pre class="r"><code># Plot the Central Europe
 library(maps)
 map(&#39;world&#39;,xlim=c(5,30), ylim=c(40,55))
@@ -447,55 +515,73 @@ map(&#39;world&#39;,xlim=c(5,30), ylim=c(40,55))
 # Overlay the range of the Alpine Shrew
 plot(shrew, col=&#39;red&#39;, add=T)</code></pre>
 <p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
-<p>Unfortunately, there is no API for the IUCN range maps. So, you need to register with IUCN and then you can download range maps for different taxonomic groups. The range maps for birds come as separate shape files per species, while the range maps of mammals are provided as single shapefile that contains all species. Course participants can download the mammal shapefile from the moodle course - of course, the license agreement by the IUCN apply!</p>
+<p>Unfortunately, there is no API for the IUCN range maps. So, you need
+to register with IUCN and then you can download range maps for different
+taxonomic groups. The range maps for birds come as separate shape files
+per species, while the range maps of mammals are provided as single
+shapefile that contains all species. Course participants can download
+the mammal shapefile from the moodle course - of course, the license
+agreement by the IUCN apply!</p>
 <pre class="r"><code># Read shapefile for all mammals using the raster package:
-mammals &lt;- shapefile(&#39;data/MAMMTERR.shp&#39;)</code></pre>
-<p>The shapefile contains a SpatialPolygonsDataFrame with the range polygons for all described mammal species. The attribute table contains information on species’ PRESENCE, ORIGIN, and SEASONALity. Please have a look at the metadata to understand the different values these attributes can be coded as.</p>
+mammals &lt;- terra::vect(&#39;data/MAMMTERR.shp&#39;)</code></pre>
+<p>The shapefile contains the range polygons for all described mammal
+species. The attribute table contains information on species’ PRESENCE,
+ORIGIN, and SEASONALity. Please have a look at the metadata to
+understand the different values these attributes can be coded as.</p>
 <pre class="r"><code>mammals</code></pre>
-<pre><code>## class       : SpatialPolygonsDataFrame 
-## features    : 43444 
-## extent      : -180.0001, 180.0025, -56.66595, 90  (xmin, xmax, ymin, ymax)
-## crs         : +proj=longlat +datum=WGS84 +no_defs 
-## variables   : 14
-## names       :           BINOMIAL, PRESENCE, ORIGIN, SEASONAL,                      COMPILER, YEAR,                               CITATION,                         SOURCE,                                                                              DIST_COMM, ISLAND,    SUBSPECIES, SUBPOP,    SHAPE_area,         SHAPE_len 
-## min values  : Abditomys latidens,        1,      1,        1,          Biodiversitas Brazil, 2008,                   Biodiversitas Brazil, African Elephant Database 2007, A free-ranging herd of D. b. michaeli occurs in a private game reserve in South Africa,   &#39;Eau, &quot;vacuum&quot; zone,     NA,  4.313328e-12, 2.52232707544e-05 
-## max values  :  Zyzomys woodwardi,        6,      6,        5, Wildlife Conservation Society, 2010, Wildlife Conservation Society and IUCN,            Wilting et al. 2010,                                                                            Zagros Mtns,   Zuna,  zanzibaricus,     NA, 6464.56233215,     6198.71426035</code></pre>
+<pre><code>##  class       : SpatVector 
+##  geometry    : polygons 
+##  dimensions  : 43444, 14  (geometries, attributes)
+##  extent      : -180.0001, 180.0025, -56.66595, 90  (xmin, xmax, ymin, ymax)
+##  source      : MAMMTERR.shp
+##  coord. ref. : lon/lat WGS 84 (EPSG:4326) 
+##  names       :        BINOMIAL PRESENCE ORIGIN SEASONAL COMPILER  YEAR
+##  type        :           &lt;chr&gt;    &lt;int&gt;  &lt;int&gt;    &lt;int&gt;    &lt;chr&gt; &lt;int&gt;
+##  values      : Amblysomus cor~        1      1        1     IUCN  2008
+##                Amblysomus hot~        1      1        1     IUCN  2008
+##                Amblysomus mar~        1      1        1     IUCN  2008
+##         CITATION SOURCE DIST_COMM ISLAND (and 4 more)
+##            &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;             
+##  IUCN (Internat~                                     
+##  IUCN (Internat~                                     
+##  IUCN (Internat~</code></pre>
 <pre class="r"><code># Inspect attribute table
-head(mammals@data)</code></pre>
+terra::head(mammals)</code></pre>
 <pre><code>##                     BINOMIAL PRESENCE ORIGIN SEASONAL COMPILER YEAR
-## 0         Amblysomus corriae        1      1        1     IUCN 2008
-## 1     Amblysomus hottentotus        1      1        1     IUCN 2008
-## 2         Amblysomus marleyi        1      1        1     IUCN 2008
-## 3        Amblysomus robustus        1      1        1     IUCN 2008
-## 4 Amblysomus septentrionalis        1      1        1     IUCN 2008
+## 1         Amblysomus corriae        1      1        1     IUCN 2008
+## 2     Amblysomus hottentotus        1      1        1     IUCN 2008
+## 3         Amblysomus marleyi        1      1        1     IUCN 2008
+## 4        Amblysomus robustus        1      1        1     IUCN 2008
 ## 5 Amblysomus septentrionalis        1      1        1     IUCN 2008
+## 6 Amblysomus septentrionalis        1      1        1     IUCN 2008
 ##                                                CITATION SOURCE DIST_COMM ISLAND
-## 0 IUCN (International Union for Conservation of Nature)   &lt;NA&gt;      &lt;NA&gt;   &lt;NA&gt;
-## 1 IUCN (International Union for Conservation of Nature)   &lt;NA&gt;      &lt;NA&gt;   &lt;NA&gt;
-## 2 IUCN (International Union for Conservation of Nature)   &lt;NA&gt;      &lt;NA&gt;   &lt;NA&gt;
-## 3 IUCN (International Union for Conservation of Nature)   &lt;NA&gt;      &lt;NA&gt;   &lt;NA&gt;
-## 4 IUCN (International Union for Conservation of Nature)   &lt;NA&gt;      &lt;NA&gt;   &lt;NA&gt;
-## 5 IUCN (International Union for Conservation of Nature)   &lt;NA&gt;      &lt;NA&gt;   &lt;NA&gt;
+## 1 IUCN (International Union for Conservation of Nature)                        
+## 2 IUCN (International Union for Conservation of Nature)                        
+## 3 IUCN (International Union for Conservation of Nature)                        
+## 4 IUCN (International Union for Conservation of Nature)                        
+## 5 IUCN (International Union for Conservation of Nature)                        
+## 6 IUCN (International Union for Conservation of Nature)                        
 ##   SUBSPECIES SUBPOP  SHAPE_area SHAPE_len
-## 0       &lt;NA&gt;   &lt;NA&gt;  4.93503476 15.575123
-## 1       &lt;NA&gt;   &lt;NA&gt; 19.94471634 28.392110
-## 2       &lt;NA&gt;   &lt;NA&gt;  0.12779360  1.902574
-## 3       &lt;NA&gt;   &lt;NA&gt;  0.09936845  1.655898
-## 4       &lt;NA&gt;   &lt;NA&gt;  0.25763915  2.078154
-## 5       &lt;NA&gt;   &lt;NA&gt;  2.70333866  7.080348</code></pre>
-<p>We can search for specific species or species groups in the attribute table in different ways:</p>
-<pre class="r"><code># Show all entries for the species &#39;Lynx lynx&#39;
-subset(mammals@data, BINOMIAL==&#39;Lynx lynx&#39;)
+## 1                    4.93503476 15.575123
+## 2                   19.94471634 28.392110
+## 3                    0.12779360  1.902574
+## 4                    0.09936845  1.655898
+## 5                    0.25763915  2.078154
+## 6                    2.70333866  7.080348</code></pre>
+<p>We can search for specific species or species groups in the attribute
+table in different ways:</p>
+<pre class="r"><code># Range map for the species &#39;Lynx lynx&#39;
+terra::subset(mammals, mammals$BINOMIAL == &quot;Lynx lynx&quot;)
 
 # Show all entries for the species with the word &#39;Lynx&#39; in their name
 grep(&#39;Lynx&#39;,mammals@data$BINOMIAL)
-mammals@data[grep(&#39;Lynx&#39;,mammals@data$BINOMIAL),]</code></pre>
-<p>We can use the attribute table subsets to select specific polygons that we want to look at.</p>
-<pre class="r"><code># Range map of the Eurasian lynx
-lynx_lynx &lt;- mammals[mammals@data$BINOMIAL==&#39;Lynx lynx&#39;,]
+mammals[grep(&#39;Lynx&#39;, mammals$BINOMIAL),]</code></pre>
+<p>We can use the attribute table subsets to select specific polygons
+that we want to look at.</p>
+<pre class="r"><code># Assign range map of the Eurasian lynx to separate object
+lynx_lynx &lt;- mammals[mammals$BINOMIAL==&#39;Lynx lynx&#39;,]
 
 # Map the range
-library(maps)
 map(&#39;world&#39;)
 plot(lynx_lynx, col=&#39;red&#39;, add=T)</code></pre>
 <p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
@@ -506,14 +592,18 @@ plot(lynx_lynx, col=&#39;red&#39;, add=T)</code></pre>
 </ul>
 </div>
 </div>
-<div id="bien-range-maps" class="section level2">
+<div id="bien-range-maps" class="section level2" number="1.2">
 <h2><span class="header-section-number">1.2</span> BIEN range maps</h2>
-<p>The <a href="https://bien.nceas.ucsb.edu/bien/biendata/">BIEN</a> database (Botanical Information and Ecology Network) contains many range maps on plants, but unfortunately only for the Americas. These can be accessed using the <code>BIEN</code> package. As illustrative example, we load the range map for the monkey puzzle tree (or Chilean pine - <em>Araucaria araucana</em>).</p>
+<p>The <a href="https://bien.nceas.ucsb.edu/bien/biendata/">BIEN</a>
+database (Botanical Information and Ecology Network) contains many range
+maps on plants, but unfortunately only for the Americas. These can be
+accessed using the <code>BIEN</code> package. As illustrative example,
+we load the range map for the monkey puzzle tree (or Chilean pine -
+<em>Araucaria araucana</em>).</p>
 <pre class="r"><code>library(BIEN)
-library(sp)
 
 # Load the range map for the monkey puzzle
-(monkey_puzzle &lt;- BIEN_ranges_load_species(&#39;Araucaria_araucana&#39;))</code></pre>
+(monkey_puzzle_raster &lt;- BIEN_ranges_load_species(&#39;Araucaria_araucana&#39;))</code></pre>
 <pre><code>## class       : SpatialPolygonsDataFrame 
 ## features    : 1 
 ## extent      : -109.9819, -55.46083, -55.73974, 62.67197  (xmin, xmax, ymin, ymax)
@@ -521,134 +611,205 @@ library(sp)
 ## variables   : 1
 ## names       :            species 
 ## value       : Araucaria_araucana</code></pre>
+<p>Currently, the <code>BIEN</code>package still relies on the spatial R
+package <code>raster</code> that was the predeccesor of
+<code>terra</code> and is still being used by many packages. Here, we
+simply convert the <code>SpatialPolygonsDataFrame</code> object into the
+<code>SpatVector</code>object that we already know from the
+<code>terra</code> package.</p>
+<pre class="r"><code># Change into SpatVector object (terra package)
+(monkey_puzzle_terra &lt;- terra::vect(monkey_puzzle_raster, crs=&#39;+proj=longlat +datum=WGS84&#39;))</code></pre>
+<pre><code>##  class       : SpatVector 
+##  geometry    : polygons 
+##  dimensions  : 1, 1  (geometries, attributes)
+##  extent      : -109.9819, -55.46083, -55.73974, 62.67197  (xmin, xmax, ymin, ymax)
+##  coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
+##  names       :            species
+##  type        :              &lt;chr&gt;
+##  values      : Araucaria_araucana</code></pre>
 <pre class="r"><code># Map
-map(&#39;world&#39;,xlim = c(-180,-20),ylim = c(-60,80))
-plot(monkey_puzzle,col=&#39;red&#39;,add=T)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<p>The native range of the mokey puzzle is in the Chilean Andes, so clearly the range maps also show areas where the species naturalized.</p>
+map(&#39;world&#39;,xlim = c(-180,-20),ylim = c(-80,80))
+plot(monkey_puzzle_terra,col=&#39;red&#39;,add=T)</code></pre>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>The native range of the mokey puzzle is in the Chilean Andes, so
+clearly the range maps also show areas where the species
+naturalized.</p>
 </div>
 </div>
-<div id="working-with-range-maps" class="section level1">
-<h1><span class="header-section-number">2</span> Working with range maps</h1>
-<div id="range-size-and-range-centre" class="section level2">
-<h2><span class="header-section-number">2.1</span> Range size and range centre</h2>
-<p>The <code>raster</code> package allows us to easily calculate the area of the polygons, meaning the range size of our species. The function <code>area()</code> outputs the area in square meters (if the CRS is in long/lat format).</p>
-<pre class="r"><code># Range area of alpine shrew in square meters:
-area(shrew)</code></pre>
-<pre><code>## [1] 490543310097</code></pre>
+<div id="working-with-range-maps" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Working with range
+maps</h1>
+<div id="range-size-and-range-centre" class="section level2"
+number="2.1">
+<h2><span class="header-section-number">2.1</span> Range size and range
+centre</h2>
+<p>The <code>terra</code> package allows us to easily calculate the area
+of the polygons, meaning the range size of our species. The function
+<code>expanse()</code> outputs the area in square meters, kilometers or
+hectars.</p>
 <pre class="r"><code># Range area of alpine shrew in square kilometers:
-area(shrew)/1000000</code></pre>
+terra::expanse(shrew, unit=&quot;km&quot;)</code></pre>
 <pre><code>## [1] 490543.3</code></pre>
 <pre class="r"><code># Range area of monkey puzzle in square meters:
-area(monkey_puzzle)</code></pre>
-<pre><code>## [1] 5.783633e+12</code></pre>
-<pre class="r"><code># Range area of monkey puzzle n square kilometers:
-area(monkey_puzzle)/1000000</code></pre>
+terra::expanse(monkey_puzzle_terra, unit=&quot;km&quot;)</code></pre>
 <pre><code>## [1] 5783633</code></pre>
-<p>We can also very easily calculate the centre of gravity or range centroid from the spatial polygons.</p>
-<pre class="r"><code>library(rgeos)</code></pre>
-<pre><code>## rgeos version: 0.5-5, (SVN revision 640)
-##  GEOS runtime version: 3.8.1-CAPI-1.13.3 
-##  Linking to sp version: 1.4-2 
-##  Polygon checking: TRUE</code></pre>
+<p>We can also very easily calculate the centre of gravity or range
+centroid from the <code>SpatVector</code> object.</p>
 <pre class="r"><code># Range centroid:
-gCentroid(shrew)</code></pre>
-<pre><code>## class       : SpatialPoints 
-## features    : 1 
-## extent      : 16.02645, 16.02645, 46.90336, 46.90336  (xmin, xmax, ymin, ymax)
-## crs         : +proj=longlat +datum=WGS84 +no_defs</code></pre>
+terra::centroids(shrew)</code></pre>
+<pre><code>##  class       : SpatVector 
+##  geometry    : points 
+##  dimensions  : 1, 27  (geometries, attributes)
+##  extent      : 16.02645, 16.02645, 46.90336, 46.90336  (xmin, xmax, ymin, ymax)
+##  coord. ref. : lon/lat WGS 84 (EPSG:4326) 
+##  names       : id_no      binomial presence origin seasonal compiler yrcompiled
+##  type        : &lt;chr&gt;         &lt;chr&gt;    &lt;int&gt;  &lt;int&gt;    &lt;int&gt;    &lt;chr&gt;      &lt;int&gt;
+##  values      : 29660 Sorex alpinus        1      1        1     IUCN       2008
+##         citation source dist_comm (and 17 more)
+##            &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;              
+##  IUCN (Internat~</code></pre>
 <pre class="r"><code># Map the species range and add the centroid to the map
 map(&#39;world&#39;,xlim=c(5,30), ylim=c(40,55))
 plot(shrew, col=&#39;red&#39;, add=T)
-plot(gCentroid(shrew), col=&#39;blue&#39;,add=T,lwd=3)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<p>We need to be careful how to interpret these centroids. They represent the centre of gravity, so losely the mean coordinates of the distribution (weighted by cell size) but obviously, if we have several patches, the centroid might not even fall within an occupied patch.</p>
-<p>In case of the Monkey Puzzle, we have suspected that the range maps also contain non-native areas. We can clip the range maps to a desired spatial extent and then only calculate the range centroid for this (presumed) native range.</p>
-<pre class="r"><code># Let&#39;s crop the range polygons to South America
-monkey_puzzle_SAm &lt;- gIntersection(monkey_puzzle, as(extent(-85, -30, -55, 5),&quot;SpatialPolygons&quot;))
+points(terra::centroids(shrew), col=&#39;blue&#39;,cex=3,pch=&quot;+&quot;)</code></pre>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>We need to be careful how to interpret these centroids. They
+represent the centre of gravity, i.e. the mean coordinates of the
+distribution (weighted by cell size) but obviously, if we have several
+patches, the centroid might not even fall within an occupied patch.</p>
+<p>In case of the Monkey Puzzle, we have suspected that the range maps
+also contain non-native areas. We can clip the range maps to a desired
+spatial extent and then only calculate the range centroid for this
+(presumed) native range.</p>
+<pre class="r"><code># Let&#39;s crop the range polygons to (rough coordinates of) South America
+monkey_puzzle_SAm &lt;- terra::intersect(monkey_puzzle_terra, ext(-85, -30, -55, 5))
 
 # Map the range and range centroid
 map(&#39;world&#39;,xlim = c(-100,-10),ylim = c(-60,15))
 plot(monkey_puzzle_SAm,col=&#39;red&#39;,add=T)
-plot(gCentroid(monkey_puzzle_SAm), col=&#39;blue&#39;,add=T,lwd=3)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+points(terra::centroids(monkey_puzzle_SAm), col=&#39;blue&#39;,pch=&#39;+&#39;, cex=3)</code></pre>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <ul>
-<li>Use the range map of the mammal species you selected above, and calculate the range size and range centroid. Add the point location of your centroid to the range map that you have plotted previously.</li>
+<li>Use the range map of the mammal species you selected earlier, and
+calculate the range size and range centroid. Add the point location of
+your centroid to the range map that you have plotted previously.</li>
 </ul>
 </div>
 </div>
-<div id="rasterising-range-maps" class="section level2">
-<h2><span class="header-section-number">2.2</span> Rasterising range maps</h2>
-<p>For many applications in macroecology, we need to rasterise the polygons. The problem is that it is unclear at which spatial resolution the range maps accurately represent species occurrences. <span class="citation">Hurlbert and Jetz (2007)</span> and <span class="citation">Jetz, McPherson, and Guralnick (2012)</span> define the minimum spatial resolution as 100-200km (1-2°), although also resolutions of 50km (0.5°) and finer have been used <span class="citation">(Krosby et al. 2015; Zurell et al. 2018)</span>.</p>
-<div id="rasterising-range-maps-with-raster" class="section level3">
-<h3><span class="header-section-number">2.2.1</span> Rasterising range maps with <code>raster</code></h3>
-<p>Rasterising polgyon data is made very easy in the <em>raster</em> package. We first have to define a raster grid of the desired resolution, and then transfer the polgyon data to the raster cells.</p>
-<pre class="r"><code># By default, raster() will create a 1° resolution map in the *WGS 84* coordinate system (lon/lat).
-(r_1deg &lt;- raster())</code></pre>
-<pre><code>## class      : RasterLayer 
-## dimensions : 180, 360, 64800  (nrow, ncol, ncell)
-## resolution : 1, 1  (x, y)
-## extent     : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-## crs        : +proj=longlat +datum=WGS84 +no_defs</code></pre>
-<pre class="r"><code>(shrew_1deg &lt;- rasterize(shrew, r_1deg))</code></pre>
-<pre><code>## class      : RasterLayer 
-## dimensions : 180, 360, 64800  (nrow, ncol, ncell)
-## resolution : 1, 1  (x, y)
-## extent     : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-## crs        : +proj=longlat +datum=WGS84 +no_defs 
-## source     : memory
-## names      : layer 
-## values     : 1, 1  (min, max)
-## attributes :
-##  ID id_no      binomial presence origin seasonal compiler yrcompiled
-##   1 29660 Sorex alpinus        1      1        1     IUCN       2008
-##                                               citation source dist_comm island
-##  IUCN (International Union for Conservation of Nature)   &lt;NA&gt;      &lt;NA&gt;   &lt;NA&gt;</code></pre>
+<div id="rasterising-range-maps" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> Rasterising range
+maps</h2>
+<p>For many applications in macroecology, we need to rasterise the
+polygons. The problem is that it is unclear at which spatial resolution
+the range maps accurately represent species occurrences. <span
+class="citation">Hurlbert and Jetz (2007)</span> and <span
+class="citation">Jetz, McPherson, and Guralnick (2012)</span> define the
+minimum spatial resolution as 100-200km (1-2°), although also
+resolutions of 50km (0.5°) and finer have been used <span
+class="citation">(Krosby et al. 2015; Zurell et al. 2018)</span>.</p>
+<div id="rasterising-range-maps-with-terra" class="section level3"
+number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> Rasterising range
+maps with <code>terra</code></h3>
+<p>Rasterising polygon data is made very easy in the <code>terra</code>
+package. We first have to define a <code>SpatRaster</code> object of the
+desired resolution, and then transfer the polygon data to the raster
+cells.</p>
+<pre class="r"><code># By default, terra() will create a 1° resolution map in the *WGS 84* coordinate system (lon/lat).
+(r_1deg &lt;- terra::rast())</code></pre>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 180, 360, 1  (nrow, ncol, nlyr)
+## resolution  : 1, 1  (x, y)
+## extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
+## coord. ref. : lon/lat WGS 84</code></pre>
+<pre class="r"><code># Now, rasterise the shrew polygon data to the 1° raster grid
+(shrew_1deg &lt;- terra::rasterize(shrew, r_1deg))</code></pre>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 180, 360, 1  (nrow, ncol, nlyr)
+## resolution  : 1, 1  (x, y)
+## extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
+## coord. ref. : lon/lat WGS 84 
+## source      : memory 
+## name        : layer 
+## min value   :     1 
+## max value   :     1</code></pre>
 <pre class="r"><code>map(&#39;world&#39;,xlim=c(5,30), ylim=c(40,55))
 plot(shrew, col=&#39;red&#39;, add=T)
 plot(shrew_1deg, add=T, alpha=0.6, legend=F)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-<p>Obviously, the margins of the range polgyon and the raster map differ at several places.</p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>Obviously, the margins of the range polgyon and the raster map differ
+at several places.</p>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
-<p>Find out what rule is being used to determine whether polygon data is transferred to a raster cell. Check out the help page <code>?rasterize</code> to answer this.</p>
+<p>Check out the help page <code>?rasterize</code> and find out what the
+argument <code>touches</code> is doing. Rasterise the shrew range map
+again with setting a different <code>touches</code> argument and map the
+result. What is the difference?</p>
 </div>
 <p>We look at a second example, the lynx:</p>
-<pre class="r"><code># Define an empty raster of the world at 2° spatial resolution
-(r_2deg &lt;- raster(res=2))</code></pre>
-<pre><code>## class      : RasterLayer 
-## dimensions : 90, 180, 16200  (nrow, ncol, ncell)
-## resolution : 2, 2  (x, y)
-## extent     : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
-## crs        : +proj=longlat +datum=WGS84 +no_defs</code></pre>
+<pre class="r"><code># Define an empty SpatRaster of the world at 2° spatial resolution
+(r_2deg &lt;- terra::rast(res=2))</code></pre>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 90, 180, 1  (nrow, ncol, nlyr)
+## resolution  : 2, 2  (x, y)
+## extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
+## coord. ref. : lon/lat WGS 84</code></pre>
 <pre class="r"><code># Rasterize the eurasian lynx data
-lynx_lynx_2deg &lt;- rasterize(lynx_lynx, r_2deg)
+lynx_lynx_2deg &lt;- terra::rasterize(lynx_lynx, r_2deg)
 
 # Map the occupied grid cells
-plot(lynx_lynx_2deg)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<p>We see that the resulting raster contains values &gt; 1. When you look back into the attribute table of the <code>lynx_lynx</code> SpatialPolygonsDataFrame, then you see that we had 48 polygons included. When rasterising, the <code>raster</code> package will assign the index of the attribute table row as the cell value. Thereby, some polygons may not be rasterised if they are too small for the desired spatial resolution. (If you have done above exercise and looked up the help pages of <code>?rasterize</code>, you should know the conditions when a cell is assigned to be within the range and when not.) Here, we need to make sure that all raster cell are set to a value of 1 so that we have a proper presence map in the end.</p>
-<pre class="r"><code>values(lynx_lynx_2deg)[!is.na(values(lynx_lynx_2deg))] &lt;- 1
-
-# Map the occupied cells
 map(&#39;world&#39;)
-plot(lynx_lynx_2deg, add=T, legend=F)</code></pre>
+plot(lynx_lynx_2deg, add = TRUE, legend = FALSE)</code></pre>
 <p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 </div>
-<div id="rasterising-range-maps-with-letsr" class="section level3">
-<h3><span class="header-section-number">2.2.2</span> Rasterising range maps with <code>letsR</code></h3>
-<p>There are also specific macroecological packages in R that facilitate working with range maps and rasterising them, for example the function <code>lets.presab()</code> in the <code>letsR</code> package.</p>
-<pre class="r"><code>library(letsR)
+<div id="rasterising-range-maps-with-letsr" class="section level3"
+number="2.2.2">
+<h3><span class="header-section-number">2.2.2</span> Rasterising range
+maps with <code>letsR</code></h3>
+<p>There are also specific macroecological packages in R that facilitate
+working with range maps and rasterising them, for example the function
+<code>lets.presab()</code> in the <code>letsR</code> package. At the
+moment, this package still relies on the older spatial R package
+<code>raster</code>.</p>
+<pre class="r"><code>library(letsR)</code></pre>
+<pre><code>## Lade nötiges Paket: raster</code></pre>
+<pre><code>## Lade nötiges Paket: sp</code></pre>
+<pre class="r"><code>library(raster)
 
-# The lets.presab() function expects specific column names in the Polygons data frame
-colnames(monkey_puzzle@data) &lt;- &quot;binomial&quot;
+# The lets.presab() function expects &quot;binomial&quot; as one specific column name in the Polygons data frame
+values(shrew)</code></pre>
+<pre><code>##   id_no      binomial presence origin seasonal compiler yrcompiled
+## 1 29660 Sorex alpinus        1      1        1     IUCN       2008
+##                                                citation source dist_comm island
+## 1 IUCN (International Union for Conservation of Nature)                        
+##   subspecies subpop            legend tax_comm  kingdom   phylum    class
+## 1                   Extant (resident)          ANIMALIA CHORDATA MAMMALIA
+##         order_    family genus category marine terrestial freshwater SHAPE_Leng
+## 1 EULIPOTYPHLA SORICIDAE Sorex       NT  False       True      False   88.67521
+##   SHAPE_Area
+## 1   57.94637</code></pre>
+<pre class="r"><code>values(monkey_puzzle_terra)</code></pre>
+<pre><code>##              species
+## 1 Araucaria_araucana</code></pre>
+<pre class="r"><code>monkey_puzzle_raster@data</code></pre>
+<pre><code>##              species
+## 1 Araucaria_araucana</code></pre>
+<pre class="r"><code># As the BIEN data do not contain &quot;binomial&quot; as column name, we have to add it:
+colnames(monkey_puzzle_raster@data) &lt;- &quot;binomial&quot;
 
 # We set the resolution to 1 degree (the default) and restrict the spatial extent to South America
-r_monkey_puzzle &lt;- lets.presab(monkey_puzzle, resol=1, xmn = -100, xmx = -10, ymn = -57, ymx = 15)
+r_monkey_puzzle &lt;- lets.presab(monkey_puzzle_raster, resol=1, xmn = -100, xmx = -10, ymn = -57, ymx = 15)
 
-# Map the range and range centroid
+# This time, we receive a raster object (instead of SpatRaster)
+r_monkey_puzzle</code></pre>
+<pre><code>## 
+## Class: PresenceAbsence 
+## Number of species: 1 
+## Number of cells: 243
+## Resolution: 1, 1 (x, y)</code></pre>
+<pre class="r"><code># Map the range and range centroid
 map(&#39;world&#39;,xlim = c(-100,-10),ylim = c(-60,15))
 plot(monkey_puzzle_SAm,col=&#39;blue&#39;,add=T)
 plot(r_monkey_puzzle, add=T, alpha=0.6, legend=F)</code></pre>
@@ -656,13 +817,19 @@ plot(r_monkey_puzzle, add=T, alpha=0.6, legend=F)</code></pre>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <ul>
-<li>Rasterise the range map of the mammal species you selected above. Try both approaches using the <code>raster</code> package and the <code>letsR</code> package.</li>
+<li>Rasterise the range map of the mammal species you selected above.
+Try both approaches using the <code>terra</code> package and the
+<code>letsR</code> package.</li>
 </ul>
 </div>
 </div>
-<div id="bulk-rasterising-multiple-species-range-maps-with-letsr" class="section level3">
-<h3><span class="header-section-number">2.2.3</span> Bulk-rasterising multiple species range maps with <code>letsR</code></h3>
-<p>The <code>letsR</code> package also allows to bulk-download multiple species and rasterise them to form a richness map. As first example, we look at the <em>Pinus</em> genus in the Americas</p>
+<div id="bulk-rasterising-multiple-species-range-maps-with-letsr"
+class="section level3" number="2.2.3">
+<h3><span class="header-section-number">2.2.3</span> Bulk-rasterising
+multiple species range maps with <code>letsR</code></h3>
+<p>The <code>letsR</code> package also allows to bulk-download multiple
+species and rasterise them to form a richness map. As first example, we
+look at the <em>Pinus</em> genus in the Americas</p>
 <pre class="r"><code># Extract the available Pinus species names
 (pinus_names &lt;- BIEN_ranges_genus(&quot;Pinus&quot;,match_names_only = T)[,1])</code></pre>
 <pre><code>##  [1] &quot;Pinus_albicaulis&quot;     &quot;Pinus_aristata&quot;       &quot;Pinus_arizonica&quot;     
@@ -693,32 +860,58 @@ plot(r_monkey_puzzle, add=T, alpha=0.6, legend=F)</code></pre>
 ## [76] &quot;Pinus_sylvestris&quot;     &quot;Pinus_tabuliformis&quot;   &quot;Pinus_taeda&quot;         
 ## [79] &quot;Pinus_tecunumanii&quot;    &quot;Pinus_teocote&quot;        &quot;Pinus_thunbergii&quot;    
 ## [82] &quot;Pinus_torreyana&quot;      &quot;Pinus_virginiana&quot;     &quot;Pinus_wallichiana&quot;</code></pre>
-<pre class="r"><code># Download the range maps for all Pinus species
-pinus &lt;- BIEN_ranges_load_species(pinus_names)
-
-# Format the column names and rasterise
+<pre class="r"><code># Download the range maps for all Pinus species (as SpatialPolygonsDataFrame using the raster standard instead of terra)
+(pinus &lt;- BIEN_ranges_load_species(pinus_names))</code></pre>
+<pre><code>## class       : SpatialPolygonsDataFrame 
+## features    : 84 
+## extent      : -179.1256, 179.8453, -55.95014, 63.61258  (xmin, xmax, ymin, ymax)
+## crs         : +proj=longlat +datum=WGS84 +no_defs 
+## variables   : 1
+## names       :           species 
+## min values  :  Pinus_albicaulis 
+## max values  : Pinus_wallichiana</code></pre>
+<pre class="r"><code># As the BIEN data do not contain &quot;binomial&quot; as column name, we have to re-format the column names again before rasterising
 colnames(pinus@data) &lt;- &quot;binomial&quot;
 r_pinus &lt;- lets.presab(pinus, resol=1, xmn = -170, xmx = -10, ymn = -57, ymx = 60)
 
 # Plot species richness
 plot(r_pinus)</code></pre>
 <p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
-<p>In the <code>lets.presab()</code> function, we can also specify which PRESENCE, ORIGIN and SEASONAL information should be used and which not (see IUCN metadata on moodle). Let’s look at Neotropical fruit bats (<strong>Artibeus</strong>) as example. Here, we set <code>presence=1</code> meaning that we only consider extant species, <code>origin=1</code> meaning only native species, and <code>seasonal=1</code> meaning only resident species.</p>
+<p>In the <code>lets.presab()</code> function, we can also specify which
+PRESENCE, ORIGIN and SEASONAL information should be used and which not
+(see IUCN metadata on moodle). Let’s look at Neotropical fruit bats
+(<strong>Artibeus</strong>) as example. Here, we set
+<code>presence=1</code> meaning that we only consider extant species,
+<code>origin=1</code> meaning only native species, and
+<code>seasonal=1</code> meaning only resident species.</p>
+<p>As the <code>letsR</code> package does not work with
+<code>SpatRaster</code> objects yet, we have to use the older
+<code>raster</code> package to prepare the range map data.</p>
+<pre><code>## class       : SpatialPolygonsDataFrame 
+## features    : 43444 
+## extent      : -180.0001, 180.0025, -56.66595, 90  (xmin, xmax, ymin, ymax)
+## crs         : +proj=longlat +datum=WGS84 +no_defs 
+## variables   : 14
+## names       :           BINOMIAL, PRESENCE, ORIGIN, SEASONAL,                      COMPILER, YEAR,                               CITATION,                         SOURCE,                                                                              DIST_COMM, ISLAND,    SUBSPECIES, SUBPOP,    SHAPE_area,         SHAPE_len 
+## min values  : Abditomys latidens,        1,      1,        1,          Biodiversitas Brazil, 2008,                   Biodiversitas Brazil, African Elephant Database 2007, A free-ranging herd of D. b. michaeli occurs in a private game reserve in South Africa,   &#39;Eau, &quot;vacuum&quot; zone,     NA,  4.313328e-12, 2.52232707544e-05 
+## max values  :  Zyzomys woodwardi,        6,      6,        5, Wildlife Conservation Society, 2010, Wildlife Conservation Society and IUCN,            Wilting et al. 2010,                                                                            Zagros Mtns,   Zuna,  zanzibaricus,     NA, 6464.56233215,     6198.71426035</code></pre>
+<pre class="r"><code># prepare raster version of the mammals shapefile
+(mammals_raster &lt;- raster::shapefile(&#39;data/MAMMTERR.shp&#39;))</code></pre>
 <pre class="r"><code># Subset the SpatialPolygonsDataFrame
-artibeus_spp &lt;- mammals[grep(&#39;Artibeus&#39;,mammals@data$BINOMIAL),]
+artibeus_spp &lt;- mammals_raster[grep(&#39;Artibeus&#39;,mammals_raster@data$BINOMIAL),]
 
 # Rasterize the ranges using the letsR package
 r_artibeus_spp &lt;- lets.presab(artibeus_spp, resol=2, 
-                              presence = 1, origin = 1, seasonal = 1)</code></pre>
-<pre><code>## Warning in proj4string(obj): CRS object has comment, which is lost in output</code></pre>
-<pre class="r"><code># Map the species richness
+                              presence = 1, origin = 1, seasonal = 1)
+
+# Map the species richness
 plot(r_artibeus_spp)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <pre class="r"><code># Map single species - here, just the first two
 par(mfrow=c(1,2))
 plot(r_artibeus_spp, name = &quot;Artibeus amplus&quot;)
 plot(r_artibeus_spp, name = &quot;Artibeus anderseni&quot;)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-16-2.png" width="672" /></p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-18-2.png" width="672" /></p>
 <pre class="r"><code># Look at structure of the object and at the presence-absence matrix
 str(r_artibeus_spp, 1)</code></pre>
 <pre><code>## List of 3
@@ -780,31 +973,49 @@ str(r_artibeus_spp, 1)</code></pre>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <ul>
-<li>Select another genus of plants or mammals, and follow the workflow to rasterise ranges and map species richness of the species within that genus.</li>
-<li>Plot the latitudinal species richness gradient for this genus. Interpret in light of previously discussed patterns.</li>
-<li>Download climate data at the correct resolution, and extract the climate information for your species richness data. Plot the species-energy relationship for the genus. Interpret in light of previously discussed patterns.</li>
+<li>Select another genus of plants or mammals, and follow the workflow
+to rasterise range maps (either using <code>terra</code> or
+<code>letsR</code>) and map species richness of the species within that
+genus.</li>
+<li>Plot the latitudinal species richness gradient for this genus.
+Interpret in light of previously discussed patterns.</li>
 </ul>
 </div>
 </div>
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">
-<h1>References</h1>
-<div id="refs" class="references">
-<div id="ref-Hurlbert2007">
-<p>Hurlbert, A. H., and W. Jetz. 2007. “Species Richness, Hotspots, and the Scale Dependence of Range Maps in Ecology and Conservation.” <em>PNAS</em> 104: 13384–9.</p>
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Hurlbert2007" class="csl-entry">
+Hurlbert, A. H., and W. Jetz. 2007. <span>“Species Richness, Hotspots,
+and the Scale Dependence of Range Maps in Ecology and
+Conservation.”</span> <em>PNAS</em> 104: 13384–89.
 </div>
-<div id="ref-Jetz2012a">
-<p>Jetz, W., J. M. McPherson, and R. P. Guralnick. 2012. “Integrating Biodiversity Distribution Knowledge: Toward a Global Map of Life.” <em>Trends in Ecology &amp; Evolution</em> 27: 151–59.</p>
+<div id="ref-Jetz2012a" class="csl-entry">
+Jetz, W., J. M. McPherson, and R. P. Guralnick. 2012. <span>“Integrating
+Biodiversity Distribution Knowledge: Toward a Global Map of
+Life.”</span> <em>Trends in Ecology &amp; Evolution</em> 27: 151–59.
 </div>
-<div id="ref-Krosby2015">
-<p>Krosby, M., C. B. Wilsey, J. L. McGuire, J. M. Duggan, T. M. Nogeire, J. A. Heinrichs, J. J. Tewksbury, and J. J. Lawler. 2015. “Climate-Induced Range Overlap Among Closely Related Species.” <em>Nature Climate Change</em> 5: 883–86.</p>
+<div id="ref-Krosby2015" class="csl-entry">
+Krosby, M., C. B. Wilsey, J. L. McGuire, J. M. Duggan, T. M. Nogeire, J.
+A. Heinrichs, J. J. Tewksbury, and J. J. Lawler. 2015.
+<span>“Climate-Induced Range Overlap Among Closely Related
+Species.”</span> <em>Nature Climate Change</em> 5: 883–86.
 </div>
-<div id="ref-W_est_2020">
-<p>Wüest, R. O., N. E. Zimmermann, D. Zurell, J. M. Alexander, S. A. Fritz, C. Hof, H. Kreft, et al. 2020. “Macroecology in the Age of Big Data Where to Go from Here?” <em>Journal of Biogeography</em> 47 (1). Wiley: 1–12. <a href="https://doi.org/10.1111/jbi.13633">https://doi.org/10.1111/jbi.13633</a>.</p>
+<div id="ref-W_est_2020" class="csl-entry">
+Wüest, R. O., N. E. Zimmermann, D. Zurell, J. M. Alexander, S. A. Fritz,
+C. Hof, H. Kreft, et al. 2020. <span>“Macroecology in the Age of Big
+Data <span></span> Where to Go from Here?”</span> <em>Journal of
+Biogeography</em> 47 (1): 1–12. <a
+href="https://doi.org/10.1111/jbi.13633">https://doi.org/10.1111/jbi.13633</a>.
 </div>
-<div id="ref-Zurell2018c">
-<p>Zurell, D., C. H. Graham, L. Gallien, W. Thuiller, and N. E. Zimmermann. 2018. “Long-Distance Migratory Birds Threatened by Multiple Independent Risks from Global Change.” <em>Nature Climate Change</em> 8 (October): 992–96. <a href="https://doi.org/10.1038/s41558-018-0312-9">https://doi.org/10.1038/s41558-018-0312-9</a>.</p>
+<div id="ref-Zurell2018c" class="csl-entry">
+Zurell, D., C. H. Graham, L. Gallien, W. Thuiller, and N. E. Zimmermann.
+2018. <span>“Long-Distance Migratory Birds Threatened by Multiple
+Independent Risks from Global Change.”</span> <em>Nature Climate
+Change</em> 8 (October): 992–96. <a
+href="https://doi.org/10.1038/s41558-018-0312-9">https://doi.org/10.1038/s41558-018-0312-9</a>.
 </div>
 </div>
 </div>
@@ -815,7 +1026,7 @@ str(r_artibeus_spp, 1)</code></pre>
 <br>
 <hr />
 <div id="footer">
-<p>Damaris Zurell 2021 <a href="http://creativecommons.org/licenses/by/4.0/" >(CC BY 4.0)</a>.  </p>
+<p>Damaris Zurell 2022 <a href="http://creativecommons.org/licenses/by/4.0/" >(CC BY 4.0)</a>.  </p>
 </div>
 
 </html>

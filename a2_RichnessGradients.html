@@ -13,7 +13,8 @@
 
 <title>Species richness gradients</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -61,6 +62,29 @@ if (window.hljs) {
 
 
 
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 
 
 
@@ -84,6 +108,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -309,7 +336,7 @@ div.tocify {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -321,11 +348,8 @@ div.tocify {
         <li>
   <a href="index.html">Home</a>
 </li>
-<li>
-  <a href="schedule.html">Schedule</a>
-</li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Pracs: macroecological analyses
      
     <span class="caret"></span>
@@ -355,7 +379,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Pracs: species distribution modelling
      
     <span class="caret"></span>
@@ -415,22 +439,48 @@ div.tocify {
 <hr />
 <div class="alert alert-info">
 <p><strong>RStudio project</strong></p>
-<p>Open the RStudio project that we created in the first session. I recommend to use this RStudio project for the entire course and within the RStudio project create separate R scripts for each session.</p>
+<p>Open the RStudio project that we created in the first session. I
+recommend to use this RStudio project for the entire course and within
+the RStudio project create separate R scripts for each session.</p>
 <ul>
-<li>Create a new empty R script by going to the tab “File”, select “New File” and then “R script”</li>
-<li>In the new R script, type <code># Session a2: Species richness gradients</code> and save the file in your folder “scripts” within your project folder, e.g. as “a2_RichnessGradients.R”</li>
+<li>Create a new empty R script by going to the tab “File”, select “New
+File” and then “R script”</li>
+<li>In the new R script, type
+<code># Session a2: Species richness gradients</code> and save the file
+in your folder “scripts” within your project folder, e.g. as
+“a2_RichnessGradients.R”</li>
 </ul>
 </div>
-<p>Today, we will explore species richness gradients in UK breeding birds. We will map species richness, explore the latitudinal species richness gradient, and the species-energy relationships.</p>
-<div id="breeding-bird-richness" class="section level1">
-<h1><span class="header-section-number">1</span> Breeding bird richness</h1>
-<div id="distribution-data" class="section level2">
-<h2><span class="header-section-number">1.1</span> Distribution data</h2>
-<p>All analyses of today will be based on a dataset of British breeding and wintering birds recently made available by <span class="citation">Gillings et al. (2019)</span>. The original data contain breeding bird records in 20-year cycles (1968-1972, 1988-1991, 2008-2011) and wintering bird records in 30-year cycles (1981/1982-1983-1984, 2007/2008-2010/2011) at a 10 km spatial resolution throughout Britain, Ireland, the Isle of Man and the Channel Islands. Some rarer species are represented at 20 or 50 km resolutions. Here, we will concentrate on bird records from Britain at 10 km resolution during the breeding seasons 2008-2011. The original data are available through the British Trust of Ornithology (www.bto.org; direct download <a href="https://www.bto.org/sites/default/files/atlas_open_data_files.zip">here</a>). To simplify matters, I have already filtered the data to contain only the relevant breeding records. These cleaned data are available <a href="data/UK_BBatlas_2008.csv">here</a>. Please download the data and save them in an appropriate folder (e.g. in <em>data</em> folder).</p>
+<p>Today, we will explore species richness gradients in UK breeding
+birds. We will map species richness, explore the latitudinal species
+richness gradient, and the species-energy relationships.</p>
+<div id="breeding-bird-richness" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Breeding bird
+richness</h1>
+<div id="distribution-data" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> Distribution
+data</h2>
+<p>All analyses of today will be based on a dataset of British breeding
+and wintering birds recently made available by <span
+class="citation">Gillings et al. (2019)</span>. The original data
+contain breeding bird records in 20-year cycles (1968-1972, 1988-1991,
+2008-2011) and wintering bird records in 30-year cycles
+(1981/1982-1983-1984, 2007/2008-2010/2011) at a 10 km spatial resolution
+throughout Britain, Ireland, the Isle of Man and the Channel Islands.
+Some rarer species are represented at 20 or 50 km resolutions. Here, we
+will concentrate on bird records from Britain at 10 km resolution during
+the breeding seasons 2008-2011. The original data are available through
+the British Trust of Ornithology (www.bto.org; direct download <a
+href="https://www.bto.org/sites/default/files/atlas_open_data_files.zip">here</a>).
+To simplify matters, I have already filtered the data to contain only
+the relevant breeding records. These cleaned data are available <a
+href="data/UK_BBatlas_2008.csv">here</a>. Please download the data and
+save them in an appropriate folder (e.g. in <em>data</em> folder).</p>
 <p>We can now read in the data into R.</p>
 <pre class="r"><code># Read in the distribution dataset:
 bird_dist &lt;- read.table(&#39;data/UK_BBatlas_2008.csv&#39;,header=T, sep=&#39;,&#39;, stringsAsFactors = F)</code></pre>
-<p>Let’s take a first look at the data and find out what information is contained in there.</p>
+<p>Let’s take a first look at the data and find out what information is
+contained in there.</p>
 <pre class="r"><code>str(bird_dist, list.len=10)</code></pre>
 <pre><code>## &#39;data.frame&#39;:    2833 obs. of  230 variables:
 ##  $ grid                         : chr  &quot;HP40&quot; &quot;HP50&quot; &quot;HP51&quot; &quot;HP60&quot; ...
@@ -444,21 +494,40 @@ bird_dist &lt;- read.table(&#39;data/UK_BBatlas_2008.csv&#39;,header=T, sep=&#39
 ##  $ Fulmarus_glacialis           : int  1 1 1 1 1 1 1 0 1 1 ...
 ##  $ Puffinus_puffinus            : int  0 0 0 0 0 0 0 0 0 0 ...
 ##   [list output truncated]</code></pre>
-<p>The data frame contains 230 columns of which the first three columns describe the grid reference and coordinates. The coordinates are provided in the British National Grid, with grid letters and grid digits. The British National Grid is based on a transverse Mercator projection, and the grid letters and grid digits can easily be converted into the so-called Easting and Northing coordinates. All other columns contain presence and absence data of 227 bird species for the breeding seasons 2008-2011. The data contain only species presences with probable or confirmed breeding. The column names are the latin species names.</p>
-<p>Let’s plot the spatial distribution of the Willow ptargmigan (<em>Lagopus lagopus</em>). As the data are provided for all grid cells in Britain without any holes, we can use the convenient <code>rasterFromXYZ()</code> function in the <code>raster</code> package for converting the data frame into raster data.</p>
-<pre class="r"><code>library(raster)
+<p>The data frame contains 230 columns of which the first three columns
+describe the grid reference and coordinates. The coordinates are
+provided in the British National Grid, with grid letters and grid
+digits. The British National Grid is based on a transverse Mercator
+projection, and the grid letters and grid digits can easily be converted
+into the so-called Easting and Northing coordinates. All other columns
+contain presence and absence data of 227 bird species for the breeding
+seasons 2008-2011. The data contain only species presences with probable
+or confirmed breeding. The column names are the latin species names.</p>
+<p>Let’s plot the spatial distribution of the Willow ptargmigan
+(<em>Lagopus lagopus</em>). As the data are provided for all grid cells
+in Britain without any holes, we can use the convenient
+<code>rast</code>()<code>function in the</code>terra` package for
+converting the data frame into raster data.</p>
+<pre class="r"><code>library(terra)
 
 # The coordinate reference system for the UK National Grid is:
 proj_UK &lt;- &#39;+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +datum=OSGB36 +units=m +no_defs&#39;
 
-r_ptarmigan &lt;- rasterFromXYZ(bird_dist[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;Lagopus_lagopus&#39;)], crs=proj_UK)
+r_ptarmigan &lt;- terra::rast(bird_dist[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;Lagopus_lagopus&#39;)], crs=proj_UK, type = &quot;xyz&quot;)
 
 plot(r_ptarmigan)</code></pre>
 <p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 </div>
-<div id="species-richness-patterns" class="section level2">
-<h2><span class="header-section-number">1.2</span> Species richness patterns</h2>
-<p>Now, we map the species richness of breeding birds in Britain. As you have seen, the data frame contains presence and absence records for all breeding bird species for each 10 km cell in Britain. We can use the function <code>rowSums()</code> to sum up the number of bird species present at any location (in each row). But be careful to only sum up the columns containing species records, not the columns containing coordinates.</p>
+<div id="species-richness-patterns" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> Species richness
+patterns</h2>
+<p>Now, we map the species richness of breeding birds in Britain. As you
+have seen, the data frame contains presence and absence records for all
+breeding bird species for each 10 km cell in Britain. We can use the
+function <code>rowSums()</code> to sum up the number of bird species
+present at any location (in each row). But be careful to only sum up the
+columns containing species records, not the columns containing
+coordinates.</p>
 <pre class="r"><code>richness &lt;- data.frame(bird_dist[,2:3], richness = rowSums(bird_dist[,-c(1:3)]))
 head(richness)</code></pre>
 <pre><code>##   EASTING NORTHING richness
@@ -468,15 +537,26 @@ head(richness)</code></pre>
 ## 4  465000  1205000       36
 ## 5  465000  1215000       47
 ## 6  395000  1135000       43</code></pre>
-<p>Again, we can use the <code>rasterFromXYZ()</code> function from above to convert this new data frame into a raster object and map this.</p>
-<pre class="r"><code>r_richness &lt;- rasterFromXYZ(richness, crs=proj_UK)
+<p>Again, we can use the <code>rast</code>()` function from above to
+convert this new data frame into a raster object and map this.</p>
+<pre class="r"><code>r_richness &lt;- terra::rast(richness, crs = proj_UK, type = &quot;xyz&quot;)
 plot(r_richness)</code></pre>
 <p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<p><strong>How is bird species richness distributed in Britain?</strong></p>
+<div class="alert alert-info">
+<p>How is bird species richness distributed in Britain?</p>
 </div>
-<div id="task-2-latitudinal-species-richness-gradient" class="section level2">
-<h2><span class="header-section-number">1.3</span> Task 2: Latitudinal species richness gradient</h2>
-<p>As was discussed in the Macroecology lecture, we can analyse different aspects of spatial patterns in species richness <span class="citation">(Gaston 2000)</span>. First, we plot the latitudinal species richness gradient. For simplicity, we use the Northing coordinates provided in the data frame rather than longitude. The smoothing line gives a first indication whether there are any strong trends.</p>
+</div>
+<div id="task-2-latitudinal-species-richness-gradient"
+class="section level2" number="1.3">
+<h2><span class="header-section-number">1.3</span> Task 2: Latitudinal
+species richness gradient</h2>
+<p>As was discussed in the Macroecology lecture, we can analyse
+different aspects of spatial patterns in species richness <span
+class="citation">(Gaston 2000)</span>. First, we plot the latitudinal
+species richness gradient. For simplicity, we use the Northing
+coordinates provided in the data frame rather than longitude. The
+smoothing line gives a first indication whether there are any strong
+trends.</p>
 <pre class="r"><code>library(ggplot2)
 ggplot(data = richness, mapping = aes(x = NORTHING, y = richness)) + 
   geom_point() + 
@@ -484,25 +564,61 @@ ggplot(data = richness, mapping = aes(x = NORTHING, y = richness)) +
   xlab(&#39;Latitude (UK NORTHING)&#39;) + 
   ylab(&#39;Species richness&#39;)</code></pre>
 <p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<p><strong>Compare your latitudinal richness gradient with <span class="citation">Gaston (2000)</span> and discuss.</strong></p>
+<div class="alert alert-info">
+<p>Compare your latitudinal richness gradient with <span
+class="citation">Gaston (2000)</span> and discuss.</p>
 </div>
-<div id="species-energy-relationships" class="section level2">
-<h2><span class="header-section-number">1.4</span> Species-energy relationships</h2>
-<p><span class="citation">Gaston (2000)</span> also presented species-energy relationship, for example the relationship between species richness and annual temperature. For this, we need to join the species richness data with climatic data. For convenience, I have already processed worldclim data (19 bioclimatic variables) for you such that the raster stack is projected in the British National Grid at 10 km spatial resolution. You can download the raster stack data <a href="data/UK_bioclim.zip">here</a>. Please save it in your <em>data</em> folder and unzip it. We can then load the raster stack data in R:</p>
-<pre class="r"><code>clim &lt;- stack(&#39;data/UK_bioclim.grd&#39;)
+</div>
+<div id="species-energy-relationships" class="section level2"
+number="1.4">
+<h2><span class="header-section-number">1.4</span> Species-energy
+relationships</h2>
+<p><span class="citation">Gaston (2000)</span> also presented
+species-energy relationship, for example the relationship between
+species richness and annual temperature. For this, we need to join the
+species richness data with climatic data. For convenience, I have
+already processed worldclim data (19 bioclimatic variables) for you such
+that the raster stack is projected in the British National Grid at 10 km
+spatial resolution. You can download the raster stack data <a
+href="data/UK_bioclim.zip">here</a>. Please save it in your
+<em>data</em> folder and unzip it. We can then load the raster data in
+R:</p>
+<pre class="r"><code>clim &lt;- terra::rast(&#39;data/UK_bioclim.grd&#39;)
 plot(clim)</code></pre>
 <p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<p>To plot the relationship between species richness and summer temperature, we have to extract the climate data for all cells in Britain and join these with the species richness data.</p>
-<p><strong>Look up the definition of the bioclimatic variables again. Which was is summer temperature?</strong></p>
+<p>To plot the relationship between species richness and summer
+temperature, we have to extract the climate data for all cells in
+Britain and join these with the species richness data.</p>
+<div class="alert alert-info">
+<p>Look up the definition of the bioclimatic variables again. Which one
+is summer temperature?</p>
+</div>
+<pre class="r"><code># Extract climate data and join with richness data frame
+richness2 &lt;- cbind(richness, terra::extract(clim, richness[,1:2]))
+
+# Plot species richness against summer temperature
+ggplot(data = richness2, mapping = aes(x = bio10/10, y = richness)) + 
+  geom_point() + 
+  geom_smooth(method=&quot;loess&quot;) + 
+  xlab(&#39;Summer temperature [°C]&#39;) + 
+  ylab(&#39;Species richness&#39;)</code></pre>
 <p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>Dont’ forget to save the species-climate data frame for later:</p>
 <pre class="r"><code>save(richness2,file=&#39;data/UK_bird_richness_clim.RData&#39;)</code></pre>
-<p><strong>Compare this species-energy relationship with <span class="citation">Gaston (2000)</span> and discuss.</strong></p>
+<div class="alert alert-info">
+<p>Compare this species-energy relationship with <span
+class="citation">Gaston (2000)</span> and discuss.</p>
 </div>
 </div>
-<div id="more-richness-patterns" class="section level1">
-<h1><span class="header-section-number">2</span> More richness patterns</h1>
-<p>As mentioned at the beginning of this practical, distribution data of UK breeding birds are available for different decades. Again, I have already processed the data and you can download them <a href="data/UK_BBatlas_1968_2008.csv">here</a>. Place the data into your <em>data</em> folder.</p>
+</div>
+<div id="more-richness-patterns" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> More richness
+patterns</h1>
+<p>As mentioned at the beginning of this practical, distribution data of
+UK breeding birds are available for different decades. Again, I have
+already processed the data and you can download them <a
+href="data/UK_BBatlas_1968_2008.csv">here</a>. Place the data into your
+<em>data</em> folder.</p>
 <pre class="r"><code># Read in the distribution dataset:
 bird_dist2 &lt;- read.table(&#39;data/UK_BBatlas_1968_2008.csv&#39;,header=T, sep=&#39;,&#39;, stringsAsFactors = F)
 
@@ -553,8 +669,11 @@ head(bird_dist2[,1:20])</code></pre>
 <pre class="r"><code># Species names are contained in the remaining columns:
 spp &lt;- names(bird_dist2)[-c(1:4)]
 spp_names &lt;- sub(&#39;_&#39;,&#39; &#39;,spp)</code></pre>
-<p>Again, we can calculate species richness by simply summing up each row. However, we need to take care to use the correct years.</p>
-<p>First, I would like to analyse how species richness has changed between different time periods. For this, we first need to compute species richness per time period, for example:</p>
+<p>Again, we can calculate species richness by simply summing up each
+row. However, we need to take care to use the correct years.</p>
+<p>First, I would like to analyse how species richness has changed
+between different time periods. For this, we first need to compute
+species richness per time period, for example:</p>
 <pre class="r"><code># Which time periods are contained in the data?
 unique(bird_dist2$period)</code></pre>
 <pre><code>## [1] &quot;1968-72&quot; &quot;1988-91&quot; &quot;2008-11&quot;</code></pre>
@@ -562,29 +681,48 @@ unique(bird_dist2$period)</code></pre>
 birds_68 &lt;- subset(bird_dist2,period==&#39;1968-72&#39;)
 birds_68$richness68 &lt;- rowSums(birds_68[,spp])
 
-plot(rasterFromXYZ(birds_68[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness68&#39;)]))</code></pre>
+# Convert to raster data and map:
+plot(terra::rast(birds_68[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness68&#39;)], type = &quot;xyz&quot;))</code></pre>
 <p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <ul>
-<li>Calculate species richness for all time periods and map them. The maps below are done using the function <code>spplot()</code>.</li>
-<li>Plot the latitudinal species richness gradients for at least one other time period.</li>
-<li>Plot species richness against annual precipitation sum. Compare with <span class="citation">Gaston (2000)</span> and discuss.</li>
+<li>Calculate species richness for all time periods and map them. The
+maps below are done by first creating a multi-layer SpatRaster object
+with <code>c()</code> and then using the function <code>spplot()</code>
+from the <code>raster</code> package. Of course, you can also plot the
+maps separately.</li>
+<li>Plot the latitudinal species richness gradients for at least one
+other time period.</li>
+<li>Plot species richness against annual precipitation sum. Compare with
+<span class="citation">Gaston (2000)</span> and discuss.</li>
 </ul>
 </div>
-<p>UK breeding bird richness mapped for all time periods using the function <code>spplot()</code></p>
+<p>UK breeding bird richness mapped for all time periods using the
+function <code>spplot()</code> from the <code>raster</code> package:</p>
 <p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<p>Latitudinal species richness gradient in UK breeding birds across different time periods. <img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
-<p>Species-energy relationship of UK breeding birds across different time periods. <img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>Latitudinal species richness gradient in UK breeding birds across
+different time periods:</p>
+<p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Species-energy relationship of UK breeding birds across different
+time periods:</p>
+<p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 </div>
 <div id="references" class="section level1 unnumbered">
-<h1>References</h1>
-<div id="refs" class="references">
-<div id="ref-Gaston2000a">
-<p>Gaston, K. J. 2000. “Global Patterns in Biodiversity.” <em>Nature</em> 405: 220–27. <a href="https://doi.org/10.1038/35012228">https://doi.org/10.1038/35012228</a>.</p>
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Gaston2000a" class="csl-entry">
+Gaston, K. J. 2000. <span>“Global Patterns in Biodiversity.”</span>
+<em>Nature</em> 405: 220–27. <a
+href="https://doi.org/10.1038/35012228">https://doi.org/10.1038/35012228</a>.
 </div>
-<div id="ref-Gillings2019">
-<p>Gillings, S., D. E. Balmer, B. J. Caffrey, I. S. Downie, D. W. Gibbons, P. C. Lack, J. B. Reid, J. T. R. Sharrock, R. L. Swann, and R. J. Fuller. 2019. “Breeding and Wintering Bird Distributions in Britain and Ireland from Citizen Science Bird Atlases.” <em>Global Ecology and Biogeography</em> 28 (7): 866–74. <a href="https://doi.org/10.1111/geb.12906">https://doi.org/10.1111/geb.12906</a>.</p>
+<div id="ref-Gillings2019" class="csl-entry">
+Gillings, S., D. E. Balmer, B. J. Caffrey, I. S. Downie, D. W. Gibbons,
+P. C. Lack, J. B. Reid, J. T. R. Sharrock, R. L. Swann, and R. J.
+Fuller. 2019. <span>“Breeding and Wintering Bird Distributions in
+Britain and Ireland from Citizen Science Bird Atlases.”</span>
+<em>Global Ecology and Biogeography</em> 28 (7): 866–74. <a
+href="https://doi.org/10.1111/geb.12906">https://doi.org/10.1111/geb.12906</a>.
 </div>
 </div>
 </div>
@@ -595,7 +733,7 @@ plot(rasterFromXYZ(birds_68[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richnes
 <br>
 <hr />
 <div id="footer">
-<p>Damaris Zurell 2021 <a href="http://creativecommons.org/licenses/by/4.0/" >(CC BY 4.0)</a>.  </p>
+<p>Damaris Zurell 2022 <a href="http://creativecommons.org/licenses/by/4.0/" >(CC BY 4.0)</a>.  </p>
 </div>
 
 </html>

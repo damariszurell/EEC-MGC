@@ -13,7 +13,8 @@
 
 <title>Setting up your course folders</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -64,6 +65,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -84,6 +86,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -309,7 +314,7 @@ div.tocify {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -321,11 +326,8 @@ div.tocify {
         <li>
   <a href="index.html">Home</a>
 </li>
-<li>
-  <a href="schedule.html">Schedule</a>
-</li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Pracs: macroecological analyses
      
     <span class="caret"></span>
@@ -355,7 +357,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Pracs: species distribution modelling
      
     <span class="caret"></span>
@@ -413,28 +415,56 @@ div.tocify {
 
 
 <hr />
-<div id="setup-a-new-project-in-rstudio" class="section level1">
-<h1><span class="header-section-number">1</span> Setup a new project in RStudio</h1>
-<p>I recommend using RStudio throughout the entire module. If you have not already done so, please visit the RStudio website (<a href="http://rstudio.org/" class="uri">http://rstudio.org/</a>) and download and install RStudio for your operating system.</p>
-<p>I also recommend setting up an RStudio project for the entire module and within the RStudio project separate R scripts for each session. To do so:</p>
+<div id="setup-a-new-project-in-rstudio" class="section level1"
+number="1">
+<h1><span class="header-section-number">1</span> Setup a new project in
+RStudio</h1>
+<p>I recommend using RStudio throughout the entire module. If you have
+not already done so, please visit the RStudio website (<a
+href="http://rstudio.org/" class="uri">http://rstudio.org/</a>) and
+download and install RStudio for your operating system.</p>
+<p>I also recommend setting up an RStudio project for the entire module
+and within the RStudio project separate R scripts for each session. To
+do so:</p>
 <ul>
 <li>Open RStudio</li>
 <li>Go to the tab “File” and select “New Project”</li>
-<li>Select either “New Directory” if you haven’t set up a module folder yet, or select “Existing Directory” to point towards an existing folder. This directory will be the working folder for the course. Navigate to the path of the project folder on your machine (e.g. ’~Documents/Courses/MGC)</li>
-<li>Name your project<br />
+<li>Select either “New Directory” if you haven’t set up a module folder
+yet, or select “Existing Directory” to point towards an existing folder.
+This directory will be the working folder for the course. Navigate to
+the path of the project folder on your machine
+(e.g. ’~Documents/Courses/EEC-MGC)</li>
+<li>Name your project, e.g “EEC-MGC.Rproj”<br />
 </li>
-<li>Use your file explorer on your machine, find your project folder, and create four sub-folders: data, scripts, results, and figures</li>
-<li>All R codes in the following practicals should be saved in separate R scripts and saved in your “scripts” folder</li>
+<li>Use your file explorer on your machine, find your project folder,
+and create four sub-folders: data, scripts, results, and figures</li>
+<li>All R codes in the following practicals should be saved in separate
+R scripts and saved in your “scripts” folder</li>
 </ul>
 </div>
-<div id="installing-geospatial-packages-on-mac" class="section level1">
-<h1><span class="header-section-number">2</span> Installing geospatial packages on Mac</h1>
-<p>In this module, we will deal a lot with geospatial data. Nowadays, R offers a lot of GIS functionalities in different packages.</p>
-<p>If you work on a Windows machine, then installing and using these packages should be straight forward. If you are working on a Mac, you will need to install the GDAL software first. Here are some instructions for doing so:</p>
+<div id="installing-geospatial-packages-on-mac" class="section level1"
+number="2">
+<h1><span class="header-section-number">2</span> Installing geospatial
+packages on Mac</h1>
+<p>In this module, we will deal a lot with geospatial data. Nowadays, R
+offers a lot of GIS functionalities in different packages.</p>
+<p>If you work on a Windows machine, then installing and using these
+packages should be straight forward. If you are working on a Mac, you
+will need to install the GDAL software first. Here are some instructions
+for doing so:</p>
 <ul>
-<li>Download the GDAL OS X complete install from kyngchaos: <a href="http://www.kyngchaos.com/software/frameworks/" class="uri">http://www.kyngchaos.com/software/frameworks/</a> and install</li>
-<li>Then, type <code>install.packages(&quot;rgdal&quot;, type=&quot;source&quot;)</code>in R</li>
+<li>Install homebrew (<a href="https://brew.sh/"
+class="uri">https://brew.sh/</a>).</li>
+<li>Then follow the instructions to install gdal and spatial R packages:
+<a
+href="https://www.alexchubaty.com/post/2020-01-08-using-latest-gdal-macos-redux/"
+class="uri">https://www.alexchubaty.com/post/2020-01-08-using-latest-gdal-macos-redux/</a></li>
 </ul>
+<!-- - Download the GDAL OS X complete install from kyngchaos: http://www.kyngchaos.com/software/frameworks/ and install -->
+<!-- - Then, type `install.packages("rgdal", type="source")`in R  -->
+<!-- ```{r echo=F} -->
+<!-- # https://www.r-bloggers.com/2010/11/installing-rgdal-on-mac-os-x-2/ -->
+<!-- ``` -->
 </div>
 
 <!DOCTYPE html>
@@ -443,7 +473,7 @@ div.tocify {
 <br>
 <hr />
 <div id="footer">
-<p>Damaris Zurell 2021 <a href="http://creativecommons.org/licenses/by/4.0/" >(CC BY 4.0)</a>.  </p>
+<p>Damaris Zurell 2022 <a href="http://creativecommons.org/licenses/by/4.0/" >(CC BY 4.0)</a>.  </p>
 </div>
 
 </html>

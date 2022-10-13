@@ -13,7 +13,8 @@
 
 <title>Analysing biodiversity changes</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -63,6 +64,29 @@ if (window.hljs) {
 
 
 
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 
 
 
@@ -86,6 +110,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -311,7 +338,7 @@ div.tocify {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -323,11 +350,8 @@ div.tocify {
         <li>
   <a href="index.html">Home</a>
 </li>
-<li>
-  <a href="schedule.html">Schedule</a>
-</li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Pracs: macroecological analyses
      
     <span class="caret"></span>
@@ -357,7 +381,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Pracs: species distribution modelling
      
     <span class="caret"></span>
@@ -417,13 +441,34 @@ div.tocify {
 <hr />
 <div class="alert alert-info">
 <p><strong>RStudio project</strong></p>
-<p>Open the RStudio project that we created in the first session. I recommend to use this RStudio project for the entire course and within the RStudio project create separate R scripts for each session.</p>
+<p>Open the RStudio project that we created in the first session. I
+recommend to use this RStudio project for the entire course and within
+the RStudio project create separate R scripts for each session.</p>
 <ul>
-<li>Create a new empty R script by going to the tab “File”, select “New File” and then “R script”</li>
-<li>In the new R script, type <code># Session a6: Analysing biodiversity changes</code> and save the file in your folder “scripts” within your project folder, e.g. as “a6_BiodivChanges.R”</li>
+<li>Create a new empty R script by going to the tab “File”, select “New
+File” and then “R script”</li>
+<li>In the new R script, type
+<code># Session a6: Analysing biodiversity changes</code> and save the
+file in your folder “scripts” within your project folder, e.g. as
+“a6_BiodivChanges.R”</li>
 </ul>
 </div>
-<p>In this session, we aim to analyse species range shifts and species richness changes in UK breeding birds over 40 years. As in previous sessions, analyses will be based on a dataset of British breeding and wintering birds recently made available by <span class="citation">Gillings et al. (2019)</span>. Here, we will concentrate on bird records from Britain at 10 km resolution and during the breeding season. Records are available from three different time periods in 20-year cycles (1968-1972, 1988-1991, 2008-2011). The original data are available through the British Trust of Ornithology (www.bto.org; direct download <a href="https://www.bto.org/sites/default/files/atlas_open_data_files.zip">here</a>). To simplify matters, I have already filtered the data to contain only the relevant breeding records. These cleaned data are available <a href="https://damariszurell.github.io/EEC-Macro/data/UK_BBatlas_1968_2008.csv">here</a>. Please download the data and save them in an appropriate folder (e.g. in <em>data</em> folder).</p>
+<p>In this session, we aim to analyse species range shifts and species
+richness changes in UK breeding birds over 40 years. As in previous
+sessions, analyses will be based on a dataset of British breeding and
+wintering birds recently made available by <span
+class="citation">Gillings et al. (2019)</span>. Here, we will
+concentrate on bird records from Britain at 10 km resolution and during
+the breeding season. Records are available from three different time
+periods in 20-year cycles (1968-1972, 1988-1991, 2008-2011). The
+original data are available through the British Trust of Ornithology
+(www.bto.org; direct download <a
+href="https://www.bto.org/sites/default/files/atlas_open_data_files.zip">here</a>).
+To simplify matters, I have already filtered the data to contain only
+the relevant breeding records. These cleaned data are available <a
+href="https://damariszurell.github.io/EEC-Macro/data/UK_BBatlas_1968_2008.csv">here</a>.
+Please download the data and save them in an appropriate folder (e.g. in
+<em>data</em> folder).</p>
 <pre class="r"><code># Read in the distribution dataset:
 bird_dist &lt;- read.table(&#39;data/UK_BBatlas_1968_2008.csv&#39;,header=T, sep=&#39;,&#39;, stringsAsFactors = F)
 
@@ -474,58 +519,76 @@ head(bird_dist[,1:20])</code></pre>
 <pre class="r"><code># Species names are contained in the remaining columns:
 spp &lt;- names(bird_dist)[-c(1:4)]
 spp_names &lt;- sub(&#39;_&#39;,&#39; &#39;,spp)</code></pre>
-<div id="species-richness-changes" class="section level1">
-<h1><span class="header-section-number">1</span> Species richness changes</h1>
-<p>First, we analyse how species richness has changed between different time periods. For this, we first need to compute species richness per time period.</p>
-<pre class="r"><code>library(raster)</code></pre>
-<pre><code>## Loading required package: sp</code></pre>
+<div id="species-richness-changes" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Species richness
+changes</h1>
+<p>First, we analyse how species richness has changed between different
+time periods. For this, we first need to compute species richness per
+time period.</p>
+<pre class="r"><code>library(terra)</code></pre>
+<pre><code>## terra 1.5.21</code></pre>
 <pre class="r"><code># Extract species occurrences per time period and compute species richness:
 birds_68 &lt;- subset(bird_dist,period==&#39;1968-72&#39;)
 birds_68$richness68 &lt;- rowSums(birds_68[,spp])
 
-plot(rasterFromXYZ(birds_68[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness68&#39;)]))</code></pre>
+plot(terra::rast(birds_68[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness68&#39;)], type=&#39;xyz&#39;))</code></pre>
 <p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<p>We can make seperate species richness data frames as above, or continue working with the original data frame and simply add a column for species richness. In the latter case, we will have to subset the data for mapping.</p>
+<p>We can make seperate species richness data frames as above, or
+continue working with the original data frame and simply add a column
+for species richness. In the latter case, we will have to subset the
+data for mapping.</p>
+<pre class="r"><code>library(raster)</code></pre>
+<pre><code>## Lade nötiges Paket: sp</code></pre>
 <pre class="r"><code># Calculate species richness
 bird_dist$richness &lt;- rowSums(bird_dist[,spp])
 
 # Map species richness for different time periods
-spplot(stack(
-  rasterFromXYZ(subset(bird_dist,period==&#39;1968-72&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)]),
-  rasterFromXYZ(subset(bird_dist,period==&#39;1988-91&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)]),
-  rasterFromXYZ(subset(bird_dist,period==&#39;2008-11&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)])),
+spplot(c(
+  terra::rast(subset(bird_dist,period==&#39;1968-72&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)], type=&#39;xyz&#39;),
+  terra::rast(subset(bird_dist,period==&#39;1988-91&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)], type=&#39;xyz&#39;),
+  terra::rast(subset(bird_dist,period==&#39;2008-11&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)], type=&#39;xyz&#39;)),
   names.attr = c(&#39;1968-72&#39;,&#39;1988-91&#39;,&#39;2008-11&#39;), main=&#39;Species richness&#39;
   )</code></pre>
 <p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 </div>
-<div id="mapping-species-richness-changes" class="section level1">
-<h1><span class="header-section-number">2</span> Mapping species richness changes</h1>
-<p>Next, we plot the species richness differences. For this, we define an own colour palette.</p>
+<div id="mapping-species-richness-changes" class="section level1"
+number="2">
+<h1><span class="header-section-number">2</span> Mapping species
+richness changes</h1>
+<p>Next, we plot the species richness differences. For this, we define
+an own colour palette.</p>
 <pre class="r"><code># Define axis for colour breaks
-brks_diff &lt;- seq(-50,50,by=5)
+brks.diff &lt;- seq(-50,50,by=5)
 
 # Define colour palette
 cols.diff = colorRampPalette(
   rev(c(&#39;#650A13&#39;,&#39;#b2182b&#39;,&#39;#d6604d&#39;,&#39;#f4a582&#39;,&#39;grey90&#39;,&#39;#92c5de&#39;,&#39;#4393c3&#39;,&#39;#2166ac&#39;,&#39;#0B2F52&#39;)))(21) # red-blue diverging</code></pre>
-<p>Now, we produce a raster that shows the difference in species richness between two periods and call this <code>change_richness</code>. Then we use our new colour palette for mapping the differences:</p>
+<p>Now, we produce a raster that shows the difference in species
+richness between two periods and call this <code>change_richness</code>.
+Then we use our new colour palette for mapping the differences:</p>
 <pre class="r"><code># Calculate the difference in species richness between 1968 and 2011
-change_richness &lt;- rasterFromXYZ(subset(bird_dist,period==&#39;2008-11&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)]) -
-  rasterFromXYZ(subset(bird_dist,period==&#39;1968-72&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)])
+change_richness &lt;- terra::rast(subset(bird_dist,period==&#39;2008-11&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)], type=&#39;xyz&#39;) -
+  terra::rast(subset(bird_dist,period==&#39;1968-72&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)], type=&#39;xyz&#39;)
 
 # Plot the species richness change between 1968 and 2011
-plot(change_richness, axes=F,  col=cols.diff, lab.breaks=brks.diff, zlim=c(-50,50), 
+plot(change_richness, axes=F,  col=cols.diff, breaks=brks.diff, 
      main=&#39;Species richness change \n1968 - 2011&#39;)</code></pre>
 <p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <div class="alert alert-info">
 <p><strong>Exercise: </strong></p>
 <ul>
-<li>Map the changes in species richness between the different time periods. Interpret.</li>
+<li>Map the changes in species richness between the different time
+periods. Interpret.</li>
 </ul>
 </div>
-<div id="mapping-taxon-specific-species-richness-changes" class="section level2">
-<h2><span class="header-section-number">2.1</span> Mapping taxon-specific species richness changes</h2>
-<p>Sometimes, we are interested how specific species groups, for example families or orders, are responding to global change. The classification into family and order was provided in the red list status table from the previous session:</p>
-<pre class="r"><code>redlist_status &lt;- read.table(&#39;/Users/zurell/data/Lehre/UP_Lehre/EEC/Macroecology/Pracs_Macro/05_IUCN_data/UK_birds_redlist_status.csv&#39;, header=T, sep=&#39;,&#39;)</code></pre>
+<div id="mapping-taxon-specific-species-richness-changes"
+class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Mapping
+taxon-specific species richness changes</h2>
+<p>Sometimes, we are interested how specific species groups, for example
+families or orders, are responding to global change. The classification
+into family and order was provided in the red list status table from the
+previous session:</p>
 <pre class="r"><code>redlist_status &lt;- read.table(&#39;data/UK_birds_redlist_status.csv&#39;, header=T, sep=&#39;,&#39;)</code></pre>
 <pre class="r"><code># Restrict red list table to those species that are found in UK:
 redlist_status &lt;- subset(redlist_status, scientific_name %in% spp_names)
@@ -583,7 +646,9 @@ subset(redlist_status,order==&#39;ACCIPITRIFORMES&#39;)$scientific_name</code></
 <pre><code>## [1] &quot;Milvus milvus&quot;        &quot;Circus aeruginosus&quot;   &quot;Circus cyaneus&quot;      
 ## [4] &quot;Accipiter gentilis&quot;   &quot;Accipiter nisus&quot;      &quot;Buteo buteo&quot;         
 ## [7] &quot;Aquila chrysaetos&quot;    &quot;Pandion haliaetus&quot;    &quot;Parabuteo unicinctus&quot;</code></pre>
-<p>We can use the table to query the species belonging to a specific order or family, then extract these species from the distribution data, and compute and map species richness.</p>
+<p>We can use the table to query the species belonging to a specific
+order or family, then extract these species from the distribution data,
+and compute and map species richness.</p>
 <pre class="r"><code># Extract species belonging to the order ACCIPITRIFORMES:
 accipiter_spp &lt;- subset(redlist_status,order==&#39;ACCIPITRIFORMES&#39;)$scientific_name
 accipiter_spp &lt;- sub(&#39; &#39;,&#39;_&#39;, accipiter_spp)
@@ -592,22 +657,33 @@ accipiter_spp &lt;- sub(&#39; &#39;,&#39;_&#39;, accipiter_spp)
 birds_68$sr_accipiter &lt;- rowSums(birds_68[,accipiter_spp])
 
 # Map ACCIPITRIFORMES species richness
-plot(rasterFromXYZ(birds_68[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;sr_accipiter&#39;)]), main=&quot;Richness ACCIPITRIFORMES&quot;)</code></pre>
+plot(terra::rast(birds_68[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;sr_accipiter&#39;)], type=&#39;xyz&#39;), main=&quot;Richness ACCIPITRIFORMES&quot;)</code></pre>
 <p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <div class="alert alert-info">
 <p><strong>Exercise: </strong></p>
 <ul>
-<li>Pick a family or order (e.g. ACCIPITRIFORMES), map species richness in different time periods as well as the changes in species richness between these time periods. Interpret.</li>
+<li>Pick a family or order (e.g. ACCIPITRIFORMES), map species richness
+in different time periods as well as the changes in species richness
+between these time periods. Interpret.</li>
 </ul>
 </div>
 </div>
 </div>
-<div id="change-in-species-ranges" class="section level1">
-<h1><span class="header-section-number">3</span> Change in species ranges</h1>
-<p>For many questions, it is also interesting to analyse global change impacts at the species level, to answer for example how many species are shifting northwards, or how many species have contracting or expanding ranges.</p>
-<div id="quantifying-species-range-changes" class="section level2">
-<h2><span class="header-section-number">3.1</span> Quantifying species range changes</h2>
-<p>In the case of the gridded distribution data with equal-area grid cells, we can simply calculate range size difference by summing the number of cells. As example, we look at the sedge warbler (<em>Acrocephalus schoenobaenus</em>):</p>
+<div id="change-in-species-ranges" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Change in species
+ranges</h1>
+<p>For many questions, it is also interesting to analyse global change
+impacts at the species level, to answer for example how many species are
+shifting northwards, or how many species have contracting or expanding
+ranges.</p>
+<div id="quantifying-species-range-changes" class="section level2"
+number="3.1">
+<h2><span class="header-section-number">3.1</span> Quantifying species
+range changes</h2>
+<p>In the case of the gridded distribution data with equal-area grid
+cells, we can simply calculate range size difference by summing the
+number of cells. As example, we look at the sedge warbler
+(<em>Acrocephalus schoenobaenus</em>):</p>
 <pre class="r"><code># range size in different time periods in km°2
 (sedge_area68 &lt;- sum(subset(bird_dist,period==&#39;1968-72&#39;)[,&#39;Acrocephalus_schoenobaenus&#39;])*100)  # each grid cell in 10*10 km of size</code></pre>
 <pre><code>## [1] 147600</code></pre>
@@ -615,7 +691,8 @@ plot(rasterFromXYZ(birds_68[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;sr_acci
 <pre><code>## [1] 155400</code></pre>
 <pre class="r"><code>(sedge_area08 &lt;- sum(subset(bird_dist,period==&#39;2008-11&#39;)[,&#39;Acrocephalus_schoenobaenus&#39;])*100)</code></pre>
 <pre><code>## [1] 121300</code></pre>
-<p>We can also compare the range size changes for all ACROCEPHALIDAE:</p>
+<p>We can also compare the range size changes for all
+ACROCEPHALIDAE:</p>
 <pre class="r"><code>acrocepha_spp &lt;- subset(redlist_status,family==&#39;ACROCEPHALIDAE&#39;)$scientific_name
 acrocepha_spp &lt;- sub(&#39; &#39;,&#39;_&#39;, acrocepha_spp)
 
@@ -634,7 +711,9 @@ for (t in c(&#39;1968-72&#39;, &#39;1988-91&#39;, &#39;2008-11&#39;)) {
 library(ggplot2)
 ggplot(data = acrocepha_rangesize, mapping = aes(x = rep(c(1968,1988,2008),4), y = log(rangesize), color=species)) + geom_line() + geom_point() + xlab(&#39;Year&#39;) + ylab(&#39;log(Range size [km^2])&#39;)</code></pre>
 <p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<p>We can also look at positions of range centres or boundaries. For simplicity, let’s analyses only the latitudinal (south-north) shifts.</p>
+<p>We can also look at positions of range centres or boundaries. For
+simplicity, let’s analyses only the latitudinal (south-north)
+shifts.</p>
 <pre class="r"><code># Make data frame for storing the range positions
 acrocepha_rangelimits &lt;- data.frame(expand.grid(period=c(&#39;1968-72&#39;, &#39;1988-91&#39;, &#39;2008-11&#39;), species=acrocepha_spp), rangecentre=NA, leading_edge=NA)
 
@@ -659,22 +738,33 @@ ggplot(data = acrocepha_rangelimits, mapping = aes(x = rep(c(1968,1988,2008),4),
 <div class="alert alert-info">
 <p><strong>Exercise: </strong></p>
 <ul>
-<li>Pick a bird family or order of your choice and quantify and plot the change in range sizes and range positions over time. Interpret.</li>
+<li>Pick a bird family or order of your choice and quantify and plot the
+change in range sizes and range positions over time. Interpret.</li>
 </ul>
 </div>
 </div>
-<div id="mapping-species-range-changes" class="section level2">
-<h2><span class="header-section-number">3.2</span> Mapping species range changes</h2>
-<p>At the species level, we can analyse how species ranges shift over time and whether ranges are contracting or expanding. As an example, let’s continue analysing range changes in the sedge warbler (<em>Acrocephalus schoenobaenus</em>):</p>
+<div id="mapping-species-range-changes" class="section level2"
+number="3.2">
+<h2><span class="header-section-number">3.2</span> Mapping species range
+changes</h2>
+<p>At the species level, we can analyse how species ranges shift over
+time and whether ranges are contracting or expanding. As an example,
+let’s continue analysing range changes in the sedge warbler
+(<em>Acrocephalus schoenobaenus</em>):</p>
 <pre class="r"><code># ranges sedge warbler
-sedge_68 &lt;- rasterFromXYZ(subset(bird_dist,period==&#39;1968-72&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;Acrocephalus_schoenobaenus&#39;)])
-sedge_88 &lt;- rasterFromXYZ(subset(bird_dist,period==&#39;1988-91&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;Acrocephalus_schoenobaenus&#39;)])
-sedge_08 &lt;- rasterFromXYZ(subset(bird_dist,period==&#39;2008-11&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;Acrocephalus_schoenobaenus&#39;)])
+sedge_68 &lt;- terra::rast(subset(bird_dist,period==&#39;1968-72&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;Acrocephalus_schoenobaenus&#39;)], type=&#39;xyz&#39;)
+sedge_88 &lt;- terra::rast(subset(bird_dist,period==&#39;1988-91&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;Acrocephalus_schoenobaenus&#39;)], type=&#39;xyz&#39;)
+sedge_08 &lt;- terra::rast(subset(bird_dist,period==&#39;2008-11&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;Acrocephalus_schoenobaenus&#39;)], type=&#39;xyz&#39;)
 
 # Plot the range in different time periods
-spplot(stack(sedge_68, sedge_88, sedge_08))</code></pre>
+spplot(c(sedge_68, sedge_88, sedge_08))</code></pre>
 <p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
-<p>Now, we want to visualise where the range remained stable, and where cells were colonised or decolonised. The distribution data are binary containing <code>0</code> and <code>1</code>. For easy mapping, we apply a little trick and recode all <code>1</code> in the more recent data set as <code>2</code>. That way, we can sum up the maps and get distinct codes for absence, extinction, colonisation, and stable occurrences:</p>
+<p>Now, we want to visualise where the range remained stable, and where
+cells were colonised or decolonised. The distribution data are binary
+containing <code>0</code> and <code>1</code>. For easy mapping, we apply
+a little trick and recode all <code>1</code> in the more recent data set
+as <code>2</code>. That way, we can sum up the maps and get distinct
+codes for absence, extinction, colonisation, and stable occurrences:</p>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <tbody>
 <tr>
@@ -734,7 +824,7 @@ dummy &lt;- sedge_08
 values(dummy)[values(dummy)&gt;0 &amp; !is.na(values(dummy))] &lt;- 2
 
 # Sum up the layers. Values=1 indicate presence in 1968, values=2 presence in 2008, values=3 presence in both periods
-diff &lt;- sedge_68+dummy
+diff &lt;- raster(sedge_68+dummy)
 diff_f &lt;- as.factor(diff)
 rat &lt;- levels(diff_f)[[1]]
 rat[[&quot;diff&quot;]] &lt;- c(&quot;Absent&quot;, &quot;Extinction&quot;, &quot;Colonisation&quot;, &quot;Stable&quot;)
@@ -754,10 +844,15 @@ levelplot(diff_f, margin=F, scales=list(draw=FALSE),col.regions=custom.pal,main=
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">
-<h1>References</h1>
-<div id="refs" class="references">
-<div id="ref-Gillings2019">
-<p>Gillings, S., D. E. Balmer, B. J. Caffrey, I. S. Downie, D. W. Gibbons, P. C. Lack, J. B. Reid, J. T. R. Sharrock, R. L. Swann, and R. J. Fuller. 2019. “Breeding and Wintering Bird Distributions in Britain and Ireland from Citizen Science Bird Atlases.” <em>Global Ecology and Biogeography</em> 28 (7): 866–74. <a href="https://doi.org/10.1111/geb.12906">https://doi.org/10.1111/geb.12906</a>.</p>
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Gillings2019" class="csl-entry">
+Gillings, S., D. E. Balmer, B. J. Caffrey, I. S. Downie, D. W. Gibbons,
+P. C. Lack, J. B. Reid, J. T. R. Sharrock, R. L. Swann, and R. J.
+Fuller. 2019. <span>“Breeding and Wintering Bird Distributions in
+Britain and Ireland from Citizen Science Bird Atlases.”</span>
+<em>Global Ecology and Biogeography</em> 28 (7): 866–74. <a
+href="https://doi.org/10.1111/geb.12906">https://doi.org/10.1111/geb.12906</a>.
 </div>
 </div>
 </div>
@@ -768,7 +863,7 @@ levelplot(diff_f, margin=F, scales=list(draw=FALSE),col.regions=custom.pal,main=
 <br>
 <hr />
 <div id="footer">
-<p>Damaris Zurell 2021 <a href="http://creativecommons.org/licenses/by/4.0/" >(CC BY 4.0)</a>.  </p>
+<p>Damaris Zurell 2022 <a href="http://creativecommons.org/licenses/by/4.0/" >(CC BY 4.0)</a>.  </p>
 </div>
 
 </html>
