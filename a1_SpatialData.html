@@ -809,7 +809,7 @@ class="citation">(Hijmans et al. 2005)</span>.</p>
 ## max values  :    30.98764,    21.14754,   100.00000,  2363.84595,    48.08275,    26.30000, ...</code></pre>
 <pre class="r"><code>library(geodata)
 
-# Download global bioclimatic data from worldclim (you may have to set argument &#39;download=T&#39; for first download, if &#39;download=F&#39; it will attempt to read from file:
+# Download global bioclimatic data from worldclim (you may have to set argument &#39;download=T&#39; for first download, if &#39;download=F&#39; it will attempt to read from file):
 (clim &lt;- geodata::worldclim_global(var = &#39;bio&#39;, res = 10, download = F, path = &#39;data&#39;))</code></pre>
 <pre class="r"><code>plot(clim)</code></pre>
 <p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
@@ -889,18 +889,18 @@ terra::extract(clim, lonlat_Potsdam)</code></pre>
 <!-- terra::extract(temp_eur, lonlat) -->
 <!-- ``` -->
 <p>For further illustration, we want to extract raster data for several
-locations, specifically for different European capitols.</p>
-<pre class="r"><code>capitols &lt;- data.frame(lon=c(2.333333, -3.683333, -0.083333, 12.583333, 10.75, 21, 23.316667, 24.1, 0), 
-        lat=c(48.86666667, 40.4, 51.5, 55.66666667, 59.91666667, 52.25, 42.68333333, 56.95, 0), 
-        capitol=c(&#39;Paris&#39;, &#39;Madrid&#39;, &#39;London&#39;, &#39;Copenhagen&#39;, &#39;Oslo&#39;, &#39;Warsaw&#39;, &#39;Sofia&#39;, &#39;Riga&#39;,&#39;Oops&#39;))
+locations, specifically for different European capitals.</p>
+<pre class="r"><code>capitals &lt;- data.frame(lon=c(2.333333, -3.683333, -0.083333, 12.583333, 10.75, 21, 23.316667, 24.1, 0), 
+        lat=c(48.86666667, 40.4, 51.5, 55.66666667, 59.91666667, 52.25, 42.68333333, 56.95, 0),
+        capital=c(&#39;Paris&#39;, &#39;Madrid&#39;, &#39;London&#39;, &#39;Copenhagen&#39;, &#39;Oslo&#39;, &#39;Warsaw&#39;, &#39;Sofia&#39;, &#39;Riga&#39;,&#39;Oops&#39;))
 
 
 # Map temperature and locations
 plot(temp_eur)
-points(capitols[,1:2], cex=2, pch=19)</code></pre>
+points(capitals[,1:2], cex=2, pch=19)</code></pre>
 <p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
 <pre class="r"><code># Extract temperature values at these locations
-terra::extract(temp_eur, capitols[,1:2])</code></pre>
+terra::extract(temp_eur, capitals[,1:2])</code></pre>
 <pre><code>##   ID wc2.1_10m_bio_1
 ## 1  1       11.604875
 ## 2  2       14.344760
@@ -912,8 +912,8 @@ terra::extract(temp_eur, capitols[,1:2])</code></pre>
 ## 8  8        6.548781
 ## 9  9             NaN</code></pre>
 <pre class="r"><code># Combine data frames:
-(capitols_clim &lt;- cbind(capitols, terra::extract(temp_eur, capitols[,1:2])))</code></pre>
-<pre><code>##         lon      lat    capitol ID wc2.1_10m_bio_1
+(capitals_clim &lt;- cbind(capitals, terra::extract(temp_eur, capitals[,1:2])))</code></pre>
+<pre><code>##         lon      lat    capital ID wc2.1_10m_bio_1
 ## 1  2.333333 48.86667      Paris  1       11.604875
 ## 2 -3.683333 40.40000     Madrid  2       14.344760
 ## 3 -0.083333 51.50000     London  3       10.485146
@@ -928,8 +928,8 @@ e.g. no temperature values are available in the ocean, then these
 locations will receive an <code>NA</code> value. Hence, you should
 always check your resulting data for <code>NA</code>s.</p>
 <pre class="r"><code># Remove NAs in resulting data frame
-na.exclude(capitols_clim)</code></pre>
-<pre><code>##         lon      lat    capitol ID wc2.1_10m_bio_1
+na.exclude(capitals_clim)</code></pre>
+<pre><code>##         lon      lat    capital ID wc2.1_10m_bio_1
 ## 1  2.333333 48.86667      Paris  1       11.604875
 ## 2 -3.683333 40.40000     Madrid  2       14.344760
 ## 3 -0.083333 51.50000     London  3       10.485146
@@ -945,10 +945,10 @@ na.exclude(capitols_clim)</code></pre>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <ul>
-<li>Take the capitol locations and extract also the temperature values
+<li>Take the capital locations and extract also the temperature values
 at the aggregated scales (<code>temp_eur_onedeg</code>,
 <code>temp_eur_twodeg</code>). Compare the temperature values.</li>
-<li>Take the capitol locations and extract all 19 bioclimatic variables
+<li>Take the capital locations and extract all 19 bioclimatic variables
 for these (from the <code>SpatRaster</code>object
 <code>clim</code>)</li>
 <li>Find the coordinates of 10 cities in Australia (or another continent

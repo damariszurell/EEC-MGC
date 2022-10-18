@@ -863,11 +863,8 @@ response plots</em></strong>. For simplicity, a function
 <code>mecofun</code> along with some other useful functions for the
 entire MGC module. We first have to install the package from the Univ.
 Potsdam gitlab:</p>
-<pre class="r"><code>library(devtools)</code></pre>
-<pre><code>## Lade nötiges Paket: usethis</code></pre>
-<pre class="r"><code>devtools::install_git(&quot;https://gitup.uni-potsdam.de/macroecology/mecofun.git&quot;)</code></pre>
-<pre><code>## Skipping install of &#39;mecofun&#39; from a git2r remote, the SHA1 (7b1f375a) has not changed since last install.
-##   Use `force = TRUE` to force installation</code></pre>
+<pre class="r"><code>library(devtools)
+devtools::install_git(&quot;https://gitup.uni-potsdam.de/macroecology/mecofun.git&quot;)</code></pre>
 <p>Now, you can load the package and try out the function. Also, check
 the help page <code>?partial_response</code>.</p>
 <pre class="r"><code>library(mecofun)
@@ -912,7 +909,7 @@ rcorr.cens(m_step$fitted.values, UK_birdrichness_clim$richness)[1]</code></pre>
 <pre class="r"><code># On cross-validated data
 rcorr.cens(preds_cv, UK_birdrichness_clim$richness)[1]</code></pre>
 <pre><code>##   C Index 
-## 0.6906467</code></pre>
+## 0.6903749</code></pre>
 <p>The C-index looks very similar between predictions on training data
 and on cross-validation folds and reaches c. 0.7. This indicates that if
 we take two random observations from our data, then in 70% of the cases

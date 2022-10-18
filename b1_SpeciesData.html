@@ -13,7 +13,8 @@
 
 <title>Species data</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -61,6 +62,29 @@ if (window.hljs) {
 
 
 
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 
 
 
@@ -84,6 +108,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -309,7 +336,7 @@ div.tocify {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -321,11 +348,8 @@ div.tocify {
         <li>
   <a href="index.html">Home</a>
 </li>
-<li>
-  <a href="schedule.html">Schedule</a>
-</li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Pracs: macroecological analyses
      
     <span class="caret"></span>
@@ -355,7 +379,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Pracs: species distribution modelling
      
     <span class="caret"></span>
@@ -415,34 +439,65 @@ div.tocify {
 <hr />
 <div class="alert alert-info">
 <p><strong>RStudio project</strong></p>
-<p>Open the RStudio project that we created in the first session. I recommend to use this RStudio project for the entire module and within the RStudio project create separate R scripts for each session.</p>
+<p>Open the RStudio project that we created in the first session. I
+recommend to use this RStudio project for the entire module and within
+the RStudio project create separate R scripts for each session.</p>
 <ul>
-<li>Create a new empty R script by going to the tab “File”, select “New File” and then “R script”</li>
-<li>In the new R script, type <code># Session b1: Species data</code> and save the file in your folder “scripts” within your project folder, e.g. as “b1_SpeciesData.R”</li>
+<li>Create a new empty R script by going to the tab “File”, select “New
+File” and then “R script”</li>
+<li>In the new R script, type <code># Session b1: Species data</code>
+and save the file in your folder “scripts” within your project folder,
+e.g. as “b1_SpeciesData.R”</li>
 </ul>
 </div>
-<p>Many different types of biodiversity data exist, e.g. from standardised monitoring schemes, citizen science platforms, or expert knowledge. Each comes with own challenges. Here, we will concentrate on GBIF as publicly available source for terrestrial species occurrence data.</p>
-<p>GBIF stands for <em>Global Biodiversity Information Facility</em>. GBIF defines itself as “an international network and research infrastructure funded by the world’s governments and aimed at providing anyone, anywhere, open access to data about all types of life on Earth”. GBIF contains worldwide point records from observations as well as museum records or other contributions. The data are thus not standardised and often it is unclear which spatial resolution the data represent. To understand this, let’s look at some example under <a href="https://www.gbif.org/" class="uri">https://www.gbif.org/</a>.</p>
-<div id="occurrence-data-from-gbif" class="section level1">
-<h1><span class="header-section-number">1</span> Occurrence data from GBIF</h1>
-<p>We will use the package <code>rgbif</code> to search and retrieve data from GBIF. A good tutorial to this package is offered <a href="https://ropensci.org/tutorials/rgbif_tutorial/">here</a>. Remember that we can install new packages with the function <code>install.packages()</code>. Alternatively, the <code>dismo</code> package offers the function <code>gbif()</code> to download gbif records. Robert Hijmans, who wrote the raster and the dismo package, also offers great tutorials on his website: <a href="http://rspatial.org" class="uri">http://rspatial.org</a>.</p>
+<p>Many different types of biodiversity data exist, e.g. from
+standardised monitoring schemes, citizen science platforms, or expert
+knowledge. Each comes with own challenges. Here, we will concentrate on
+GBIF as publicly available source for terrestrial species occurrence
+data.</p>
+<p>GBIF stands for <em>Global Biodiversity Information Facility</em>.
+GBIF defines itself as “an international network and research
+infrastructure funded by the world’s governments and aimed at providing
+anyone, anywhere, open access to data about all types of life on Earth”.
+GBIF contains worldwide point records from observations as well as
+museum records or other contributions. The data are thus not
+standardised and often it is unclear which spatial resolution the data
+represent. To understand this, let’s look at some example under <a
+href="https://www.gbif.org/" class="uri">https://www.gbif.org/</a>.</p>
+<div id="occurrence-data-from-gbif" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Occurrence data from
+GBIF</h1>
+<p>We will use the package <code>rgbif</code> to search and retrieve
+data from GBIF. A good tutorial to this package is offered <a
+href="https://ropensci.org/tutorials/rgbif_tutorial/">here</a>. Remember
+that we can install new packages with the function
+<code>install.packages()</code>. Alternatively, the <code>dismo</code>
+package offers the function <code>gbif()</code> to download gbif
+records. Robert Hijmans, who wrote the raster and the dismo package,
+also offers great tutorials on his website: <a
+href="http://rspatial.org" class="uri">http://rspatial.org</a>.</p>
 <pre class="r"><code>library(rgbif)
 
 # Check out the number of occurrences found in GBIF:
 occ_count()</code></pre>
-<pre><code>## [1] 1917011990</code></pre>
+<pre><code>## [1] 2260246955</code></pre>
 <pre class="r"><code># number of observations:
 occ_count(basisOfRecord=&#39;OBSERVATION&#39;)</code></pre>
-<pre><code>## [1] 19888454</code></pre>
+<pre><code>## [1] 23372979</code></pre>
 <pre class="r"><code># number of occurrences reported for Germany:
 occ_count(country=isocodes[grep(&quot;Germany&quot;, isocodes$name), &quot;code&quot;])</code></pre>
-<pre><code>## [1] 46842810</code></pre>
+<pre><code>## [1] 49290638</code></pre>
 <pre class="r"><code># number of observations reported for Germany:
 occ_count(country=isocodes[grep(&quot;Germany&quot;, isocodes$name), &quot;code&quot;],basisOfRecord=&#39;OBSERVATION&#39;)</code></pre>
-<pre><code>## [1] 289572</code></pre>
-<p>As example, I picked the Alpine shrew (<em>Sorex alpinus</em>) for today, a small mammal species occurring in Central and Suuth-Eastern European mountain ranges. Its conservation status is near threatened (<a href="https://www.iucnredlist.org/species/29660/9514588">Link to IUCN redlist</a>).</p>
+<pre><code>## [1] 155477</code></pre>
+<p>As example, I picked the Alpine shrew (<em>Sorex alpinus</em>) for
+today, a small mammal species occurring in Central and Suuth-Eastern
+European mountain ranges. Its conservation status is near threatened (<a
+href="https://www.iucnredlist.org/species/29660/9514588">Link to IUCN
+redlist</a>).</p>
 <p><img src="figures/shrew.png" title="**Figure 1. The Alpine shrew (*Sorex alpinus*). Picture by Dr. Richard Kraft, downloaded from https://kleinsaeuger.at/sorex-alpinus.html.**" alt="**Figure 1. The Alpine shrew (*Sorex alpinus*). Picture by Dr. Richard Kraft, downloaded from https://kleinsaeuger.at/sorex-alpinus.html.**" width="50%" /></p>
-<p>We first check whether any synonyms exist and how many records exist for the species. Download will be slow for high numbers of records.</p>
+<p>We first check whether any synonyms exist and how many records exist
+for the species. Download will be slow for high numbers of records.</p>
 <pre class="r"><code># Check for synonyms
 name_suggest(q=&#39;Sorex alpinus&#39;, rank=&#39;species&#39;)</code></pre>
 <pre><code>## Records returned [1] 
@@ -455,68 +510,83 @@ name_suggest(q=&#39;Sorex alpinus&#39;, rank=&#39;species&#39;)</code></pre>
 ## 1 2435986 Sorex alpinus SPECIES</code></pre>
 <pre class="r"><code># Check number of records - here filtered to those with coordinate information
 occ_search(scientificName = &quot;Sorex alpinus&quot;, hasCoordinate=T, limit = 10)</code></pre>
-<pre><code>## Records found [1180] 
+<pre><code>## Records found [1270] 
 ## Records returned [10] 
 ## No. unique hierarchies [1] 
 ## No. media records [10] 
 ## No. facets [0] 
 ## Args [hasCoordinate=TRUE, limit=10, offset=0, scientificName=Sorex alpinus,
 ##      fields=all] 
-## # A tibble: 10 × 86
+## # A tibble: 10 × 83
 ##    key        scientificName  decimalLatitude decimalLongitude issues datasetKey
 ##    &lt;chr&gt;      &lt;chr&gt;                     &lt;dbl&gt;            &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;     
-##  1 3117844078 Sorex alpinus …            46.2            11.3  &quot;cdro… 50c9509d-…
-##  2 3124800976 Sorex alpinus …            47.8            13.7  &quot;cdro… 50c9509d-…
-##  3 3307202767 Sorex alpinus …            47.1             9.32 &quot;cdro… 50c9509d-…
-##  4 3321365464 Sorex alpinus …            47.1             9.38 &quot;&quot;     aa5a1c3c-…
-##  5 3321353464 Sorex alpinus …            47.1             9.32 &quot;&quot;     aa5a1c3c-…
-##  6 3321367470 Sorex alpinus …            46.4             8.51 &quot;&quot;     aa5a1c3c-…
-##  7 3383444669 Sorex alpinus …            47.7            13.3  &quot;bri&quot;  c1492854-…
-##  8 3355778524 Sorex alpinus …            47.9            13.6  &quot;cdro… 50c9509d-…
-##  9 3384008970 Sorex alpinus …            45.9            11.5  &quot;cdro… 50c9509d-…
-## 10 3384130345 Sorex alpinus …            46.2            11.4  &quot;cdro… 50c9509d-…
-## # … with 80 more variables: publishingOrgKey &lt;chr&gt;, installationKey &lt;chr&gt;,
+##  1 3824140382 Sorex alpinus …            48.7             8.36 cdrou… 8a863029-…
+##  2 3784645455 Sorex alpinus …            46.8            11.3  cdrou… 50c9509d-…
+##  3 3873231122 Sorex alpinus …            46.5            10.6  cdrou… 50c9509d-…
+##  4 3881729801 Sorex alpinus …            47.5            10.7  cdrou… 50c9509d-…
+##  5 3892282027 Sorex alpinus …            46.6             6.11 cdrou… 50c9509d-…
+##  6 3902041214 Sorex alpinus …            47.1            12.7  cdrou… 50c9509d-…
+##  7 3904820501 Sorex alpinus …            47.8             8.34 cdrou… 8a863029-…
+##  8 3906193269 Sorex alpinus …            48.8             8.44 cdrou… 8a863029-…
+##  9 3902763723 Sorex alpinus …            50.2            17.3  cdrou… 50c9509d-…
+## 10 3923242090 Sorex alpinus …            46.9             6.64 cdrou… 50c9509d-…
+## # … with 77 more variables: publishingOrgKey &lt;chr&gt;, installationKey &lt;chr&gt;,
 ## #   publishingCountry &lt;chr&gt;, protocol &lt;chr&gt;, lastCrawled &lt;chr&gt;,
 ## #   lastParsed &lt;chr&gt;, crawlId &lt;int&gt;, hostingOrganizationKey &lt;chr&gt;,
-## #   basisOfRecord &lt;chr&gt;, occurrenceStatus &lt;chr&gt;, taxonKey &lt;int&gt;,
-## #   kingdomKey &lt;int&gt;, phylumKey &lt;int&gt;, classKey &lt;int&gt;, orderKey &lt;int&gt;,
-## #   familyKey &lt;int&gt;, genusKey &lt;int&gt;, speciesKey &lt;int&gt;, acceptedTaxonKey &lt;int&gt;,
-## #   acceptedScientificName &lt;chr&gt;, kingdom &lt;chr&gt;, phylum &lt;chr&gt;, order &lt;chr&gt;, …</code></pre>
+## #   basisOfRecord &lt;chr&gt;, individualCount &lt;int&gt;, occurrenceStatus &lt;chr&gt;,
+## #   lifeStage &lt;chr&gt;, taxonKey &lt;int&gt;, kingdomKey &lt;int&gt;, phylumKey &lt;int&gt;,
+## #   classKey &lt;int&gt;, orderKey &lt;int&gt;, familyKey &lt;int&gt;, genusKey &lt;int&gt;,
+## #   speciesKey &lt;int&gt;, acceptedTaxonKey &lt;int&gt;, acceptedScientificName &lt;chr&gt;, …</code></pre>
 <div class="alert alert-info">
 <p><strong><em>Exercise:</em></strong></p>
-<p>What does the argument <code>hasCoordinate=T</code> do? Look up the help page and explain.</p>
+<p>What does the argument <code>hasCoordinate=T</code> do? Look up the
+help page and explain.</p>
 </div>
-<p>One of the most interesting items from the outputs is the “Records found” at the very top of the output. Please be aware that <code>occ_search()</code> will not allow to download more than 100’000 records. If the GBIF data contain more, then you can set additional filters (e.g. set time period with argument <code>year</code> or geographic extent with arguments <code>decimalLatitude</code> and <code>decimalLongitude</code>) or split the area into spatial tiles (by setting geographic extent) and download the tiles separately.</p>
-<p>GBIF data also contain a lot of extra information about observer, basis of record etc. Take a look at the arguments you can set in <code>?occ_search</code> to get an overview. For example, we can limit the data to those observations that were done by humans:</p>
+<p>One of the most interesting items from the outputs is the “Records
+found” at the very top of the output. Please be aware that
+<code>occ_search()</code> will not allow to download more than 100’000
+records. If the GBIF data contain more, then you can set additional
+filters (e.g. set time period with argument <code>year</code> or
+geographic extent with arguments <code>decimalLatitude</code> and
+<code>decimalLongitude</code>) or split the area into spatial tiles (by
+setting geographic extent) and download the tiles separately.</p>
+<p>GBIF data also contain a lot of extra information about observer,
+basis of record etc. Take a look at the arguments you can set in
+<code>?occ_search</code> to get an overview. For example, we can limit
+the data to those observations that were done by humans:</p>
 <pre class="r"><code>occ_search(scientificName = &quot;Sorex alpinus&quot;, hasCoordinate=T, basisOfRecord=&#39;HUMAN_OBSERVATION&#39;, limit = 10)</code></pre>
-<pre><code>## Records found [568] 
+<pre><code>## Records found [613] 
 ## Records returned [10] 
 ## No. unique hierarchies [1] 
 ## No. media records [10] 
 ## No. facets [0] 
 ## Args [hasCoordinate=TRUE, limit=10, offset=0, scientificName=Sorex alpinus,
 ##      basisOfRecord=HUMAN_OBSERVATION, fields=all] 
-## # A tibble: 10 × 85
+## # A tibble: 10 × 83
 ##    key        scientificName  decimalLatitude decimalLongitude issues datasetKey
 ##    &lt;chr&gt;      &lt;chr&gt;                     &lt;dbl&gt;            &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;     
-##  1 3117844078 Sorex alpinus …            46.2            11.3  &quot;cdro… 50c9509d-…
-##  2 3124800976 Sorex alpinus …            47.8            13.7  &quot;cdro… 50c9509d-…
-##  3 3307202767 Sorex alpinus …            47.1             9.32 &quot;cdro… 50c9509d-…
-##  4 3321353464 Sorex alpinus …            47.1             9.32 &quot;&quot;     aa5a1c3c-…
-##  5 3321367470 Sorex alpinus …            46.4             8.51 &quot;&quot;     aa5a1c3c-…
-##  6 3355778524 Sorex alpinus …            47.9            13.6  &quot;cdro… 50c9509d-…
-##  7 3384008970 Sorex alpinus …            45.9            11.5  &quot;cdro… 50c9509d-…
-##  8 3384130345 Sorex alpinus …            46.2            11.4  &quot;cdro… 50c9509d-…
-##  9 3385066952 Sorex alpinus …            46.3            11.0  &quot;cdro… 50c9509d-…
-## 10 3121298750 Sorex alpinus …            46.1             8.96 &quot;&quot;     aa5a1c3c-…
-## # … with 79 more variables: publishingOrgKey &lt;chr&gt;, installationKey &lt;chr&gt;,
+##  1 3824140382 Sorex alpinus …            48.7             8.36 cdrou… 8a863029-…
+##  2 3784645455 Sorex alpinus …            46.8            11.3  cdrou… 50c9509d-…
+##  3 3873231122 Sorex alpinus …            46.5            10.6  cdrou… 50c9509d-…
+##  4 3881729801 Sorex alpinus …            47.5            10.7  cdrou… 50c9509d-…
+##  5 3892282027 Sorex alpinus …            46.6             6.11 cdrou… 50c9509d-…
+##  6 3902041214 Sorex alpinus …            47.1            12.7  cdrou… 50c9509d-…
+##  7 3904820501 Sorex alpinus …            47.8             8.34 cdrou… 8a863029-…
+##  8 3906193269 Sorex alpinus …            48.8             8.44 cdrou… 8a863029-…
+##  9 3902763723 Sorex alpinus …            50.2            17.3  cdrou… 50c9509d-…
+## 10 3923242090 Sorex alpinus …            46.9             6.64 cdrou… 50c9509d-…
+## # … with 77 more variables: publishingOrgKey &lt;chr&gt;, installationKey &lt;chr&gt;,
 ## #   publishingCountry &lt;chr&gt;, protocol &lt;chr&gt;, lastCrawled &lt;chr&gt;,
 ## #   lastParsed &lt;chr&gt;, crawlId &lt;int&gt;, hostingOrganizationKey &lt;chr&gt;,
-## #   basisOfRecord &lt;chr&gt;, occurrenceStatus &lt;chr&gt;, taxonKey &lt;int&gt;,
-## #   kingdomKey &lt;int&gt;, phylumKey &lt;int&gt;, classKey &lt;int&gt;, orderKey &lt;int&gt;,
-## #   familyKey &lt;int&gt;, genusKey &lt;int&gt;, speciesKey &lt;int&gt;, acceptedTaxonKey &lt;int&gt;,
-## #   acceptedScientificName &lt;chr&gt;, kingdom &lt;chr&gt;, phylum &lt;chr&gt;, order &lt;chr&gt;, …</code></pre>
-<p>Now, let’s download the records and plot them. We had a bit less than 600 records for the shrew, and use this as <code>limit</code>. Of course, the map will only help us judging the data quality if we have a rough idea where the species should occur. So, look up the species on the web first!</p>
+## #   basisOfRecord &lt;chr&gt;, individualCount &lt;int&gt;, occurrenceStatus &lt;chr&gt;,
+## #   lifeStage &lt;chr&gt;, taxonKey &lt;int&gt;, kingdomKey &lt;int&gt;, phylumKey &lt;int&gt;,
+## #   classKey &lt;int&gt;, orderKey &lt;int&gt;, familyKey &lt;int&gt;, genusKey &lt;int&gt;,
+## #   speciesKey &lt;int&gt;, acceptedTaxonKey &lt;int&gt;, acceptedScientificName &lt;chr&gt;, …</code></pre>
+<p>Now, let’s download the records and plot them. We had a bit less than
+600 records for the shrew, and use this as <code>limit</code>. Of
+course, the map will only help us judging the data quality if we have a
+rough idea where the species should occur. So, look up the species on
+the web first!</p>
 <pre class="r"><code>gbif_shrew &lt;- occ_search(scientificName = &quot;Sorex alpinus&quot;, hasCoordinate=T, basisOfRecord=&#39;HUMAN_OBSERVATION&#39;, limit = 600) 
 
 # We are just interested in the data frame containing the records
@@ -528,57 +598,103 @@ plot(wrld_simpl,xlim=c(5,50), ylim=c(40,55))
 points(gbif_shrew$decimalLongitude, gbif_shrew$decimalLatitude, col=&#39;red&#39;,  pch=19)</code></pre>
 <p><img src="b1_SpeciesData_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
-<div id="cleaning-and-cross-checking-occurrence-data" class="section level1">
-<h1><span class="header-section-number">2</span> Cleaning and cross-checking occurrence data</h1>
-<p>You should always critically assess the quality of your data. This also holds true for GBIF data. Look at the map again, do all records look plausible?</p>
-<p>Not all coordinates seem to be correct, and we thus need to cross-check these. Robert Hijmans provides some code in his <code>dismo</code> <a href="http://rspatial.org">tutorials</a>. We will here use the new package <code>CoordinateCleaner</code> (<span class="citation">Zizka et al. (2019)</span>; see tutorials <a href="https://ropensci.github.io/CoordinateCleaner/">here</a>). The function <code>clean_coordinates()</code> allows cleaning geographic coordinates using different cross-checks. Here, we first compare whether the coordinates for each entry match the country code provided (test <code>centroids</code>) for each entry and are no outliers (test <code>outliers</code>). Also, we test for vicinity to a biodiversity institution like botanical or zoological gardens (test <code>ìnstitutions</code> and radius <code>inst_rad</code>), and for duplicates (test <code>duplicates</code>). There are many more tests that you can check in the help pages <code>?clean_coordinates</code>.</p>
+<div id="cleaning-and-cross-checking-occurrence-data"
+class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Cleaning and
+cross-checking occurrence data</h1>
+<p>You should always critically assess the quality of your data. This
+also holds true for GBIF data. Look at the map again, do all records
+look plausible?</p>
+<p>Not all coordinates seem to be correct, and we thus need to
+cross-check these. Robert Hijmans provides some code in his
+<code>dismo</code> <a href="http://rspatial.org">tutorials</a>. We will
+here use the new package <code>CoordinateCleaner</code> (<span
+class="citation">Zizka et al. (2019)</span>; see tutorials <a
+href="https://ropensci.github.io/CoordinateCleaner/">here</a>). The
+function <code>clean_coordinates()</code> allows cleaning geographic
+coordinates using different cross-checks. Here, we first compare whether
+the coordinates for each entry match the country code provided (test
+<code>centroids</code>) for each entry and are no outliers (test
+<code>outliers</code>). Also, we test for vicinity to a biodiversity
+institution like botanical or zoological gardens (test
+<code>ìnstitutions</code> and radius <code>inst_rad</code>), and for
+duplicates (test <code>duplicates</code>). There are many more tests
+that you can check in the help pages
+<code>?clean_coordinates</code>.</p>
 <pre class="r"><code>library(CoordinateCleaner)
 
 # We use only those data entries with coordinate information - Note that you don&#39;t need this if you have used the hasCoordinate=T in the occ_search() function:
 gbif_shrew &lt;- subset(gbif_shrew, !is.na(decimalLatitude))
 
 # We now clean the coordinates and check for outliers - see ?clean_coordinates for more options
-cl_gbif_shrew &lt;- clean_coordinates(gbif_shrew, lon=&quot;decimalLongitude&quot;, lat=&quot;decimalLatitude&quot;, countries=&quot;countryCode&quot;, tests=c(&quot;centroids&quot;, &quot;outliers&quot;, &quot;duplicates&quot;, &quot;institutions&quot;), inst_rad = 1000)</code></pre>
+gbif_shrew_cleaned_coord &lt;- clean_coordinates(gbif_shrew, lon=&quot;decimalLongitude&quot;, lat=&quot;decimalLatitude&quot;, countries=&quot;countryCode&quot;, tests=c(&quot;centroids&quot;, &quot;outliers&quot;, &quot;duplicates&quot;, &quot;institutions&quot;), inst_rad = 1000)</code></pre>
 <pre><code>## Testing coordinate validity</code></pre>
 <pre><code>## Flagged 0 records.</code></pre>
 <pre><code>## Testing country centroids</code></pre>
 <pre><code>## Flagged 0 records.</code></pre>
 <pre><code>## Testing geographic outliers</code></pre>
-<pre><code>## Flagged 19 records.</code></pre>
+<pre><code>## Flagged 15 records.</code></pre>
 <pre><code>## Testing biodiversity institutions</code></pre>
 <pre><code>## Flagged 0 records.</code></pre>
 <pre><code>## Testing duplicates</code></pre>
-<pre><code>## Flagged 194 records.</code></pre>
-<pre><code>## Flagged 212 of 568 records, EQ = 0.37.</code></pre>
-<pre class="r"><code>plot(wrld_simpl,xlim=c(5,50), ylim=c(40,55))
+<pre><code>## Flagged 189 records.</code></pre>
+<pre><code>## Flagged 204 of 600 records, EQ = 0.34.</code></pre>
+<pre class="r"><code># Plot world map
+plot(wrld_simpl,xlim=c(5,50), ylim=c(40,55))
+# Plot all gbif points downloaded
 points(gbif_shrew$decimalLongitude, gbif_shrew$decimalLatitude, col=&#39;red&#39;,  pch=19)
-points(gbif_shrew$decimalLongitude[cl_gbif_shrew$.summary], gbif_shrew$decimalLatitude[cl_gbif_shrew$.summary], col=&#39;blue&#39;,  pch=18)</code></pre>
+# Plot all remaining points after cleaning
+points(gbif_shrew$decimalLongitude[gbif_shrew_cleaned_coord$.summary], gbif_shrew$decimalLatitude[gbif_shrew_cleaned_coord$.summary], col=&#39;blue&#39;,  pch=18)</code></pre>
 <p><img src="b1_SpeciesData_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<pre class="r"><code>gbif_shrew &lt;- gbif_shrew[cl_gbif_shrew$.summary,]</code></pre>
+<pre class="r"><code># Store the cleaned point locations in a new object
+gbif_shrew_cleaned &lt;- gbif_shrew[gbif_shrew_cleaned_coord$.summary,]</code></pre>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
-<p>Look up the options in <code>clean_coordinates()</code> and think about why I chose the specific tests and options.</p>
+<p>Look up the options in <code>clean_coordinates()</code> and think
+about why I chose the specific tests and options.</p>
 </div>
-<p>Have a look at <span class="citation">Zizka et al. (2019)</span> and the examples by Robert Hijmans (<a href="https://rspatial.org/raster/sdm/2_sdm_occdata.html">http://rspatial.org</a>) for finding out about other typical problems with GBIF and how to deal with these.</p>
-<p>Finally, save your data, for example by writing the final data frame to file or by saving the R object(s).</p>
-<pre class="r"><code>save(gbif_shrew,file=&#39;data/gbif_shrew.RData&#39;)</code></pre>
+<p>Have a look at <span class="citation">Zizka et al. (2019)</span> and
+the examples by Robert Hijmans (<a
+href="https://rspatial.org/terra/sdm/2_sdm_occdata.html#species-occurrence-data">http://rspatial.org</a>
+for finding out about other typical problems with GBIF and how to deal
+with these.</p>
+<p>Finally, save your data, for example by writing the final data frame
+to file or by saving the R object(s).</p>
+<pre class="r"><code>save(gbif_shrew_cleaned,file=&#39;data/gbif_shrew_cleaned.RData&#39;)</code></pre>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
-<p>Pick a species of your choice, look it up on the web (www.gbif.org), and then download and clean the GBIF data using <code>occ_search()</code> and <code>clean_coordinates()</code>.</p>
+<p>Pick a species of your choice, look it up on the web (www.gbif.org),
+and then download and clean the GBIF data using
+<code>occ_search()</code> and <code>clean_coordinates()</code>.</p>
 <ul>
-<li>Be careful with very large data sets as download will take long. Try, for example, the Iberian lynx, the Gorilla, the Caucasian Salamander, or any other species with max. 500-1000 records.</li>
-<li>Summarise the data: how many occurrence records are there in total, how many with coordinates, how many human observations, which time span do the records cover&gt;?</li>
+<li>Be careful with very large data sets as download will take long.
+Try, for example, the Iberian lynx, the Gorilla, the Caucasian
+Salamander, or any other species with max. 500-1000 records.</li>
+<li>Summarise the data: how many occurrence records are there in total,
+how many with coordinates, how many human observations, which time span
+do the records cover?</li>
 <li>Map the data</li>
-<li>Clean the data: how many geographic outliers did you find, how many duplicates?</li>
+<li>Clean the data: how many geographic outliers did you find, how many
+duplicates?</li>
 </ul>
 </div>
 </div>
-<div id="occurrence-data-for-marine-species-obis" class="section level1">
-<h1><span class="header-section-number">3</span> Occurrence data for marine species: OBIS</h1>
-<p>Although we will concentrate on terrestrial species in the practicals, I would at least like to mention that marine data are available from OBIS, the the Ocean Biodiversity Information System. Currently, the OBIS database holds more than 135 000 marine species. We can access the database using the package <code>robis</code>. This can be installed from github.</p>
+<div id="extra-occurrence-data-for-marine-species-obis"
+class="section level1" number="3">
+<h1><span class="header-section-number">3</span> [<em>EXTRA</em>]
+Occurrence data for marine species: OBIS</h1>
+<p>Although we will concentrate on terrestrial species in the
+practicals, I would at least like to mention that marine data are
+available from OBIS, the the Ocean Biodiversity Information System.
+Currently, the OBIS database holds more than 135 000 marine species. We
+can access the database using the package <code>robis</code>. This can
+be installed from github.</p>
 <pre class="r"><code>library(devtools)
 install_github(&quot;iobis/robis&quot;)</code></pre>
-<p>You can visually check out the data on the <a href="https://mapper.obis.org/">OBIS Mapper webpage</a>. Occurrence can be downloaded from the website or using the function <code>occurrence()</code> from <code>robis</code> package.</p>
+<p>You can visually check out the data on the <a
+href="https://mapper.obis.org/">OBIS Mapper webpage</a>. Occurrence can
+be downloaded from the website or using the function
+<code>occurrence()</code> from <code>robis</code> package.</p>
 <pre class="r"><code>library(robis)
 
 # Download OBIS data for the sea otter
@@ -589,28 +705,38 @@ library(maps)
 map(&#39;world&#39;)
 points(otter$decimalLongitude, otter$decimalLatitude, col=&#39;blue&#39;,  pch=18)</code></pre>
 <p><img src="b1_SpeciesData_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-<p>Showing the occurrence records in our typically Atlantic-centred world view is a little confusing. We can obtain a Pacific-centred view by simply wrapping the maps.</p>
+<p>Showing the occurrence records in our typically Atlantic-centred
+world view is a little confusing. We can obtain a Pacific-centred view
+by simply wrapping the maps.</p>
 <pre class="r"><code>map(&quot;world&quot;, wrap=c(0,360))
 points(ifelse(otter$decimalLongitude&lt;0,otter$decimalLongitude+360,otter$decimalLongitude), otter$decimalLatitude, col=&#39;blue&#39;,  pch=18)</code></pre>
 <p><img src="b1_SpeciesData_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<p>Overall, the data look quite plausible. In general, however, we also need to pay attention to data cleaning in OBIS data. As the OBIS data follow the same data standards as GBIF data, we can also use the package <code>CoordinateCleaner</code> for data cleaning.</p>
+<p>Overall, the data look quite plausible. In general, however, we also
+need to pay attention to data cleaning in OBIS data. As the OBIS data
+follow the same data standards as GBIF data, we can also use the package
+<code>CoordinateCleaner</code> for data cleaning.</p>
 <pre class="r"><code># We test for spatial outliers and remove duplicates
-cl_otter &lt;- clean_coordinates(otter, lon=&quot;decimalLongitude&quot;, lat=&quot;decimalLatitude&quot;, tests=c(&quot;duplicates&quot;,&quot;outliers&quot;))</code></pre>
+otter_cleaned_coord &lt;- clean_coordinates(otter, lon=&quot;decimalLongitude&quot;, lat=&quot;decimalLatitude&quot;, tests=c(&quot;duplicates&quot;,&quot;outliers&quot;))</code></pre>
 <pre><code>## Testing coordinate validity</code></pre>
 <pre><code>## Flagged 0 records.</code></pre>
 <pre><code>## Testing geographic outliers</code></pre>
 <pre><code>## Flagged 0 records.</code></pre>
 <pre><code>## Testing duplicates</code></pre>
 <pre><code>## Flagged 2140 records.</code></pre>
-<pre><code>## Flagged 2140 of 3261 records, EQ = 0.66.</code></pre>
+<pre><code>## Flagged 2140 of 3259 records, EQ = 0.66.</code></pre>
 <pre class="r"><code># remove the flagged records
-otter2 &lt;- otter[cl_otter$.summary,]</code></pre>
+otter_cleaned &lt;- otter[otter_cleaned_coord$.summary,]</code></pre>
 </div>
 <div id="references" class="section level1 unnumbered">
-<h1>References</h1>
-<div id="refs" class="references">
-<div id="ref-Zizka2019">
-<p>Zizka, A., D. Silvestro, T. Andermann, J. Azevedo, C. Duarte Ritter, D. Edler, H. Farooq, et al. 2019. “CoordinateCleaner : Standardized Cleaning of Occurrence Records from Biological Collection Databases.” <em>Methods in Ecology and Evolution</em> 10 (5): 744–51. <a href="https://doi.org/10.1111/2041-210x.13152">https://doi.org/10.1111/2041-210x.13152</a>.</p>
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Zizka2019" class="csl-entry">
+Zizka, A., D. Silvestro, T. Andermann, J. Azevedo, C. Duarte Ritter, D.
+Edler, H. Farooq, et al. 2019. <span>“<span>CoordinateCleaner</span> :
+Standardized Cleaning of Occurrence Records from Biological Collection
+Databases.”</span> <em>Methods in Ecology and Evolution</em> 10 (5):
+744–51. <a
+href="https://doi.org/10.1111/2041-210x.13152">https://doi.org/10.1111/2041-210x.13152</a>.
 </div>
 </div>
 </div>
@@ -621,7 +747,7 @@ otter2 &lt;- otter[cl_otter$.summary,]</code></pre>
 <br>
 <hr />
 <div id="footer">
-<p>Damaris Zurell 2021 <a href="http://creativecommons.org/licenses/by/4.0/" >(CC BY 4.0)</a>.  </p>
+<p>Damaris Zurell 2022 <a href="http://creativecommons.org/licenses/by/4.0/" >(CC BY 4.0)</a>.  </p>
 </div>
 
 </html>

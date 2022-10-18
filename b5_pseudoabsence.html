@@ -13,7 +13,8 @@
 
 <title>Pseudo-absence and background data</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -61,6 +62,29 @@ if (window.hljs) {
 
 
 
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 
 
 
@@ -84,6 +108,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -309,7 +336,7 @@ div.tocify {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -321,11 +348,8 @@ div.tocify {
         <li>
   <a href="index.html">Home</a>
 </li>
-<li>
-  <a href="schedule.html">Schedule</a>
-</li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Pracs: macroecological analyses
      
     <span class="caret"></span>
@@ -355,7 +379,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Pracs: species distribution modelling
      
     <span class="caret"></span>
@@ -414,301 +438,428 @@ div.tocify {
 
 <div class="alert alert-info">
 <p><strong>RStudio project</strong></p>
-<p>Open the RStudio project that we created in the first session. I recommend to use this RStudio project for the entire course and within the RStudio project create separate R scripts for each session.</p>
+<p>Open the RStudio project that we created in the first session. I
+recommend to use this RStudio project for the entire course and within
+the RStudio project create separate R scripts for each session.</p>
 <ul>
-<li>Create a new empty R script by going to the tab “File”, select “New File” and then “R script”</li>
-<li>In the new R script, type <code># Session b5: Pseudo-absence and background data</code> and save the file in your folder “scripts” within your project folder, e.g. as “b5_PseudoAbsences.R”</li>
+<li>Create a new empty R script by going to the tab “File”, select “New
+File” and then “R script”</li>
+<li>In the new R script, type
+<code># Session b5: Pseudo-absence and background data</code> and save
+the file in your folder “scripts” within your project folder, e.g. as
+“b5_PseudoAbsences.R”</li>
 </ul>
 </div>
-<div id="introduction" class="section level1">
+<div id="introduction" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>In the previous sessions, we have worked with very convenient presence/absence data to train our species distribution models (SDMs). However, as you have seen when downloading your own GBIF data, we often have only presence records available. Absence data are also inherently difficult to get because it requires a very high sampling effort to classify a species as absent from a location. For plants, we would need complete inventories of a larger region, e.g. several 100 m plots placed within larger 1 km sample squares. For birds, we would need several visits to a specific region within the breeding season. In both cases, we could still miss some species, meaning that we do not record the species although present (resulting in a false negative).</p>
-<p>But what should we do if absence data are not available? Most SDM algorithms (except the profile methods, see session 6) need some kind of absence or background data to contrast the presence data to. There are different approaches for creating background data or pseudo-absence data <span class="citation">(Barbet-Massin et al. 2012; Kramer-Schadt et al. 2013; Phillips et al. 2009)</span>, although there is still room for further developments in this field and more clear-cut recommendations for users would be certainly useful. Nevertheless, I hope this tutorial will provide some examples of how to deal with presence-only data. For advice on how many background/pseudo-absence points you need, please read <span class="citation">(Barbet-Massin et al. 2012)</span>.</p>
-<p>In this session, we look at four different ways of creating background/pseudo-absence data:</p>
+<p>In the previous sessions, we have worked with very convenient
+presence/absence data to train our species distribution models (SDMs).
+However, as you have seen when downloading your own GBIF data, we often
+have only presence records available. Absence data are also inherently
+difficult to get because it requires a very high sampling effort to
+classify a species as absent from a location. For plants, we would need
+complete inventories of a larger region, e.g. several 100 m plots placed
+within larger 1 km sample squares. For birds, we would need several
+visits to a specific region within the breeding season. In both cases,
+we could still miss some species, meaning that we do not record the
+species although present (resulting in a false negative).</p>
+<p>But what should we do if absence data are not available? Most SDM
+algorithms (except the profile methods, see session 6) need some kind of
+absence or background data to contrast the presence data to. There are
+different approaches for creating background data or pseudo-absence data
+<span class="citation">(Barbet-Massin et al. 2012; Kramer-Schadt et al.
+2013; Phillips et al. 2009)</span>, although there is still room for
+further developments in this field and more clear-cut recommendations
+for users would be certainly useful. Nevertheless, I hope this tutorial
+will provide some examples of how to deal with presence-only data. For
+advice on how many background/pseudo-absence points you need, please
+read <span class="citation">(Barbet-Massin et al. 2012)</span>.</p>
+<p>In this session, we look at two major ways of creating
+background/pseudo-absence data:</p>
 <ul>
-<li>random selection of points within study area (including or excluding the presence locations) <span class="citation">(Barbet-Massin et al. 2012)</span></li>
-<li>random selection of points outside of study area <span class="citation">(Barbet-Massin et al. 2012)</span></li>
-<li>accounting for spatial sampling bias using target-group selection <span class="citation">(Phillips et al. 2009)</span></li>
-<li>accounting for spatial sampling bias using inverse distance weighting <span class="citation">(Kramer-Schadt et al. 2013)</span></li>
+<li>random selection of points within study area (including or excluding
+the presence locations) <span class="citation">(Barbet-Massin et al.
+2012)</span></li>
+<li>random selection of points outside of study area <span
+class="citation">(Barbet-Massin et al. 2012)</span></li>
+</ul>
+<p>We will not cover approaches for dealing with sampling bias:</p>
+<ul>
+<li>accounting for spatial sampling bias using target-group selection
+<span class="citation">(Phillips et al. 2009)</span></li>
+<li>accounting for spatial sampling bias using inverse distance
+weighting <span class="citation">(Kramer-Schadt et al. 2013)</span></li>
 </ul>
 </div>
-<div id="species-presence-data" class="section level1">
-<h1><span class="header-section-number">2</span> Species presence data</h1>
-<p>I created a virtual species data set with presence points for a dummy species called <em>Populus imagines</em> and sister species <em>Populus spp</em>. The spatial resolution of the data is 5 minutes. You can download the data <a href="data/Prac5_data.zip">here</a> or from the moodle page.</p>
+<div id="species-presence-data" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Species presence
+data</h1>
+<!-- ```{r, eval=F, echo=F, message=F, warning=F} -->
+<!-- library(raster) -->
+<!-- library(dismo) -->
+<!-- ac <- data.frame(x=c(10,20),y=c(51,51),occ=1) -->
+<!-- coordinates(ac) <- ~x+y -->
+<!-- projection(ac) <- CRS('+proj=longlat +datum=WGS84') -->
+<!-- acx <- circles(ac, d=500000, lonlat=TRUE) -->
+<!-- pol <- polygons(acx) -->
+<!-- samp1 <- spsample(pol, 1000, type='random', iter=25) -->
+<!-- cells <- cellFromXY(bg, samp1) -->
+<!-- cells <- unique(cells) -->
+<!-- cells <- cells[!is.na(extract(bg,cells))] -->
+<!-- xy <- data.frame(xyFromCell(bg, cells)) -->
+<!-- xy$sp <- NA -->
+<!-- ac2 <- data.frame(x=c(10,12,13,15,18,20),y=c(51,50,53,52,53,51),occ=1) -->
+<!-- coordinates(ac2) <- ~x+y -->
+<!-- projection(ac2) <- CRS('+proj=longlat +datum=WGS84') -->
+<!-- ac2x <- circles(ac2, d=120000, lonlat=TRUE) -->
+<!-- pol2 <- polygons(ac2x) -->
+<!-- xy[which(cells %in%  cellFromPolygon(bg,pol2)[[1]]),'sp'] <- 'Populus_imagines' -->
+<!-- xy[-which(cells %in%  cellFromPolygon(bg,pol2)[[1]]),'sp'] <- 'Populus_spp' -->
+<!-- write.table(xy,file='../data/D4_02_presences.txt',row.names=F) -->
+<!-- ``` -->
+<p>I created a virtual species data set with presence points for a dummy
+species called <em>Populus imagines</em> and sister species <em>Populus
+spp</em>. The spatial resolution of the data is 5 minutes. You can
+download the data <a href="data/Prac5_data.zip">here</a> or from the
+moodle page.</p>
 <p>Load and plot the data:</p>
-<pre class="r"><code>library(raster)
+<pre class="r"><code>library(terra)
 library(dismo)
+library(raster)
 
-mask &lt;- raster(&#39;data/Prac5_Europe5min.grd&#39;)
+region &lt;- terra::rast(&#39;data/Prac5_Europe5min.grd&#39;)
 sp &lt;- read.table(&#39;data/Prac5_presences.txt&#39;, header=T)
 
 # Plot the map and data
-plot(mask,col=&#39;grey&#39;,legend=F)
+plot(region,col=&#39;grey&#39;,legend=F)
 points(sp[sp$sp==&#39;Populus_imagines&#39;,1:2],pch=&#39;+&#39;,col=&#39;red&#39;)
 points(sp[sp$sp==&#39;Populus_spp&#39;,1:2],pch=&#39;+&#39;,cex=0.3,col=&#39;grey20&#39;)</code></pre>
-<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 </div>
-<div id="backgroundpseudo-absence-data-selection" class="section level1">
-<h1><span class="header-section-number">3</span> Background/Pseudo-absence data selection</h1>
-<p>We use a lot of methods from the <code>dismo</code> tutorials, which are worth looking into (<a href="https://rspatial.org/raster/sdm/3_sdm_absence-background.html">see link here</a>).</p>
-<div id="random-selection-of-points-within-study-area-but-excluding-the-presence-location" class="section level2">
-<h2><span class="header-section-number">3.1</span> Random selection of points within study area but excluding the presence location</h2>
-<p>The <code>dismo</code> package has a function to sample random points (background data).</p>
+<div id="backgroundpseudo-absence-data-selection" class="section level1"
+number="3">
+<h1><span class="header-section-number">3</span>
+Background/Pseudo-absence data selection</h1>
+<p>We use a lot of methods from the <code>dismo</code> tutorials, which
+are worth looking into (<a
+href="https://rspatial.org/raster/sdm/3_sdm_absence-background.html">see
+link here</a>) as well as from the <code>terra</code> tutorials (<a
+href="https://rspatial.org/terra/sdm/3_sdm_absence-background.html">link
+here</a>).</p>
+<div
+id="random-selection-of-points-within-study-area-but-excluding-the-presence-location"
+class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Random selection of
+points within study area but excluding the presence location</h2>
+<p>The <code>dismo</code> package has a function to sample random points
+(background data).</p>
 <pre class="r"><code># Randomly select background points from study region
-bg_rand &lt;- randomPoints(mask, 500)
+bg_rand &lt;- dismo::randomPoints(raster(region), 500)
 
 # Plot the map and data
-plot(mask,col=&#39;grey&#39;,legend=F)
+plot(region,col=&#39;grey&#39;,legend=F)
 points(sp[sp$sp==&#39;Populus_imagines&#39;,1:2],pch=&#39;+&#39;,col=&#39;red&#39;)
 points(bg_rand,pch=19,cex=0.3)</code></pre>
-<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>So, this function will by default sample from the entire study area independent of the presence points. We can also provide the presence points as additional argument, and by that make sure that random background data are not sampled from presence locations.</p>
-<pre class="r"><code># Randomly select background data but excluding presence locations
-bg_rand2 &lt;- randomPoints(mask, 500, p=sp[sp$sp==&#39;Populus_imagines&#39;,1:2])
+<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>The same could be achieved using the <code>spatSample()</code>
+function in <code>terra</code>.</p>
+<pre class="r"><code># Random points with terra package:
+bg_rand_t &lt;- terra::spatSample(region, 500, as.points=T, na.rm=T)
 
 # Plot the map and data
-plot(mask,col=&#39;grey&#39;,legend=F)
+plot(region,col=&#39;grey&#39;,legend=F)
 points(sp[sp$sp==&#39;Populus_imagines&#39;,1:2],pch=&#39;+&#39;,col=&#39;red&#39;)
-points(bg_rand2,pch=19,cex=0.3)</code></pre>
+points(bg_rand_t,pch=19,cex=0.3)</code></pre>
+<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Both functions will by default sample from the entire study area
+independent of the presence points. However, in the
+<code>randomPoints()</code> function of the <code>dismo</code> package,
+we can provide the presence points as additional argument, and by that
+make sure that random background data are not sampled from presence
+locations.</p>
+<pre class="r"><code># Randomly select background data but excluding presence locations
+bg_rand_exclp &lt;- dismo::randomPoints(raster(region), 500, p=sp[sp$sp==&#39;Populus_imagines&#39;,1:2])
+
+# Plot the map and data
+plot(region,col=&#39;grey&#39;,legend=F)
+points(sp[sp$sp==&#39;Populus_imagines&#39;,1:2],pch=&#39;+&#39;,col=&#39;red&#39;)
+points(bg_rand_exclp,pch=19,cex=0.3)</code></pre>
 <p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>Also, we can define an extent from where random points should be drawn. By default, this extent is increased by 5% at each side. To circumvent this, we set <code>extf=1.0</code>.</p>
+<p>Also, we can define an extent from where random points should be
+drawn. By default, this extent is increased by 5% at each side. To
+circumvent this, we set <code>extf=1.0</code>.</p>
 <pre class="r"><code># Define extent object:
 e &lt;- extent(8,24,46,57)
 
 # Randomly select background data within a restricted extent
-bg_rand3 &lt;- randomPoints(mask, 500, p=sp[sp$sp==&#39;Populus_imagines&#39;,1:2], ext=e, extf=1.0)
+bg_rand_exclp_e &lt;- randomPoints(raster(region), 500, p=sp[sp$sp==&#39;Populus_imagines&#39;,1:2], ext=e, extf=1.0)
 
 # Plot the map and data
-plot(mask,col=&#39;grey&#39;,legend=F)
+plot(region,col=&#39;grey&#39;,legend=F)
 points(sp[sp$sp==&#39;Populus_imagines&#39;,1:2],pch=&#39;+&#39;,col=&#39;red&#39;)
-points(bg_rand3,pch=19,cex=0.3)
+points(bg_rand_exclp_e,pch=19,cex=0.3)
 plot(e, add=TRUE, col=&#39;red&#39;)</code></pre>
 <p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<p>Last, we could also restrict the random samples to within a certain buffer distance. For this, we first create a <code>SpatialPointsDataFrame</code>, then place a buffer around these and sample from within the buffer. The buffer can be interpreted as the area that was accessible to the species in the long-term past. Thus, the buffer helps accounting for biogeographic history by constraining absence points to those geographic area that could have been reached by the species given the movement capacity but excludes other areas. Of course, restricting the absences to a certain geographic rectangle can achieve a similar tasks but might be less accurate for complex geographies and large areas. For example, is Iceland accessible to European species or not?</p>
-<pre class="r"><code># Make SpatialPointsDataFrame:
-pop_imag &lt;- sp[sp$sp==&#39;Populus_imagines&#39;,1:2]
-coordinates(pop_imag) &lt;- ~x+y
-projection(pop_imag) &lt;- CRS(&#39;+proj=longlat +datum=WGS84&#39;)
+<p>Last, we could also restrict the random samples to within a certain
+buffer distance. For this, we first create a
+<code>SpatialPointsDataFrame</code>, then place a buffer around these
+and sample from within the buffer. The buffer can be interpreted as the
+area that was accessible to the species in the long-term past. Thus, the
+buffer helps accounting for biogeographic history by constraining
+absence points to those geographic area that could have been reached by
+the species given the movement capacity but excludes other areas. Of
+course, restricting the absences to a certain geographic rectangle can
+achieve a similar tasks but might be less accurate for complex
+geographies and large areas. For example, is Iceland accessible to
+European species or not?</p>
+<pre class="r"><code># Make SpatVector:
+pop_imag &lt;- terra::vect( as.matrix( sp[sp$sp==&#39;Populus_imagines&#39;,1:2]) , crs=crs(region))
 
 # Then, place a buffer of 200 km radius around our presence points
-x &lt;- buffer(pop_imag,width=200000)
+v_buf &lt;- terra::buffer(pop_imag, width=200000)
 
 # Set all raster cells outside the buffer to NA
-x &lt;- mask(mask,x)
+region_buf &lt;- terra::mask(region, v_buf)
 
 # Randomly select background data within the buffer
-bg_rand4 &lt;- randomPoints(x, 500)
+bg_rand_buf &lt;- dismo::randomPoints(raster(region_buf), 500)
 
 # Plot the map and data
-plot(mask,col=&#39;grey&#39;,legend=F)
-plot(x, legend=F, add=T)
+plot(region,col=&#39;grey&#39;,legend=F)
+plot(region_buf, legend=F, add=T)
 points(sp[sp$sp==&#39;Populus_imagines&#39;,1:2],pch=&#39;+&#39;,col=&#39;red&#39;)
-points(bg_rand4,pch=19,cex=0.3)</code></pre>
+points(bg_rand_buf,pch=19,cex=0.3)</code></pre>
 <p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
-<div id="random-selection-of-points-outside-of-study-area" class="section level2">
-<h2><span class="header-section-number">3.2</span> Random selection of points outside of study area</h2>
-<p><span class="citation">Barbet-Massin et al. (2012)</span> also suggested a method to sample pseudo-absences only beyond a minimum distance from the presence points. This is more of a macroecological approach, suitable for characterising the climatic limits of species. We can also use the buffering approach from above to achieve this.</p>
-<pre class="r"><code># Place a buffer of 100 km radius around our presence points
-x &lt;- buffer(pop_imag,width=200000)
+<div id="random-selection-of-points-outside-of-study-area"
+class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Random selection of
+points outside of study area</h2>
+<p><span class="citation">Barbet-Massin et al. (2012)</span> also
+suggested a method to sample pseudo-absences only beyond a minimum
+distance from the presence points. This is more of a macroecological
+approach, suitable for characterising the climatic limits of species. We
+can also use the buffering approach from above to achieve this.</p>
+<pre class="r"><code># Place a buffer of 200 km radius around our presence points
+v_buf &lt;- terra::buffer(pop_imag, width=200000)
 
 # Set all raster cells outside the buffer to NA
-x &lt;- mask(mask,x)
+region_buf &lt;- terra::mask(region, v_buf)
 
 # Now, we set all the buffer cells in the mask to NA
-mask2 &lt;- mask
-values(mask2)[values(x)==1 &amp; !is.na(values(x))] &lt;- NA
+region_outbuf &lt;- region
+values(region_outbuf)[values(region_buf)==1 &amp; !is.na(values(region_buf))] &lt;- NA
 
 # Randomly select background data outside the buffer
-bg_far &lt;- randomPoints(mask2, 500)
+bg_rand_outbuf &lt;- dismo::randomPoints(raster(region_outbuf), 500)
 
 # Plot the map and data
-plot(mask,col=&#39;grey&#39;,legend=F)
-plot(x,legend=F, add=T)
+plot(region,col=&#39;grey&#39;,legend=F)
+plot(region_buf,legend=F, add=T)
 points(sp[sp$sp==&#39;Populus_imagines&#39;,1:2],pch=&#39;+&#39;,col=&#39;red&#39;)
-points(bg_far,pch=19,cex=0.3)</code></pre>
+points(bg_rand_outbuf,pch=19,cex=0.3)</code></pre>
 <p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-</div>
-<div id="accounting-for-spatial-sampling-bias-using-target-group-selection" class="section level2">
-<h2><span class="header-section-number">3.3</span> Accounting for spatial sampling bias using target-group selection</h2>
-<p>A critical assumption behind the above-mentioned background/pseudo-absence sampling is that the presence points were systematically or randomly sampled from the known distribution and are not spatially biased. In practice, this assumption is often violated, for example when observers go to more easily accessible areas. <span class="citation">Phillips et al. (2009)</span> suggested a target-group sampling for this. The idea is that we use the presence points of other groups of species as potential pseudo-absence points to mimic survey effort. These target groups should be collected or observed using the same methods and equipments. So, this approach is kind of assuming that no complete inventories were made by the observers but that there is a chance that if the species had been there it would have been observed along with the others.</p>
-<p>Here, we use the sister populus species as target group.</p>
-<pre class="r"><code># Randomly select background points from the target group
-p &lt;- sample(seq_len(nrow(sp[sp$sp==&#39;Populus_spp&#39;,])), 500)
-bg_target &lt;- sp[sp$sp==&#39;Populus_spp&#39;,1:2][p,]
-
-# Plot the map and data
-plot(mask,col=&#39;grey&#39;,legend=F)
-points(sp[sp$sp==&#39;Populus_imagines&#39;,1:2],pch=&#39;+&#39;,col=&#39;red&#39;)
-points(bg_target,pch=19,cex=0.3)</code></pre>
-<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-</div>
-<div id="accounting-for-spatial-sampling-bias-using-inverse-distance-weighting" class="section level2">
-<h2><span class="header-section-number">3.4</span> Accounting for spatial sampling bias using inverse distance weighting</h2>
-<p>In the last example, we manipulate the background to have the same sampling bias as the presence data <span class="citation">(Kramer-Schadt et al. 2013)</span>. For example, this is particularly useful if presence records are restricted to easily accessible areas like roads. We use inverse distance weighting to define the sampling density of the presence points and then sample background proportional to that density. Following <span class="citation">Kramer-Schadt et al. (2013)</span>, we assume a low sampling effort outside the sampling range of the presence data - here a 5% sampling effort.</p>
-<pre class="r"><code># Compute inverse distance weighted interpolation and create raster with density layer
-idw &lt;- geoIDW(as.matrix(sp[sp$sp==&#39;Populus_imagines&#39;,1:2]), 
-              randomPoints(mask, sum(sp$sp==&#39;Populus_imagines&#39;)))
-idw_r &lt;- predict(mask, idw)</code></pre>
-<pre><code>## [inverse distance weighted interpolation]</code></pre>
-<pre class="r"><code># Re-classify density values below 0.05 indicating a 1/20 of the sampling effort
-values(idw_r)[values(idw_r) &lt; 0.05] &lt;- 0.05
-
-# Clip to land mass
-idw_r &lt;- mask(idw_r,mask)
-
-# Randomly select background data proportional to sampling density in presence data
-bg_idw &lt;- randomPoints(idw_r, 500, prob=T)
-
-# Plot the map and data
-plot(idw_r)
-points(sp[sp$sp==&#39;Populus_imagines&#39;,1:2],pch=&#39;+&#39;,col=&#39;red&#39;)
-points(bg_idw,pch=19,cex=0.3)</code></pre>
-<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<!-- ## Accounting for spatial sampling bias using target-group selection -->
+<!-- A critical assumption behind the above-mentioned background/pseudo-absence sampling is that the presence points were systematically or randomly sampled from the known distribution and are not spatially biased. In practice, this assumption is often violated, for example when observers go to more easily accessible areas. @Phillips2009 suggested a target-group sampling for this. The idea is that we use the presence points of other groups of species as potential pseudo-absence points to mimic survey effort. These target groups should be collected or observed using the same methods and equipments. So, this approach is kind of assuming that no complete inventories were made by the observers but that there is a chance that if the species had been there it would have been observed along with the others. -->
+<!-- Here, we use the sister populus species as target group. -->
+<!-- ```{r message=F, warning=F} -->
+<!-- # Randomly select background points from the target group -->
+<!-- p <- sample(seq_len(nrow(sp[sp$sp=='Populus_spp',])), 500) -->
+<!-- bg_target <- sp[sp$sp=='Populus_spp',1:2][p,] -->
+<!-- # Plot the map and data -->
+<!-- plot(mask,col='grey',legend=F) -->
+<!-- points(sp[sp$sp=='Populus_imagines',1:2],pch='+',col='red') -->
+<!-- points(bg_target,pch=19,cex=0.3) -->
+<!-- ``` -->
+<!-- ## Accounting for spatial sampling bias using inverse distance weighting -->
+<!-- In the last example, we manipulate the background to have the same sampling bias as the presence data [@Kramer-Schadt2013]. For example, this is particularly useful if presence records are restricted to easily accessible areas like roads. We use inverse distance weighting to define the sampling density of the presence points and then sample background proportional to that density. Following @Kramer-Schadt2013, we assume a low sampling effort outside the sampling range of the presence data - here a 5% sampling effort. -->
+<!-- ```{r message=F, warning=F} -->
+<!-- # Compute inverse distance weighted interpolation and create raster with density layer -->
+<!-- idw <- geoIDW(as.matrix(sp[sp$sp=='Populus_imagines',1:2]),  -->
+<!--               randomPoints(mask, sum(sp$sp=='Populus_imagines'))) -->
+<!-- idw_r <- predict(mask, idw) -->
+<!-- # Re-classify density values below 0.05 indicating a 1/20 of the sampling effort -->
+<!-- values(idw_r)[values(idw_r) < 0.05] <- 0.05 -->
+<!-- # Clip to land mass -->
+<!-- idw_r <- mask(idw_r,mask) -->
+<!-- # Randomly select background data proportional to sampling density in presence data -->
+<!-- bg_idw <- randomPoints(idw_r, 500, prob=T) -->
+<!-- # Plot the map and data -->
+<!-- plot(idw_r) -->
+<!-- points(sp[sp$sp=='Populus_imagines',1:2],pch='+',col='red') -->
+<!-- points(bg_idw,pch=19,cex=0.3) -->
+<!-- ``` -->
 </div>
 </div>
-<div id="workflow-for-joining-presence-and-backgroundpseudo-absence-data" class="section level1">
-<h1><span class="header-section-number">4</span> Workflow for joining presence and background/pseudo-absence data</h1>
-<p>In session 2, we have already learned how to join species data and environmental data (at 10 min resolution) using the Alpine Shrew as example species. Here, we will revisit this example, sample random background data and join these with environmental data to come up with a dataset containing presences and background data as well as the climatic predictors.</p>
+<div
+id="workflow-for-joining-presence-and-backgroundpseudo-absence-data"
+class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Workflow for joining
+presence and background/pseudo-absence data</h1>
+<p>In session b2, we have already learned how to join species data and
+environmental data (at 10 min resolution) using the Alpine Shrew as
+example species. Here, we will revisit this example, sample random
+background data and join these with environmental data to come up with a
+dataset containing presences and background data as well as the climatic
+predictors.</p>
 <pre class="r"><code># Load the species presence data (here, the data set from session 1):
-load(&#39;data/gbif_shrew.RData&#39;)
+load(&#39;data/gbif_shrew_cleaned.RData&#39;)
 
-head(gbif_shrew[,1:4])</code></pre>
+head(gbif_shrew2[,1:4])</code></pre>
 <pre><code>##          key             scientificName decimalLatitude decimalLongitude
-## 1 3117844078 Sorex alpinus Schinz, 1837        46.16635         11.31240
-## 2 3124800976 Sorex alpinus Schinz, 1837        47.84548         13.71877
-## 3 3307202767 Sorex alpinus Schinz, 1837        47.09105          9.32275
-## 4 3321353464 Sorex alpinus Schinz, 1837        47.13813          9.31725
-## 5 3321367470 Sorex alpinus Schinz, 1837        46.38380          8.51107
-## 6 3355778524 Sorex alpinus Schinz, 1837        47.89564         13.63084</code></pre>
+## 1 3824140382 Sorex alpinus Schinz, 1837        48.65200         8.358008
+## 2 3784645455 Sorex alpinus Schinz, 1837        46.75777        11.317498
+## 3 3873231122 Sorex alpinus Schinz, 1837        46.54926        10.625149
+## 4 3881729801 Sorex alpinus Schinz, 1837        47.54320        10.693369
+## 5 3892282027 Sorex alpinus Schinz, 1837        46.56076         6.107981
+## 6 3902041214 Sorex alpinus Schinz, 1837        47.14652        12.712957</code></pre>
 <pre class="r"><code># Plot the species presences
 library(maptools)
 data(wrld_simpl)
 
 plot(wrld_simpl,xlim=c(-12,45), ylim=c(35,73))
-points(gbif_shrew$decimalLongitude, gbif_shrew$decimalLatitude, col=&#39;red&#39;,  pch=19)</code></pre>
-<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-<p>You have already downloaded the climate data in session 2 and can simply read it back in. We crop it to European extent.</p>
-<pre class="r"><code># You may have to adjust the path to your folder structure:
-clim &lt;- getData(&quot;worldclim&quot;, var=&quot;bio&quot;, res=10, download=F, path=&quot;data/clim_data&quot;)
+points(gbif_shrew2$decimalLongitude, gbif_shrew2$decimalLatitude, col=&#39;red&#39;,  pch=19)</code></pre>
+<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>You have already downloaded the climate data in session 2 and can
+simply read it back in. We crop it to European extent.</p>
+<pre class="r"><code>library(geodata)
+
+# Download global bioclimatic data from worldclim (you may have to set argument &#39;download=T&#39; for first download, if &#39;download=F&#39; it will attempt to read from file):
+clim &lt;- geodata::worldclim_global(var = &#39;bio&#39;, res = 10, download = F, path = &#39;data&#39;)
 
 # Crop to Europe
-clim &lt;- crop(clim, c(-12,45,35,73))</code></pre>
-<p>What is important to consider is that you kind of arbitrarily chose a scale of analysis by chosing climate data (or other environmental data) at a certain spatial resolution. Here, we chose a spatial resolution of 10 minutes while the species data may actually be at a finer resolution. So, we first make sure that our species data are fit to the spatial resolution, meaning we remove any duplicates within 10 minute cells. We do this by joining the species data with the environmental data (basically, repeating what we had already done at the end of session 2). Then, we can remove the duplicate cells.</p>
-<pre class="r"><code># Extract environmental data and raster cellnumbers for the species data
-gbif_shrew2 &lt;- cbind(gbif_shrew[,c(&#39;decimalLongitude&#39;,&#39;decimalLatitude&#39;)], raster::extract(x = clim[[1]], 
-    y = data.frame(gbif_shrew[,c(&#39;decimalLongitude&#39;,&#39;decimalLatitude&#39;)]), cellnumbers=T ))
-
-# Now we remove the rows with duplicate cellnumbers:
-gbif_shrew2 &lt;- gbif_shrew2[!duplicated(gbif_shrew2$cells),]
-
-# Actually, we just need the new coordinates:
+clim &lt;- terra::crop(clim, c(-12,45,35,73))</code></pre>
+<p>What is important to consider is that you kind of arbitrarily chose a
+scale of analysis by chosing climate data (or other environmental data)
+at a certain spatial resolution. Here, we chose a spatial resolution of
+10 minutes while the species data may actually be at a finer resolution.
+So, we first make sure that our species data are fit to the spatial
+resolution, meaning we remove any duplicates within 10 minute cells. We
+do this by joining the species data with the environmental data
+(basically, repeating what we had already done at the end of session 2).
+Then, we can remove the duplicate cells.</p>
+<pre class="r"><code># We have already extracted environmental data and raster cellnumbers for the species data
+# Remember to remove any rows with duplicate cellnumbers if necessary:
+duplicated(gbif_shrew2$cells)</code></pre>
+<pre><code>## logical(0)</code></pre>
+<pre class="r"><code># From now on, we just need the coordinates:
 gbif_shrew2 &lt;- gbif_shrew2[,c(&#39;decimalLongitude&#39;,&#39;decimalLatitude&#39;)]</code></pre>
-<p>We place a buffer of 200 km around the shrew records and sample background points randomly from within the buffer but excluding presence locations (remember that also other pseudo-absence/background data strategies are possible).</p>
-<pre class="r"><code># Make SpatialPointsDataFrame:
-presences &lt;- gbif_shrew2
-coordinates(presences) &lt;- ~decimalLongitude + decimalLatitude
-projection(presences) &lt;- CRS(&#39;+proj=longlat +datum=WGS84&#39;)
+<p>We place a buffer of 200 km around the shrew records and sample
+background points randomly from within the buffer but excluding presence
+locations (remember that also other pseudo-absence/background data
+strategies are possible).</p>
+<pre class="r"><code># Make SpatVector:
+presences &lt;- terra::vect( as.matrix(gbif_shrew2), crs=crs(clim))
 
 # Then, place a buffer of 200 km radius around our presence points
-buf &lt;- buffer(presences,width=200000)
+v_buf &lt;- terra::buffer(presences, width=200000)
 
-# Create a mask with target resolution and extent from climate layers
-mask &lt;- clim[[1]]
-values(mask)[!is.na(values(mask))] &lt;- 1
-plot(mask, col=&#39;grey90&#39;, legend=F)
-
+# Create a background mask with target resolution and extent from climate layers
 # Set all raster cells outside the buffer to NA.
-buf &lt;- mask(mask,buf)
-plot(buf, add=T, col=&#39;grey60&#39;, legend=F)
+bg &lt;- clim[[1]]
+values(bg)[!is.na(values(bg))] &lt;- 1
+region_buf &lt;- terra::mask(bg, v_buf)
+plot(bg, col=&#39;grey90&#39;, legend=F)
+plot(region_buf, add=T, col=&#39;grey60&#39;, legend=F)
 
 # Randomly select background data within the buffer, excluding presence locations. We sample 10 times as many background data as we have presences.
-bg_dat &lt;- randomPoints(buf, length(presences)*10, p=presences)
-points(bg_dat, pch=19, cex=0.2, col=&#39;red&#39;)
-points(presences, pch=19, cex=0.5)</code></pre>
-<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
-<p>Last, we need to join the presences and background data, and extract the environmental data.</p>
+bg_rand_buf &lt;- dismo::randomPoints(raster(region_buf), length(presences)*10, p=gbif_shrew2)</code></pre>
+<pre><code>## Warning in dismo::randomPoints(raster(region_buf), length(presences) * 10, :
+## generated random points = 0.952272727272727 times requested number</code></pre>
+<pre class="r"><code>points(bg_rand_buf, pch=19, cex=0.2)
+points(presences, pch=19, cex=0.5, col=&#39;red&#39;)</code></pre>
+<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>Last, we need to join the presences and background data, and extract
+the environmental data.</p>
 <pre class="r"><code># First, we prepare the presences data to contain a column indicating 1 for presence.
 sp_env &lt;- data.frame(gbif_shrew2, occ=1)
 
 # Second, we make sure the background data have the same columns, and indicate 0 for absence.
-bg_dat &lt;- data.frame(bg_dat)
-summary(bg_dat)</code></pre>
-<pre><code>##        x                y        
-##  Min.   : 3.083   Min.   :43.08  
-##  1st Qu.: 7.250   1st Qu.:45.58  
-##  Median :10.750   Median :47.25  
-##  Mean   :10.519   Mean   :47.38  
-##  3rd Qu.:13.750   3rd Qu.:48.92  
-##  Max.   :17.583   Max.   :52.42</code></pre>
-<pre class="r"><code>names(bg_dat) &lt;- c(&#39;decimalLongitude&#39;,&#39;decimalLatitude&#39;)
-bg_dat$occ &lt;- 0
-summary(bg_dat)</code></pre>
+bg_rand_buf &lt;- data.frame(bg_rand_buf)
+summary(bg_rand_buf)</code></pre>
+<pre><code>##        x               y        
+##  Min.   : 2.75   Min.   :40.92  
+##  1st Qu.: 7.75   1st Qu.:45.08  
+##  Median :11.25   Median :47.08  
+##  Mean   :10.92   Mean   :47.06  
+##  3rd Qu.:14.08   3rd Qu.:49.08  
+##  Max.   :18.58   Max.   :52.58</code></pre>
+<pre class="r"><code>names(bg_rand_buf) &lt;- c(&#39;decimalLongitude&#39;,&#39;decimalLatitude&#39;)
+bg_rand_buf$occ &lt;- 0
+summary(bg_rand_buf)</code></pre>
 <pre><code>##  decimalLongitude decimalLatitude      occ   
-##  Min.   : 3.083   Min.   :43.08   Min.   :0  
-##  1st Qu.: 7.250   1st Qu.:45.58   1st Qu.:0  
-##  Median :10.750   Median :47.25   Median :0  
-##  Mean   :10.519   Mean   :47.38   Mean   :0  
-##  3rd Qu.:13.750   3rd Qu.:48.92   3rd Qu.:0  
-##  Max.   :17.583   Max.   :52.42   Max.   :0</code></pre>
+##  Min.   : 2.75    Min.   :40.92   Min.   :0  
+##  1st Qu.: 7.75    1st Qu.:45.08   1st Qu.:0  
+##  Median :11.25    Median :47.08   Median :0  
+##  Mean   :10.92    Mean   :47.06   Mean   :0  
+##  3rd Qu.:14.08    3rd Qu.:49.08   3rd Qu.:0  
+##  Max.   :18.58    Max.   :52.58   Max.   :0</code></pre>
 <pre class="r"><code># Third, we bind these two data sets
-sp_env &lt;- rbind(sp_env, bg_dat)
+sp_env &lt;- rbind(sp_env, bg_rand_buf)
 summary(sp_env)</code></pre>
 <pre><code>##  decimalLongitude decimalLatitude      occ         
-##  Min.   : 3.083   Min.   :43.08   Min.   :0.00000  
-##  1st Qu.: 7.250   1st Qu.:45.75   1st Qu.:0.00000  
-##  Median :10.417   Median :47.08   Median :0.00000  
-##  Mean   :10.409   Mean   :47.31   Mean   :0.09091  
-##  3rd Qu.:13.417   3rd Qu.:48.75   3rd Qu.:0.00000  
-##  Max.   :17.583   Max.   :52.42   Max.   :1.00000</code></pre>
+##  Min.   : 2.750   Min.   :40.92   Min.   :0.00000  
+##  1st Qu.: 7.583   1st Qu.:45.25   1st Qu.:0.00000  
+##  Median :10.917   Median :46.92   Median :0.00000  
+##  Mean   :10.762   Mean   :47.02   Mean   :0.09503  
+##  3rd Qu.:13.750   3rd Qu.:48.75   3rd Qu.:0.00000  
+##  Max.   :18.583   Max.   :52.58   Max.   :1.00000</code></pre>
 <pre class="r"><code># Last, we join this combined data set with the climate data.
-sp_env &lt;- cbind(sp_env, raster::extract(x = clim, y = sp_env[,c(&#39;decimalLongitude&#39;,&#39;decimalLatitude&#39;)], cellnumbers=T) )
+sp_env &lt;- cbind(sp_env, terra::extract(x = clim, y = sp_env[,c(&#39;decimalLongitude&#39;,&#39;decimalLatitude&#39;)], cells=T) )
 summary(sp_env)</code></pre>
-<pre><code>##  decimalLongitude decimalLatitude      occ              cells      
-##  Min.   : 3.083   Min.   :43.08   Min.   :0.00000   Min.   :42202  
-##  1st Qu.: 7.250   1st Qu.:45.75   1st Qu.:0.00000   1st Qu.:49704  
-##  Median :10.417   Median :47.08   Median :0.00000   Median :53134  
-##  Mean   :10.409   Mean   :47.31   Mean   :0.09091   Mean   :52684  
-##  3rd Qu.:13.417   3rd Qu.:48.75   3rd Qu.:0.00000   3rd Qu.:55922  
-##  Max.   :17.583   Max.   :52.42   Max.   :1.00000   Max.   :61330  
-##       bio1          bio2             bio3           bio4           bio5      
-##  Min.   :-25   Min.   : 50.00   Min.   :24.0   Min.   :5008   Min.   : 78.0  
-##  1st Qu.: 71   1st Qu.: 81.00   1st Qu.:30.0   1st Qu.:6110   1st Qu.:215.0  
-##  Median : 85   Median : 87.00   Median :32.0   Median :6457   Median :231.0  
-##  Mean   : 83   Mean   : 85.79   Mean   :31.6   Mean   :6485   Mean   :227.3  
-##  3rd Qu.:101   3rd Qu.: 92.00   3rd Qu.:33.0   3rd Qu.:6905   3rd Qu.:250.0  
-##  Max.   :159   Max.   :107.00   Max.   :39.0   Max.   :7719   Max.   :304.0  
-##       bio6              bio7            bio8            bio9       
-##  Min.   :-126.00   Min.   :193.0   Min.   :-72.0   Min.   :-87.00  
-##  1st Qu.: -56.00   1st Qu.:253.0   1st Qu.:109.0   1st Qu.:  3.00  
-##  Median : -38.00   Median :265.0   Median :152.0   Median : 19.00  
-##  Mean   : -39.78   Mean   :267.0   Mean   :131.8   Mean   : 39.58  
-##  3rd Qu.: -21.00   3rd Qu.:282.5   3rd Qu.:167.0   3rd Qu.: 54.00  
-##  Max.   :  57.00   Max.   :319.0   Max.   :204.0   Max.   :233.00  
-##      bio10           bio11            bio12            bio13      
-##  Min.   : 41.0   Min.   :-87.00   Min.   : 486.0   Min.   : 60.0  
-##  1st Qu.:154.0   1st Qu.:-17.00   1st Qu.: 725.0   1st Qu.: 83.0  
-##  Median :168.0   Median :  0.00   Median : 858.0   Median :100.0  
-##  Mean   :165.1   Mean   : -1.09   Mean   : 921.1   Mean   :106.6  
-##  3rd Qu.:183.0   3rd Qu.: 16.00   3rd Qu.:1070.5   3rd Qu.:127.0  
-##  Max.   :235.0   Max.   : 97.00   Max.   :2056.0   Max.   :198.0  
-##      bio14            bio15          bio16           bio17      
-##  Min.   : 10.00   Min.   : 7.0   Min.   :167.0   Min.   : 65.0  
-##  1st Qu.: 40.00   1st Qu.:17.0   1st Qu.:229.0   1st Qu.:133.0  
-##  Median : 49.00   Median :23.0   Median :275.0   Median :162.0  
-##  Mean   : 53.25   Mean   :22.8   Mean   :298.7   Mean   :174.6  
-##  3rd Qu.: 64.00   3rd Qu.:29.0   3rd Qu.:361.0   3rd Qu.:204.0  
-##  Max.   :150.00   Max.   :47.0   Max.   :577.0   Max.   :466.0  
-##      bio18           bio19      
-##  Min.   : 71.0   Min.   : 65.0  
-##  1st Qu.:212.0   1st Qu.:145.0  
-##  Median :248.0   Median :182.0  
-##  Mean   :272.8   Mean   :196.5  
-##  3rd Qu.:330.0   3rd Qu.:231.0  
-##  Max.   :563.0   Max.   :526.0</code></pre>
-<div id="spatial-thinning" class="section level2">
+<pre><code>##  decimalLongitude decimalLatitude      occ                ID      
+##  Min.   : 2.750   Min.   :40.92   Min.   :0.00000   Min.   :   1  
+##  1st Qu.: 7.583   1st Qu.:45.25   1st Qu.:0.00000   1st Qu.:1042  
+##  Median :10.917   Median :46.92   Median :0.00000   Median :2084  
+##  Mean   :10.762   Mean   :47.02   Mean   :0.09503   Mean   :2084  
+##  3rd Qu.:13.750   3rd Qu.:48.75   3rd Qu.:0.00000   3rd Qu.:3126  
+##  Max.   :18.583   Max.   :52.58   Max.   :1.00000   Max.   :4167  
+##  wc2.1_10m_bio_1  wc2.1_10m_bio_2  wc2.1_10m_bio_3 wc2.1_10m_bio_4
+##  Min.   :-3.347   Min.   : 5.193   Min.   :24.74   Min.   :464.7  
+##  1st Qu.: 7.577   1st Qu.: 8.075   1st Qu.:31.28   1st Qu.:624.6  
+##  Median : 8.938   Median : 8.561   Median :32.60   Median :658.0  
+##  Mean   : 8.916   Mean   : 8.593   Mean   :32.62   Mean   :666.7  
+##  3rd Qu.:10.579   3rd Qu.: 9.182   3rd Qu.:33.87   3rd Qu.:706.1  
+##  Max.   :16.905   Max.   :11.446   Max.   :41.01   Max.   :819.1  
+##  wc2.1_10m_bio_5  wc2.1_10m_bio_6   wc2.1_10m_bio_7 wc2.1_10m_bio_8 
+##  Min.   : 7.883   Min.   :-13.749   Min.   :18.97   Min.   :-6.303  
+##  1st Qu.:21.878   1st Qu.: -4.501   1st Qu.:24.88   1st Qu.: 9.516  
+##  Median :23.524   Median : -2.989   Median :26.09   Median :14.251  
+##  Mean   :23.407   Mean   : -2.916   Mean   :26.32   Mean   :12.467  
+##  3rd Qu.:25.832   3rd Qu.: -1.126   3rd Qu.:27.67   3rd Qu.:16.568  
+##  Max.   :31.365   Max.   :  8.387   Max.   :32.22   Max.   :21.641  
+##  wc2.1_10m_bio_9   wc2.1_10m_bio_10 wc2.1_10m_bio_11  wc2.1_10m_bio_12
+##  Min.   :-9.6958   Min.   : 3.722   Min.   :-9.7354   Min.   : 217.0  
+##  1st Qu.: 0.9651   1st Qu.:15.857   1st Qu.:-0.7275   1st Qu.: 715.0  
+##  Median : 3.4396   Median :17.214   Median : 0.6776   Median : 852.0  
+##  Mean   : 5.5439   Mean   :17.213   Mean   : 0.9196   Mean   : 915.8  
+##  3rd Qu.: 6.3193   3rd Qu.:19.303   3rd Qu.: 2.6122   3rd Qu.:1082.0  
+##  Max.   :24.3333   Max.   :24.333   Max.   :11.0833   Max.   :2334.0  
+##  wc2.1_10m_bio_13 wc2.1_10m_bio_14 wc2.1_10m_bio_15 wc2.1_10m_bio_16
+##  Min.   : 28.0    Min.   :  4.00   Min.   : 4.41    Min.   : 77.0   
+##  1st Qu.: 83.0    1st Qu.: 36.00   1st Qu.:16.23    1st Qu.:226.0   
+##  Median :100.0    Median : 49.00   Median :23.09    Median :269.0   
+##  Mean   :107.5    Mean   : 50.18   Mean   :23.91    Mean   :295.8   
+##  3rd Qu.:126.0    3rd Qu.: 61.00   3rd Qu.:30.10    3rd Qu.:345.0   
+##  Max.   :278.0    Max.   :119.00   Max.   :61.70    Max.   :743.0   
+##  wc2.1_10m_bio_17 wc2.1_10m_bio_18 wc2.1_10m_bio_19      cell      
+##  Min.   : 25.0    Min.   : 31.0    Min.   : 36.0    Min.   :41864  
+##  1st Qu.:126.0    1st Qu.:195.0    1st Qu.:146.0    1st Qu.:49690  
+##  Median :164.0    Median :229.0    Median :189.0    Median :53464  
+##  Mean   :170.5    Mean   :252.7    Mean   :198.7    Mean   :53285  
+##  3rd Qu.:206.0    3rd Qu.:290.0    3rd Qu.:241.0    3rd Qu.:56898  
+##  Max.   :438.0    Max.   :573.0    Max.   :526.0    Max.   :65823</code></pre>
+<div id="spatial-thinning" class="section level2" number="4.1">
 <h2><span class="header-section-number">4.1</span> Spatial thinning</h2>
-<p>When we prepare our distribution data for species distribution modelling, we also need to think about spatial autocorrelation. Using adjacent cells in model building can lead to problems with spatial autocorrelation. One way to avoid this is spatially thinning the records, for example using the package <code>spThin</code> <span class="citation">(Aiello-Lammens et al. 2015)</span>. Load the package and look up the help page <code>?thin</code>.</p>
+<p>When we prepare our distribution data for species distribution
+modelling, we also need to think about spatial autocorrelation. Using
+adjacent cells in model building can lead to problems with spatial
+autocorrelation. As a rule of thumb, data points should be at least 2-3
+cells apart.</p>
+<p>One way to avoid this is spatially thinning the records, for example
+using the package <code>spThin</code> <span
+class="citation">(Aiello-Lammens et al. 2015)</span>. Load the package
+and look up the help page <code>?thin</code>.</p>
 <pre class="r"><code>library(spThin)
 
 # The spThin package requires longitude/latitude coordinates, which we already have.
@@ -719,75 +870,121 @@ summary(sp_env)</code></pre>
 sp_env$sp &lt;- &#39;Sorex_alpinus&#39;
   
 # Remove adjacent cells of presence/background data:
-xy &lt;- thin(sp_env, lat.col=&#39;decimalLatitude&#39;,long.col=&#39;decimalLongitude&#39;,spec.col=&#39;sp&#39;, thin.par=20,reps=5, write.files=F,locs.thinned.list.return=T)</code></pre>
+xy &lt;- thin(sp_env, lat.col=&#39;decimalLatitude&#39;,long.col=&#39;decimalLongitude&#39;,spec.col=&#39;sp&#39;, thin.par=30,reps=1, write.files=F,locs.thinned.list.return=T)</code></pre>
 <pre><code>## ********************************************** 
 ##  Beginning Spatial Thinning.
-##  Script Started at: Thu Jan 13 11:13:11 2022
+##  Script Started at: Wed Oct 19 00:04:41 2022
 ## lat.long.thin.count
-## 1040 1041 1043 1047 1050 
-##    1    1    1    1    1 
-## [1] &quot;Maximum number of records after thinning: 1050&quot;
+## 734 
+##   1 
+## [1] &quot;Maximum number of records after thinning: 734&quot;
 ## [1] &quot;Number of data.frames with max records: 1&quot;
 ## [1] &quot;No files written for this run.&quot;</code></pre>
-<pre class="r"><code># The thinning function was repeated 5 times, and we now want to know which run retained the presence records?
-which.max(sapply(xy,nrow))</code></pre>
-<pre><code>## [1] 1</code></pre>
 <pre class="r"><code># Keep the coordinates with the most presence records
-xy_keep &lt;- xy[[which.max(sapply(xy,nrow))]]
+xy_keep &lt;- xy[[1]]
 
 # Thin the dataset - here, we first extract the cell numbers for the thinned coordinates and then use these to subset our data frame.
-cells_thinned &lt;- cellFromXY(clim, xy_keep)
-sp_thinned &lt;- sp_env[sp_env$cells %in% cells_thinned,]
+cells_thinned &lt;- terra::cellFromXY(clim, xy_keep)
+sp_thinned &lt;- sp_env[sp_env$cell %in% cells_thinned,]
 
 # Plot the map and data
-plot(mask, col=&#39;grey90&#39;, legend=F)
+plot(bg, col=&#39;grey90&#39;, legend=F)
 points(sp_thinned[,1:2],pch=19,col=c(&#39;black&#39;,&#39;red&#39;)[as.factor(sp_thinned$occ)], cex=0.3)</code></pre>
-<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
-<p>Finally, don’t forget to save your data, for example by writing the final data frame to file or by saving the R object(s).</p>
+<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<!-- ```{r eval=F, echo=F} -->
+<!-- # Alternatively, remove adjacent cells separately in presence data and background data: -->
+<!-- xy_pres <- thin(sp_env[sp_env$occ==1,], lat.col='decimalLatitude',long.col='decimalLongitude',spec.col='sp', thin.par=20,reps=5, write.files=F,locs.thinned.list.return=T) -->
+<!-- xy_pres_keep <- xy_pres[[which.max(sapply(xy_pres,nrow))]] -->
+<!-- xy_abs <- thin(sp_env[sp_env$occ==0,], lat.col='decimalLatitude',long.col='decimalLongitude',spec.col='sp', thin.par=20,reps=5, write.files=F,locs.thinned.list.return=T) -->
+<!-- xy_abs_keep <- xy_abs[[which.max(sapply(xy_abs,nrow))]] -->
+<!-- # Thin the dataset - here, we first extract the cell numbers for the thinned coordinates and then use these to subset our data frame. -->
+<!-- cells_thinned2 <- cellFromXY(clim, rbind(xy_pres_keep, xy_abs_keep)) -->
+<!-- sp_thinned2 <- sp_env[sp_env$cells %in% cells_thinned2,] -->
+<!-- # Plot the map and data -->
+<!-- plot(mask, col='grey90', legend=F) -->
+<!-- points(sp_thinned2[,1:2],pch=19,col=c('black','red')[as.factor(sp_thinned2$occ)], cex=0.3) -->
+<!-- ``` -->
+<p>Finally, don’t forget to save your data, for example by writing the
+final data frame to file or by saving the R object(s).</p>
 <pre class="r"><code>save(sp_thinned,file=&#39;data/gbif_shrew_PresAbs_thinned.RData&#39;)</code></pre>
-<p><strong>Alternative:</strong> The <code>thin()</code> function can take quite long and needs a lot of memory space. A useful alternative function for spatial thinning is <code>gridSample()</code> in the <code>dismo</code> package.</p>
-<pre class="r"><code>xy &lt;- gridSample(sp_env[,c(&quot;decimalLongitude&quot;,&quot;decimalLatitude&quot;)], mask,chess=&#39;white&#39;)
+<p><strong>Alternative:</strong> The <code>thin()</code> function can
+take quite long and needs a lot of memory space. A useful alternative
+function for spatial thinning is <code>gridSample()</code> in the
+<code>dismo</code> package.</p>
+<pre class="r"><code>xy &lt;- dismo::gridSample(sp_env[,c(&quot;decimalLongitude&quot;,&quot;decimalLatitude&quot;)], bg,chess=&#39;white&#39;)
 sp_thinned2 &lt;- merge(xy,sp_env,by=c(&quot;decimalLongitude&quot;,&quot;decimalLatitude&quot;))
 
 # Plot the map and data
-plot(mask, col=&#39;grey90&#39;, legend=F)
+plot(region, col=&#39;grey90&#39;, legend=F)
 points(sp_thinned2[,1:2],pch=19,col=c(&#39;black&#39;,&#39;red&#39;)[as.factor(sp_thinned2$occ)], cex=0.3)</code></pre>
-<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<pre class="r"><code>#-----
+
+# Thinning to larger grid
+xy &lt;- dismo::gridSample(sp_env[,c(&quot;decimalLongitude&quot;,&quot;decimalLatitude&quot;)], aggregate(bg,2),chess=&#39;white&#39;)
+sp_thinned3 &lt;- merge(xy,sp_env,by=c(&quot;decimalLongitude&quot;,&quot;decimalLatitude&quot;))
+
+# Plot the map and data
+plot(region, col=&#39;grey90&#39;, legend=F)
+points(sp_thinned3[,1:2],pch=19,col=c(&#39;black&#39;,&#39;red&#39;)[as.factor(sp_thinned2$occ)], cex=0.3)</code></pre>
+<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-15-2.png" width="672" /></p>
+<!-- <div class="alert alert-info"> -->
+<!-- _**Exercise:**_ -->
+<!-- We have now finished our first own dataset.  -->
+<!-- - Use the data and build a GLM for the alpine shrew. Remember the different steps of checking for multicollinearity, building the full model and simplifying it.  -->
+<!-- - Assess the predictive performance of that model. -->
+<!-- - Make predictions to current climate. Where is the species predicted to occur in Europe? -->
+<!-- </div> -->
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
-<p>We have now finished our first own dataset.</p>
+<p>In practical b1, you have downloaded your own GBIF data. Carry out
+the pseudo-absence data selection for this species, and run a GLM
+analysis.</p>
 <ul>
-<li>Use the data and build a GLM for the alpine shrew. Remember the different steps of checking for multicollinearity, building the full model and simplifying it.</li>
+<li>Choose a pseudo-absence/background data strategy for your species.
+Why is this the most appropriate?</li>
+<li>Use the data and build a GLM. Remember the different steps of
+checking for multicollinearity, building the full model and simplifying
+it.</li>
 <li>Assess the predictive performance of that model.</li>
-<li>Make predictions to current climate. Where is the species predicted to occur in Europe?</li>
-</ul>
-</div>
-<div class="alert alert-info">
-<p><em><strong>Exercise:</strong></em></p>
-<p>In practical b1, you have downloaded your own GBIF data. Carry out the pseudo-absence data selection for this species, and run a GLM analysis.</p>
-<ul>
-<li>Choose a pseudo-absence/background data strategy for your species. Why is this the most appropriate?</li>
-<li>Use the data and build a GLM. Remember the different steps of checking for multicollinearity, building the full model and simplifying it.</li>
-<li>Assess the predictive performance of that model.</li>
-<li>Make predictions to current climate. Where is the species predicted to occur on the Globe?</li>
+<li>Make predictions to current climate. Where is the species predicted
+to occur on the Globe?</li>
 </ul>
 </div>
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">
-<h1>References</h1>
-<div id="refs" class="references">
-<div id="ref-Aiello-Lammens2015">
-<p>Aiello-Lammens, M. E., R. A. Boria, A. Radosavljevic, B. Vilela, and R. P. Anderson. 2015. “spThin: An R Package for Spatial Thinning of Species Occurrence Records for Use in Ecological Niche Models.” <em>Ecography</em> 38 (5). Wiley: 541–45. <a href="https://doi.org/10.1111/ecog.01132">https://doi.org/10.1111/ecog.01132</a>.</p>
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Aiello-Lammens2015" class="csl-entry">
+Aiello-Lammens, M. E., R. A. Boria, A. Radosavljevic, B. Vilela, and R.
+P. Anderson. 2015. <span>“<span class="nocase">spThin</span>: An r
+Package for Spatial Thinning of Species Occurrence Records for Use in
+Ecological Niche Models.”</span> <em>Ecography</em> 38 (5): 541–45. <a
+href="https://doi.org/10.1111/ecog.01132">https://doi.org/10.1111/ecog.01132</a>.
 </div>
-<div id="ref-BarbetMassin2012a">
-<p>Barbet-Massin, M., F. Jiguet, C. H. Albert, and W. Thuiller. 2012. “Selecting Pseudo-Absences for Species Distribution Models: How, Where and How Many?” <em>Methods in Ecology and Evolution</em> 3 (2): 327–38. <a href="https://doi.org/10.1111/j.2041-210X.2011.00172.x">https://doi.org/10.1111/j.2041-210X.2011.00172.x</a>.</p>
+<div id="ref-BarbetMassin2012a" class="csl-entry">
+Barbet-Massin, M., F. Jiguet, C. H. Albert, and W. Thuiller. 2012.
+<span>“Selecting Pseudo-Absences for Species Distribution Models: How,
+Where and How Many?”</span> <em>Methods in Ecology and Evolution</em> 3
+(2): 327–38. <a
+href="https://doi.org/10.1111/j.2041-210X.2011.00172.x">https://doi.org/10.1111/j.2041-210X.2011.00172.x</a>.
 </div>
-<div id="ref-Kramer-Schadt2013">
-<p>Kramer-Schadt, S., J. Niedballa, J. D. Pilgrim, B. Schroeder, J. Lindenborn, V. Reinfelder, M. Stillfried, et al. 2013. “The Importance of Correcting for Sampling Bias in Maxent Species Distribution Models.” <em>Diversity and Distributions</em> 19 (11): 1366–79. <a href="https://doi.org/10.1111/ddi.12096">https://doi.org/10.1111/ddi.12096</a>.</p>
+<div id="ref-Kramer-Schadt2013" class="csl-entry">
+Kramer-Schadt, S., J. Niedballa, J. D. Pilgrim, B. Schroeder, J.
+Lindenborn, V. Reinfelder, M. Stillfried, et al. 2013. <span>“The
+Importance of Correcting for Sampling Bias in MaxEnt Species
+Distribution Models.”</span> <em>Diversity and Distributions</em> 19
+(11): 1366–79. <a
+href="https://doi.org/10.1111/ddi.12096">https://doi.org/10.1111/ddi.12096</a>.
 </div>
-<div id="ref-Phillips2009">
-<p>Phillips, S. J., M. Dudik, J. Elith, C. H. Graham, A. Lehmann, J. Leathwick, and S. Ferrier. 2009. “Sample Selection Bias and Presence-Only Distribution Models: Implications for Background and Pseudo-Absence Data.” <em>Ecological Applications</em> 19 (1): 181–97. <a href="https://doi.org/10.1890/07-2153.1">https://doi.org/10.1890/07-2153.1</a>.</p>
+<div id="ref-Phillips2009" class="csl-entry">
+Phillips, S. J., M. Dudik, J. Elith, C. H. Graham, A. Lehmann, J.
+Leathwick, and S. Ferrier. 2009. <span>“Sample Selection Bias and
+Presence-Only Distribution Models: Implications for Background and
+Pseudo-Absence Data.”</span> <em>Ecological Applications</em> 19 (1):
+181–97. <a
+href="https://doi.org/10.1890/07-2153.1">https://doi.org/10.1890/07-2153.1</a>.
 </div>
 </div>
 </div>
@@ -798,7 +995,7 @@ points(sp_thinned2[,1:2],pch=19,col=c(&#39;black&#39;,&#39;red&#39;)[as.factor(s
 <br>
 <hr />
 <div id="footer">
-<p>Damaris Zurell 2021 <a href="http://creativecommons.org/licenses/by/4.0/" >(CC BY 4.0)</a>.  </p>
+<p>Damaris Zurell 2022 <a href="http://creativecommons.org/licenses/by/4.0/" >(CC BY 4.0)</a>.  </p>
 </div>
 
 </html>
