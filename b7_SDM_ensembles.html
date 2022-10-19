@@ -13,7 +13,8 @@
 
 <title>SDM ensembles</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -61,6 +62,29 @@ if (window.hljs) {
 
 
 
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 
 
 
@@ -84,6 +108,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -309,7 +336,7 @@ div.tocify {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -321,11 +348,8 @@ div.tocify {
         <li>
   <a href="index.html">Home</a>
 </li>
-<li>
-  <a href="schedule.html">Schedule</a>
-</li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Pracs: macroecological analyses
      
     <span class="caret"></span>
@@ -355,7 +379,7 @@ div.tocify {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Pracs: species distribution modelling
      
     <span class="caret"></span>
@@ -414,126 +438,185 @@ div.tocify {
 
 <div class="alert alert-info">
 <p><strong>RStudio project</strong></p>
-<p>Open the RStudio project that we created in the first session. I recommend to use this RStudio project for the entire course and within the RStudio project create separate R scripts for each session.</p>
+<p>Open the RStudio project that we created in the first session. I
+recommend to use this RStudio project for the entire course and within
+the RStudio project create separate R scripts for each session.</p>
 <ul>
-<li>Create a new empty R script by going to the tab “File”, select “New File” and then “R script”</li>
-<li>In the new R script, type <code># Session b7: SDM ensembles</code> and save the file in your folder “scripts” within your project folder, e.g. as “b7_SDM_ensembles.R”</li>
+<li>Create a new empty R script by going to the tab “File”, select “New
+File” and then “R script”</li>
+<li>In the new R script, type <code># Session b7: SDM ensembles</code>
+and save the file in your folder “scripts” within your project folder,
+e.g. as “b7_SDM_ensembles.R”</li>
 </ul>
 </div>
-<div id="introduction" class="section level1">
+<div id="introduction" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>In the previous session, we got to know several SDM algorithms <span class="citation">(Elith et al. 2006; Thuiller et al. 2009; Guisan, Thuiller, and Zimmermann 2017)</span>. But how do we proceed with all these models now? In the end, it would be handy to just work with a single, general prediction. One way to achive a single prediction would be to select the best performing algorithm. However, we have also seen that different models make different assumptions and extrapolate differently to new environments. <em>A priori</em>, it is difficult to judge which of the algorithms will perform best in new situations. Ensemble models have been introduced as an alternative <span class="citation">(Araujo and New 2007)</span>. These combine different models and provide information about the overall trend and the uncertainty around this trend <span class="citation">(Guisan, Thuiller, and Zimmermann 2017; Thuiller et al. 2019)</span>. Sometimes, the term ensembles is used synonymously with model averaging <span class="citation">(Dormann et al. 2018)</span> when only different model algorithms are combined. According to <span class="citation">Araujo and New (2007)</span>, ensembles could also take into account varying initial and boundary conditions (e.g. different data inputs, and different future scenarios).</p>
-<p>In ensembles, predictions can be combined or averaged in different ways <span class="citation">(Thuiller et al. 2009)</span>. Simple averages of predictions are derived using the arithmetic mean or the median. An alternative is to use weighted averages. Here, each model receives a weight derived from information criteria (e.g. AIC) or from predictive performance (e.g. AUC or TSS derived from cross-validation or split-sample approaches). To assess uncertainty in model predictions, we can, for example, calculate the coefficient of variation or standard deviation.</p>
-<p>Here, we will concentrate on how different algorithms can be combined into ensemble predictions. This is primarily meant to show you the main workflow. The ensembles can be adopted individually by using less, more or simply other algorithms, by using different parameterisations for the different algorithms, by using different input data (e.g. atlas data vs. range maps), and projections can be made to different scenarios of future (or past) global change.</p>
-<p>There is one important note for forecast ensembles. Typically, we would make projections under climate change or land use change for scenarios derived from different climate models or land use models. This captures the uncertainty from different underlying model assumptions. This should not be confused with different storylines (the old SRES storylines or newer RCPs in climate models, or the SSPs in land use models; <span class="citation">Vuuren and Carter (2013)</span>). When making projections into the future, we would typically combine ensembles of predictions for different SDM algorithms and different climate and land use models. However, we would not combine projections for different storylines, but would want to analyse the potential pathways separately.</p>
+<p>In the previous session, we got to know several SDM algorithms <span
+class="citation">(Elith et al. 2006; Thuiller et al. 2009; Guisan,
+Thuiller, and Zimmermann 2017)</span>. But how do we proceed with all
+these models now? In the end, it would be handy to just work with a
+single, general prediction. One way to achive a single prediction would
+be to select the best performing algorithm. However, we have also seen
+that different models make different assumptions and extrapolate
+differently to new environments. <em>A priori</em>, it is difficult to
+judge which of the algorithms will perform best in new situations.
+Ensemble models have been introduced as an alternative <span
+class="citation">(Araujo and New 2007)</span>. These combine different
+models and provide information about the overall trend and the
+uncertainty around this trend <span class="citation">(Guisan, Thuiller,
+and Zimmermann 2017; Thuiller et al. 2019)</span>. Sometimes, the term
+ensembles is used synonymously with model averaging <span
+class="citation">(Dormann et al. 2018)</span> when only different model
+algorithms are combined. According to <span class="citation">Araujo and
+New (2007)</span>, ensembles could also take into account varying
+initial and boundary conditions (e.g. different data inputs, and
+different future scenarios).</p>
+<p>In ensembles, predictions can be combined or averaged in different
+ways <span class="citation">(Thuiller et al. 2009)</span>. Simple
+averages of predictions are derived using the arithmetic mean or the
+median. An alternative is to use weighted averages. Here, each model
+receives a weight derived from information criteria (e.g. AIC) or from
+predictive performance (e.g. AUC or TSS derived from cross-validation or
+split-sample approaches). To assess uncertainty in model predictions, we
+can, for example, calculate the coefficient of variation or standard
+deviation.</p>
+<p>Here, we will concentrate on how different algorithms can be combined
+into ensemble predictions. This is primarily meant to show you the main
+workflow. The ensembles can be adopted individually by using less, more
+or simply other algorithms, by using different parameterisations for the
+different algorithms, by using different input data (e.g. atlas data
+vs. range maps), and projections can be made to different scenarios of
+future (or past) global change.</p>
+<p>There is one important note for forecast ensembles. Typically, we
+would make projections under climate change or land use change for
+scenarios derived from different climate models or land use models. This
+captures the uncertainty from different underlying model assumptions.
+This should not be confused with different storylines (the old SRES
+storylines or newer RCPs in climate models, or the SSPs in land use
+models; <span class="citation">Vuuren and Carter (2013)</span>). When
+making projections into the future, we would typically combine ensembles
+of predictions for different SDM algorithms and different climate and
+land use models. However, we would not combine projections for different
+storylines, but would want to analyse the potential pathways
+separately.</p>
 </div>
-<div id="recap-of-last-session-data-and-model-building-steps" class="section level1">
-<h1><span class="header-section-number">2</span> Recap of last session: data and model building steps</h1>
-<p>We will continue to work on the Ring Ouzel example of the previous session, using data from the British breeding and wintering birds citizen science atlas <span class="citation">(Gillings et al. 2019)</span>. The species presense/absence data and the bioclimatic variables at these locations are available from file. Also, we have already tested the data for multicollinearity and identified bio11 and bio8 as weakly correlated variables with high univariate variable importance, and we have run different algorithms.</p>
-<div id="data" class="section level2">
+<div id="recap-of-last-session-data-and-model-building-steps"
+class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Recap of last session:
+data and model building steps</h1>
+<p>We will continue to work on the Yellowhammer example of the previous
+session, using data from the British breeding and wintering birds
+citizen science atlas <span class="citation">(Gillings et al.
+2019)</span>. The species presense/absence data and the bioclimatic
+variables at these locations are available from file. Also, we have
+already tested the data for multicollinearity and identified bio12 and
+bio9 as most important but weakly correlated variables, and we have run
+different algorithms.</p>
+<div id="data" class="section level2" number="2.1">
 <h2><span class="header-section-number">2.1</span> Data</h2>
-<pre class="r"><code>library(raster)
-bg &lt;- raster(&#39;data/Prac3_UK_mask.grd&#39;)</code></pre>
-<pre><code>## Warning in showSRID(uprojargs, format = &quot;PROJ&quot;, multiline = &quot;NO&quot;, prefer_proj =
-## prefer_proj): Discarded datum OSGB 1936 in Proj4 definition</code></pre>
-<pre class="r"><code>sp_dat &lt;- read.table(&#39;data/Prac3_RingOuzel.txt&#39;,header=T)</code></pre>
-<p>Previously, we have used a simple split-sample to validate model performance:</p>
+<pre class="r"><code>library(terra)
+
+bg &lt;- terra::rast(&#39;data/Prac3_UK_mask.grd&#39;)
+sp_dat &lt;- read.table(&#39;data/Prac3_YellowHammer.txt&#39;,header=T)</code></pre>
+<p>Previously, we have used a simple split-sample to validate model
+performance:</p>
 <pre class="r"><code># Read the split-sample back in
 train_i &lt;- scan(&#39;data/indices_traindata.txt&#39;)
 
 # Then, we can subset the training and testing data
 sp_train &lt;- sp_dat[train_i,]
 sp_test &lt;- sp_dat[-train_i,]</code></pre>
-<p>For making predictions in space, we also load the previously processed raster layers of current climate (see session 4).</p>
-<pre class="r"><code>library(raster)
-
-bio_curr &lt;- stack(&#39;data/Prac4_UK_bio_curr.grd&#39;)</code></pre>
+<p>For making predictions in space, we also load the previously
+processed raster layers of current climate (see session 4).</p>
+<pre class="r"><code>bio_curr &lt;- terra::rast(&#39;data/Prac4_UK_bio_curr.grd&#39;)</code></pre>
 </div>
-<div id="model-fitting" class="section level2">
+<div id="model-fitting" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> Model fitting</h2>
-<p>In the previous tutorial, we already fitted different model algorithms. Here, we refit them very quickly.</p>
+<p>In the previous tutorial, we already fitted different model
+algorithms. Here, we refit them very quickly.</p>
 <pre class="r"><code># Our predictors:
-my_preds &lt;- c(&#39;bio11&#39;, &#39;bio8&#39;)
+my_preds &lt;- c(&#39;bio12&#39;, &#39;bio9&#39;)
 
 
 library(dismo)
 
-# Fit BIOCLIM model
-m_bc &lt;- bioclim(bio_curr[[my_preds]], 
-                sp_train[sp_train$Turdus_torquatus==1,c(&#39;EASTING&#39;,&#39;NORTHING&#39;)])
+# Fit BIOCLIM model - with Raster* object!
+m_bc &lt;- bioclim(stack(bio_curr[[my_preds]]), 
+                sp_train[sp_train$Emberiza_citrinella==1,c(&#39;EASTING&#39;,&#39;NORTHING&#39;)])
 
-# Fit Domain model
-m_dom &lt;- domain(bio_curr[[my_preds]], 
-                sp_train[sp_train$Turdus_torquatus==1,c(&#39;EASTING&#39;,&#39;NORTHING&#39;)])
+# Fit Domain model - with Raster* object!
+m_dom &lt;- domain(stack(bio_curr[[my_preds]]), 
+                sp_train[sp_train$Emberiza_citrinella==1,c(&#39;EASTING&#39;,&#39;NORTHING&#39;)])
 
 # Fit generalised linear model (GLM)
-m_glm &lt;- step(glm( Turdus_torquatus ~ bio11 + I(bio11^2) + bio8 + I(bio8^2),
+m_glm &lt;- step(glm( Emberiza_citrinella ~ bio12 + I(bio12^2) + bio9 + I(bio9^2),
     family=&#39;binomial&#39;, data=sp_train))
 
 # Fit generalised additive model (GAM) with cubic smoothing splines
-library(gam)
-m_gamS &lt;- gam( Turdus_torquatus ~ s(bio11, df=4) + s(bio8, df=4),
+library(mgcv)
+m_gam &lt;- mgcv::gam( Emberiza_citrinella ~ s(bio12, k=4) + s(bio9, k=4),
     family=&#39;binomial&#39;, data=sp_train)
 
 # Fit Maxent
 library(maxnet)
-m_maxent &lt;- maxnet(p=sp_train$Turdus_torquatus, data=sp_train[,my_preds],
-    maxnet.formula(p=sp_train$Turdus_torquatus, data=sp_train[,my_preds], classes=&quot;lh&quot;))
+m_maxent &lt;- maxnet(p=sp_train$Emberiza_citrinella, data=sp_train[,my_preds],
+    maxnet.formula(p=sp_train$Emberiza_citrinella, data=sp_train[,my_preds], classes=&quot;lh&quot;))
 
 # Fit classification and regression tree (CART)
 library(rpart)
-m_cart &lt;- rpart( Turdus_torquatus ~ bio11 + bio8,
+m_cart &lt;- rpart( Emberiza_citrinella ~ bio12 + bio9,
     data=sp_train, control=rpart.control(minsplit=20,xval=10))
 
 # Fit Random Forest (RF)
 library(randomForest)
-m_rf &lt;- randomForest( x=sp_train[,my_preds], y=sp_train$Turdus_torquatus, 
+m_rf &lt;- randomForest( x=sp_train[,my_preds], y=sp_train$Emberiza_citrinella, 
     ntree=1000, importance =T)
 
 # Fit boosted regression tree (BRT)
 library(gbm)
 m_brt &lt;- gbm.step(data = sp_train, 
     gbm.x = my_preds,
-    gbm.y = &#39;Turdus_torquatus&#39;, 
+    gbm.y = &#39;Emberiza_citrinella&#39;, 
     family = &#39;bernoulli&#39;,
     tree.complexity = 2,
     bag.fraction = 0.75,
     learning.rate = 0.001,
     verbose=F)</code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
-<div id="model-assessment" class="section level2">
+<div id="model-assessment" class="section level2" number="2.3">
 <h2><span class="header-section-number">2.3</span> Model assessment</h2>
-<p>We have already validated model performance on the hold-out test data in last session, and stored the results of the model validation:</p>
+<p>We have already validated model performance on the hold-out test data
+in last session, and stored the results of the model validation:</p>
 <pre class="r"><code># Adapt the file path to your folder structure
 (comp_perf &lt;- read.table(&#39;data/SDM_alg_performances.txt&#39;, header=T))</code></pre>
-<pre><code>##      alg       AUC       TSS     Kappa   Sens      Spec       PCC         D2
-## 1     bc 0.7948070 0.6102941 0.4317295 0.7500 0.8602941 0.8486842 -0.4583228
-## 2    dom 0.7821691 0.5441176 0.3274336 0.7500 0.7941176 0.7894737 -1.0856837
-## 3    glm 0.9333640 0.7352941 0.5006258 0.8750 0.8602941 0.8618421  0.4607125
-## 4   gamS 0.9375000 0.7757353 0.4912689 0.9375 0.8382353 0.8486842  0.4586095
-## 5   cart 0.8244485 0.6323529 0.4751381 0.7500 0.8823529 0.8684211  0.2546056
-## 6     rf 0.9039522 0.7132353 0.4597156 0.8750 0.8382353 0.8421053  0.2859066
-## 7    brt 0.9379596 0.7352941 0.5006258 0.8750 0.8602941 0.8618421  0.3962420
-## 8 maxent 0.9384191 0.7610294 0.4656918 0.9375 0.8235294 0.8355263  0.3160077
-##   thresh
-## 1  0.260
-## 2  0.680
-## 3  0.120
-## 4  0.100
-## 5  0.320
-## 6  0.130
-## 7  0.125
-## 8  0.265</code></pre>
+<pre><code>##      alg       AUC       TSS     Kappa      Sens      Spec       PCC
+## 1     bc 0.7579365 0.4017857 0.4090909 0.5476190 0.8541667 0.7111111
+## 2    dom 0.7098214 0.3601190 0.3655589 0.5476190 0.8125000 0.6888889
+## 3    glm 0.8903770 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
+## 4    gam 0.8859127 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
+## 5   cart 0.8196925 0.5922619 0.5958084 0.7380952 0.8541667 0.8000000
+## 6     rf 0.8308532 0.6071429 0.6017699 0.8571429 0.7500000 0.8000000
+## 7    brt 0.8831845 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
+## 8 maxent 0.8774802 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
+##            D2 thresh
+## 1 -0.37385682  0.175
+## 2  0.09900221  0.680
+## 3  0.37029784  0.525
+## 4  0.36548148  0.530
+## 5  0.16934395  0.800
+## 6  0.18303802  0.545
+## 7  0.34556241  0.580
+## 8  0.25816707  0.410</code></pre>
 </div>
-<div id="predictions" class="section level2">
+<div id="predictions" class="section level2" number="2.4">
 <h2><span class="header-section-number">2.4</span> Predictions</h2>
 <p>We also know how to make predictions to independent test data:</p>
 <pre class="r"><code>pred_testdata &lt;- data.frame(
   bc = predict(m_bc, sp_test[,my_preds]),
   dom = predict(m_dom, sp_test[,my_preds]),
   glm = predict(m_glm, sp_test[,my_preds], type=&#39;response&#39;),
-  gamS = predict(m_gamS, sp_test[,my_preds], type=&#39;response&#39;),
+  gam = as.vector(predict(m_gam, sp_test[,my_preds], type=&#39;response&#39;)),
   cart = predict(m_cart, sp_test[,my_preds]),
   rf = predict(m_rf, sp_test[,my_preds], type=&#39;response&#39;),
   brt = predict.gbm(m_brt, sp_test[,my_preds], 
@@ -542,52 +625,60 @@ m_brt &lt;- gbm.step(data = sp_train,
 )
 
 summary(pred_testdata)</code></pre>
-<pre><code>##        bc               dom              glm                 gamS          
-##  Min.   :0.00000   Min.   :0.0000   Min.   :0.0000408   Min.   :0.0000004  
-##  1st Qu.:0.00000   1st Qu.:0.3373   1st Qu.:0.0042416   1st Qu.:0.0067507  
-##  Median :0.07407   Median :0.5179   Median :0.0178688   Median :0.0175060  
-##  Mean   :0.17690   Mean   :0.4914   Mean   :0.1000621   Mean   :0.1010995  
-##  3rd Qu.:0.22222   3rd Qu.:0.6937   3rd Qu.:0.0830426   3rd Qu.:0.0822473  
-##  Max.   :0.96296   Max.   :0.8027   Max.   :0.7418596   Max.   :0.9988305  
-##       cart               rf               brt              maxent         
-##  Min.   :0.00000   Min.   :0.00000   Min.   :0.02403   Min.   :0.0004466  
-##  1st Qu.:0.01351   1st Qu.:0.00000   1st Qu.:0.02403   1st Qu.:0.0238353  
-##  Median :0.01351   Median :0.00010   Median :0.02411   Median :0.0746837  
-##  Mean   :0.11415   Mean   :0.10111   Mean   :0.10094   Mean   :0.1998619  
-##  3rd Qu.:0.01351   3rd Qu.:0.09087   3rd Qu.:0.04284   3rd Qu.:0.2724494  
-##  Max.   :0.77778   Max.   :0.97707   Max.   :0.56041   Max.   :0.9999025</code></pre>
-<p>As we have stored the maxSens+Spec threshold for each model, we can also threshold the predictions to obtain predicted presences and absences.</p>
+<pre><code>##        bc               dom              glm                 gam           
+##  Min.   :0.00000   Min.   :0.0000   Min.   :0.0009634   Min.   :0.0007748  
+##  1st Qu.:0.02101   1st Qu.:0.4422   1st Qu.:0.1988715   1st Qu.:0.1921130  
+##  Median :0.11765   Median :0.6294   Median :0.5515085   Median :0.5796006  
+##  Mean   :0.21083   Mean   :0.5440   Mean   :0.4999623   Mean   :0.5007960  
+##  3rd Qu.:0.33193   3rd Qu.:0.7012   3rd Qu.:0.8040124   3rd Qu.:0.8025983  
+##  Max.   :0.94118   Max.   :0.7329   Max.   :0.9070566   Max.   :0.9005589  
+##       cart               rf              brt             maxent       
+##  Min.   :0.02273   Min.   :0.0000   Min.   :0.1204   Min.   :0.01877  
+##  1st Qu.:0.20000   1st Qu.:0.1229   1st Qu.:0.1815   1st Qu.:0.22899  
+##  Median :0.75000   Median :0.6020   Median :0.6003   Median :0.43513  
+##  Mean   :0.52357   Mean   :0.5115   Mean   :0.5112   Mean   :0.37117  
+##  3rd Qu.:0.85047   3rd Qu.:0.8416   3rd Qu.:0.8061   3rd Qu.:0.54487  
+##  Max.   :0.85047   Max.   :0.9781   Max.   :0.8211   Max.   :0.58623</code></pre>
+<p>As we have stored the maxSens+Spec threshold for each model, we can
+also threshold the predictions to obtain predicted presences and
+absences.</p>
 <pre class="r"><code># We use the sapply function to apply the thresholding to all columns 
 # in the prediction data frame. You could also use a loop or construct
 # the data frame by hand.
-binpred_testdata &lt;- sapply(names(pred_testdata), FUN=function(alg){ 
-  ifelse(pred_testdata[,alg]&gt;=comp_perf[comp_perf$alg==alg,&#39;thresh&#39;],1,0)
-})
+binpred_testdata &lt;- sapply(names(pred_testdata), 
+                           FUN=function(alg){
+                              ifelse(pred_testdata[,alg] &gt;= comp_perf[comp_perf$alg==alg,&#39;thresh&#39;],1,0)
+                             }
+                           )
 
 summary(binpred_testdata)</code></pre>
-<pre><code>##        bc              dom              glm              gamS       
+<pre><code>##        bc              dom              glm              gam        
 ##  Min.   :0.0000   Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
 ##  1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000  
-##  Median :0.0000   Median :0.0000   Median :0.0000   Median :0.0000  
-##  Mean   :0.2039   Mean   :0.2632   Mean   :0.2171   Mean   :0.2434  
-##  3rd Qu.:0.0000   3rd Qu.:1.0000   3rd Qu.:0.0000   3rd Qu.:0.0000  
+##  Median :0.0000   Median :0.0000   Median :1.0000   Median :1.0000  
+##  Mean   :0.3333   Mean   :0.3556   Mean   :0.5222   Mean   :0.5222  
+##  3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000  
 ##  Max.   :1.0000   Max.   :1.0000   Max.   :1.0000   Max.   :1.0000  
 ##       cart              rf              brt             maxent      
 ##  Min.   :0.0000   Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
 ##  1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000  
-##  Median :0.0000   Median :0.0000   Median :0.0000   Median :0.0000  
-##  Mean   :0.1842   Mean   :0.2434   Mean   :0.2171   Mean   :0.2566  
-##  3rd Qu.:0.0000   3rd Qu.:0.0000   3rd Qu.:0.0000   3rd Qu.:1.0000  
+##  Median :0.0000   Median :1.0000   Median :1.0000   Median :1.0000  
+##  Mean   :0.4222   Mean   :0.5667   Mean   :0.5222   Mean   :0.5222  
+##  3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000  
 ##  Max.   :1.0000   Max.   :1.0000   Max.   :1.0000   Max.   :1.0000</code></pre>
 </div>
 </div>
-<div id="making-ensembles" class="section level1">
+<div id="making-ensembles" class="section level1" number="3">
 <h1><span class="header-section-number">3</span> Making ensembles</h1>
-<p>We have gathered all information now that we need for making ensembles: evaluation statistics, optimal thresholds for binary predictions, and model predictions. The predictions can be combined into ensembles in different ways:<br />
+<p>We have gathered all information now that we need for making
+ensembles: evaluation statistics, optimal thresholds for binary
+predictions, and model predictions. The predictions can be combined into
+ensembles in different ways:<br />
 - mean of probabilities<br />
 - median of probabilities<br />
 - weighted mean of probabilities (weighted by model performance)<br />
-- committee averaging of binary predictions (what is the proportion of models predicting a presence?)</p>
+- committee averaging of binary predictions (what is the proportion of
+models predicting a presence?)</p>
 <pre class="r"><code># Mean of probabilities
 mean_prob &lt;- rowMeans(pred_testdata)
 
@@ -605,41 +696,54 @@ committee_av &lt;- rowSums(binpred_testdata)/ncol(binpred_testdata)
 # We can also calculate uncertainty measures, 
 # e.g. the standard deviation when making ensembles of mean probabilities.
 sd_prob &lt;- apply(pred_testdata, 1, sd)</code></pre>
-<p>Thus, ensembles can be easily constructed by hand. Of course, if you have many input data, models, and scenarios to put into your ensemble, this is easily becoming tedious. For that purpose, it will be very useful to automatise your code and write automatic functions. For an example for automatising your functions, have a look at the code that we published along with <span class="citation">(<span class="citeproc-not-found" data-reference-id="Zurell2019"><strong>???</strong></span>)</span>, which you can obtain from the corresponding <a href="https://github.com/damariszurell/SSDM-JSDM">github repository</a>. Also, there are packages like <code>biomod2</code> that make it easy to construct ensembles automatically <span class="citation">(Thuiller et al. 2009)</span>.</p>
+<p>Thus, ensembles can be easily constructed by hand. Of course, if you
+have many input data, models, and scenarios to put into your ensemble,
+this is easily becoming tedious. For that purpose, it will be very
+useful to automatise your code and write automatic functions. For an
+example for automatising your functions, have a look at the code that we
+published along with <span
+class="citation">(<strong>Zurell2019?</strong>)</span>, which you can
+obtain from the corresponding <a
+href="https://github.com/damariszurell/SSDM-JSDM">github repository</a>.
+Also, there are packages like <code>biomod2</code> that make it easy to
+construct ensembles automatically <span class="citation">(Thuiller et
+al. 2009)</span>.</p>
 <p>Now, let’s assess the performance of these ensembles.</p>
 <pre class="r"><code>library(mecofun)
 
 # performance measures for &quot;mean of probabilities&quot;
-(perf_mean_prob &lt;- evalSDM(sp_test$Turdus_torquatus, mean_prob))</code></pre>
-<pre><code>##         AUC       TSS     Kappa   Sens      Spec       PCC        D2 thresh
-## 1 0.9117647 0.7389706 0.4304069 0.9375 0.8014706 0.8157895 0.2879811   0.17</code></pre>
+(perf_mean_prob &lt;- evalSDM(sp_test$Emberiza_citrinella, mean_prob))</code></pre>
+<pre><code>##        AUC       TSS     Kappa      Sens      Spec       PCC        D2 thresh
+## 1 0.874504 0.6904762 0.6884273 0.8571429 0.8333333 0.8444444 0.3217438   0.53</code></pre>
 <pre class="r"><code># performance measures for &quot;median of probabilities&quot;:
-(perf_median_prob &lt;- evalSDM(sp_test$Turdus_torquatus, median_prob))</code></pre>
-<pre><code>##         AUC       TSS     Kappa   Sens      Spec       PCC        D2 thresh
-## 1 0.9113051 0.7536765 0.4535398 0.9375 0.8161765 0.8289474 0.3914097   0.08</code></pre>
+(perf_median_prob &lt;- evalSDM(sp_test$Emberiza_citrinella, median_prob))</code></pre>
+<pre><code>##         AUC       TSS     Kappa      Sens      Spec       PCC        D2 thresh
+## 1 0.8819444 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667 0.3475024   0.55</code></pre>
 <pre class="r"><code># performance measures for &quot;weighted mean of probabilities&quot;:
-(perf_wmean_prob &lt;- evalSDM(sp_test$Turdus_torquatus, wmean_prob))</code></pre>
-<pre><code>##         AUC       TSS     Kappa  Sens      Spec       PCC        D2 thresh
-## 1 0.9131434 0.7279412 0.4864865 0.875 0.8529412 0.8552632 0.3175547  0.215</code></pre>
+(perf_wmean_prob &lt;- evalSDM(sp_test$Emberiza_citrinella, wmean_prob))</code></pre>
+<pre><code>##         AUC       TSS     Kappa      Sens      Spec       PCC        D2 thresh
+## 1 0.8769841 0.6964286 0.6902655 0.9047619 0.7916667 0.8444444 0.3320276  0.505</code></pre>
 <pre class="r"><code># performance measures for &quot;committee average&quot;:
-(perf_committee_prob &lt;- evalSDM(sp_test$Turdus_torquatus, committee_av))</code></pre>
-<pre><code>##         AUC       TSS     Kappa   Sens      Spec       PCC        D2 thresh
-## 1 0.8818934 0.7536765 0.4535398 0.9375 0.8161765 0.8289474 -2.310092  0.185</code></pre>
+(perf_committee_prob &lt;- evalSDM(sp_test$Emberiza_citrinella, committee_av))</code></pre>
+<pre><code>##        AUC       TSS     Kappa      Sens      Spec       PCC         D2 thresh
+## 1 0.874752 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667 -0.2191851   0.56</code></pre>
 <pre class="r"><code># Compare:
 (ens_perf &lt;- rbind(mean_prob = perf_mean_prob, median_prob = perf_median_prob, 
                     wmean_prob = perf_mean_prob, committee_av = perf_committee_prob))</code></pre>
-<pre><code>##                    AUC       TSS     Kappa   Sens      Spec       PCC
-## mean_prob    0.9117647 0.7389706 0.4304069 0.9375 0.8014706 0.8157895
-## median_prob  0.9113051 0.7536765 0.4535398 0.9375 0.8161765 0.8289474
-## wmean_prob   0.9117647 0.7389706 0.4304069 0.9375 0.8014706 0.8157895
-## committee_av 0.8818934 0.7536765 0.4535398 0.9375 0.8161765 0.8289474
+<pre><code>##                    AUC       TSS     Kappa      Sens      Spec       PCC
+## mean_prob    0.8745040 0.6904762 0.6884273 0.8571429 0.8333333 0.8444444
+## median_prob  0.8819444 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667
+## wmean_prob   0.8745040 0.6904762 0.6884273 0.8571429 0.8333333 0.8444444
+## committee_av 0.8747520 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667
 ##                      D2 thresh
-## mean_prob     0.2879811  0.170
-## median_prob   0.3914097  0.080
-## wmean_prob    0.2879811  0.170
-## committee_av -2.3100922  0.185</code></pre>
-<div id="visualising-response-surfaces" class="section level2">
-<h2><span class="header-section-number">3.1</span> Visualising response surfaces</h2>
+## mean_prob     0.3217438   0.53
+## median_prob   0.3475024   0.55
+## wmean_prob    0.3217438   0.53
+## committee_av -0.2191851   0.56</code></pre>
+<div id="visualising-response-surfaces" class="section level2"
+number="3.1">
+<h2><span class="header-section-number">3.1</span> Visualising response
+surfaces</h2>
 <p>Let’s plot the response surfaces for the ensembles.</p>
 <pre class="r"><code>library(RColorBrewer)
 library(lattice)
@@ -657,7 +761,7 @@ xyz_preds &lt;- data.frame(
   bc = predict(m_bc, xyz),
   dom = predict(m_dom, xyz),
   glm = predict(m_glm, xyz, type=&#39;response&#39;),
-  gamS = predict(m_gamS, xyz[,my_preds], type=&#39;response&#39;),
+  gam = predict(m_gam, xyz[,my_preds], type=&#39;response&#39;),
   cart = predict(m_cart, xyz),
   rf = predict(m_rf, xyz, type=&#39;response&#39;),
   brt = predict.gbm(m_brt, xyz, 
@@ -681,52 +785,56 @@ xyz_ensemble &lt;- data.frame(
 
 # Plot ensemble of mean probabilities:
 xyz$z &lt;- xyz_ensemble[,&#39;mean_prob&#39;]
-wireframe(z ~ bio11 + bio8, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
+wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
           drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
-          zlim = c(0, 1), main=&#39;Ensemble: mean prob&#39;, xlab=&#39;bio11&#39;, 
-          ylab=&#39;bio8&#39;, screen=list(z = -120, x = -70, y = 3))</code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+          zlim = c(0, 1), main=&#39;Ensemble: mean prob&#39;, xlab=&#39;bio12&#39;, 
+          ylab=&#39;bio9&#39;, screen=list(z = -120, x = -70, y = 3))</code></pre>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <pre class="r"><code># Plot ensemble of median probabilities:
 xyz$z &lt;- xyz_ensemble[,&#39;median_prob&#39;]
-wireframe(z ~ bio11 + bio8, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
+wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
           drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
-          zlim = c(0, 1), main=&#39;Ensemble: median prob&#39;, xlab=&#39;bio11&#39;, 
-          ylab=&#39;bio8&#39;, screen=list(z = -120, x = -70, y = 3))</code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
+          zlim = c(0, 1), main=&#39;Ensemble: median prob&#39;, xlab=&#39;bio12&#39;, 
+          ylab=&#39;bio9&#39;, screen=list(z = -120, x = -70, y = 3))</code></pre>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
 <pre class="r"><code># Plot ensemble of weighted mean probabilities:
 xyz$z &lt;- xyz_ensemble[,&#39;wmean_prob&#39;]
-wireframe(z ~ bio11 + bio8, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
+wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
           drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
-          zlim = c(0, 1), main=&#39;Ensemble: weighted mean prob&#39;, xlab=&#39;bio11&#39;, 
-          ylab=&#39;bio8&#39;, screen=list(z = -120, x = -70, y = 3))</code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-10-3.png" width="672" /></p>
+          zlim = c(0, 1), main=&#39;Ensemble: weighted mean prob&#39;, xlab=&#39;bio12&#39;, 
+          ylab=&#39;bio9&#39;, screen=list(z = -120, x = -70, y = 3))</code></pre>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-11-3.png" width="672" /></p>
 <pre class="r"><code># Plot ensemble of committee average:
 xyz$z &lt;- xyz_ensemble[,&#39;committee_av&#39;]
-wireframe(z ~ bio11 + bio8, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
+wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
           drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
-          zlim = c(0, 1), main=&#39;Ensemble: committee average&#39;, xlab=&#39;bio11&#39;, 
-          ylab=&#39;bio8&#39;, screen=list(z = -120, x = -70, y = 3))</code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-10-4.png" width="672" /></p>
+          zlim = c(0, 1), main=&#39;Ensemble: committee average&#39;, xlab=&#39;bio12&#39;, 
+          ylab=&#39;bio9&#39;, screen=list(z = -120, x = -70, y = 3))</code></pre>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-11-4.png" width="672" /></p>
 <pre class="r"><code># Plot standard deviation of mean probabilities. This gives us an indication where in environmental space we have highest uncertainty:
 xyz$z &lt;- xyz_ensemble[,&#39;sd_prob&#39;]
-wireframe(z ~ bio11 + bio8, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
+wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
           drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
-          zlim = c(0, 1), main=&#39;Ensemble: sd&#39;, xlab=&#39;bio11&#39;, ylab=&#39;bio8&#39;, 
+          zlim = c(0, 1), main=&#39;Ensemble: sd&#39;, xlab=&#39;bio12&#39;, ylab=&#39;bio9&#39;, 
           screen=list(z = -120, x = -70, y = 3))</code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-10-5.png" width="672" /></p>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-11-5.png" width="672" /></p>
 </div>
-<div id="mapping-ensemble-predictions" class="section level2">
-<h2><span class="header-section-number">3.2</span> Mapping ensemble predictions</h2>
-<p>Finally, let’s do some mapping. We first map the occurrence probabilities predicted by the different algorithms as well as the potential presences.</p>
+<div id="mapping-ensemble-predictions" class="section level2"
+number="3.2">
+<h2><span class="header-section-number">3.2</span> Mapping ensemble
+predictions</h2>
+<p>Finally, let’s do some mapping. We first map the occurrence
+probabilities predicted by the different algorithms as well as the
+potential presences.</p>
 <pre class="r"><code># Prepare data frame with environmental data
-bio_curr_df &lt;- data.frame(rasterToPoints(bio_curr[[my_preds]]))
+bio_curr_df &lt;- data.frame(crds(bio_curr[[my_preds]]),as.points(bio_curr[[my_preds]]))
 
 # We make predictions of all models:
 env_preds &lt;- data.frame(bio_curr_df[,1:2], 
   bc = predict(m_bc, bio_curr_df),
   dom = predict(m_dom, bio_curr_df),
   glm = predict(m_glm, bio_curr_df, type=&#39;response&#39;),
-  gamS = predict(m_gamS, bio_curr_df[,my_preds], type=&#39;response&#39;),
+  gam = predict(m_gam, bio_curr_df[,my_preds], type=&#39;response&#39;),
   cart = predict(m_cart, bio_curr_df),
   rf = predict(m_rf, bio_curr_df, type=&#39;response&#39;),
   brt = predict.gbm(m_brt, bio_curr_df, 
@@ -741,15 +849,15 @@ env_preds_bin &lt;- data.frame(bio_curr_df[,1:2],
   }))
 
 # Make rasters from predictions:
-r_preds &lt;- rasterFromXYZ(env_preds, crs=crs(bg))
-r_preds_bin &lt;- rasterFromXYZ(env_preds_bin, crs=crs(bg))
+r_preds &lt;- terra::rast(env_preds, crs=crs(bg))
+r_preds_bin &lt;- terra::rast(env_preds_bin, crs=crs(bg))
 
 # Map predicted occurrence probabilities:
 spplot(r_preds)</code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <pre class="r"><code># Map predicted presences:
 spplot(r_preds_bin)</code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
 <p>Now, we map the ensemble predictions.</p>
 <pre class="r"><code># We make ensembles:    
 env_ensemble &lt;- data.frame(bio_curr_df[,1:2], 
@@ -760,77 +868,120 @@ env_ensemble &lt;- data.frame(bio_curr_df[,1:2],
   sd_prob = apply(env_preds[,-c(1:2)], 1, sd))
 
 # Make rasters from ensemble predictions:
-r_ens &lt;- rasterFromXYZ(env_ensemble, crs=crs(bg))
+r_ens &lt;- terra::rast(env_ensemble, crs=crs(bg))
 
 # Map continuous ensemble predictions:
 spplot(r_ens[[1:4]])</code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<p>Mapping the standard deviation of model predictions shows us the areas of highest deviation between model algorithms.</p>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Mapping the standard deviation of model predictions shows us the
+areas of highest deviation between model algorithms.</p>
 <pre class="r"><code># Map standard deviation across model algorithms:
 plot(r_ens[[&#39;sd_prob&#39;]])</code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
-<p>We can also derive binary ensemble predictions. We have already estimated the optimal thresholds when calculating the performance measures for the ensembles.</p>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>We can also derive binary ensemble predictions. We have already
+estimated the optimal thresholds when calculating the performance
+measures for the ensembles.</p>
 <pre class="r"><code># Binarise ensemble predictions
 env_ensemble_bin &lt;- data.frame(bio_curr_df[,1:2], 
     sapply(c(&#39;mean_prob&#39;, &#39;median_prob&#39;, &#39;wmean_prob&#39;), 
            FUN=function(x){ifelse(env_ensemble[,x]&gt;= ens_perf[x,&#39;thresh&#39;],1,0)}))
 
 # Make rasters:
-r_ens_bin &lt;- rasterFromXYZ(env_ensemble_bin, crs=crs(bg))
+r_ens_bin &lt;- terra::rast(env_ensemble_bin, crs=crs(bg))
 
 # Map predicted presence from ensembles:
 spplot(r_ens_bin)   </code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
-<p>In the previous practical, you ran three different SDM algorithms on your own species-climate data (from practical b5). Use these to construct ensembles.</p>
+<p>In the previous practical, you ran three different SDM algorithms on
+your own species-climate data (from practical b5). Use these to
+construct ensembles.</p>
 </div>
 </div>
 </div>
-<div id="further-analysing-your-predictions" class="section level1">
-<h1><span class="header-section-number">4</span> Further analysing your predictions</h1>
-<p>Congratulations. You have successfully fitted multiple SDM algorithms to your species distribution data and made predictions in space and time. Of course, science doesn’t stop here and you may want to answer different questions using your SDM. I only provide some hints here.</p>
+<div id="further-analysing-your-predictions" class="section level1"
+number="4">
+<h1><span class="header-section-number">4</span> Further analysing your
+predictions</h1>
+<p>Congratulations. You have successfully fitted multiple SDM algorithms
+to your species distribution data and made predictions in space and
+time. Of course, science doesn’t stop here and you may want to answer
+different questions using your SDM. I only provide some hints here.</p>
 <div class="alert alert-success">
-<p>Remember how we analysed biodiversity changes in <a href="a6_BiodivChanges.html">practical a6</a>.</p>
+<p>Remember how we analysed biodiversity changes in <a
+href="a6_BiodivChanges.html">practical a6</a>. The same workflow can be
+used to analyse predicted current vs. predicted future ranges.</p>
 <ul>
-<li>How much are your species predicted to win or lose in range size under climate change?</li>
-<li>Where is your species range predicted to remain stable, to become unsuitable or to become colonisable under climate change?</li>
+<li>Download a future climate scenario and make future range
+predictions.</li>
+<li>How much range size is your species predicted to win or lose under
+climate change?</li>
+<li>Where is your species range predicted to remain stable, to become
+unsuitable or to become colonisable under climate change?</li>
 </ul>
-<p>In conservation, we often aim to prioritise the most important sites for reserve selection.</p>
+<p>In conservation, we often aim to prioritise the most important sites
+for reserve selection.</p>
 <ul>
-<li>Identify the top 5 % suitable area (the 5 % of cells with the highest habitat suitability)</li>
-<li>Compare the top 5 % suitable area across different SDM algorithms</li>
-<li>Overlay the top 5 % suitable area for multiple species (if you fitted SDMs to multiple species)</li>
+<li>Identify the top 5 % suitable area (the 5 % of cells with the
+highest habitat suitability)</li>
+<li>Compare the top 5 % suitable area across different SDM
+algorithms</li>
+<li>Overlay the top 5 % suitable area for multiple species (if you
+fitted SDMs to multiple species)</li>
 </ul>
-<p>What others ideas do you have?</p>
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">
-<h1>References</h1>
-<div id="refs" class="references">
-<div id="ref-araujo2007">
-<p>Araujo, M. B., and M. New. 2007. “Ensemble Forecasting of Species Distributions.” <em>Trends in Ecology and Evolution</em> 22: 42–47.</p>
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-araujo2007" class="csl-entry">
+Araujo, M. B., and M. New. 2007. <span>“Ensemble Forecasting of Species
+Distributions.”</span> <em>Trends in Ecology and Evolution</em> 22:
+42–47.
 </div>
-<div id="ref-Dormann2018a">
-<p>Dormann, C. F., J. M. Calabrese, G. Guillera-Arroita, E. Matechou, V. Bahn, K. Barton, C. M. Beale, et al. 2018. “Model Averaging in Ecology: A Review of Bayesian, Information-Theoretic, and Tactical Approaches for Predictive Inference.” <em>Ecological Monographs</em> 88 (4): 485–504. <a href="https://doi.org/10.1002/ecm.1309">https://doi.org/10.1002/ecm.1309</a>.</p>
+<div id="ref-Dormann2018a" class="csl-entry">
+Dormann, C. F., J. M. Calabrese, G. Guillera-Arroita, E. Matechou, V.
+Bahn, K. Barton, C. M. Beale, et al. 2018. <span>“Model Averaging in
+Ecology: A Review of Bayesian, Information-Theoretic, and Tactical
+Approaches for Predictive Inference.”</span> <em>Ecological
+Monographs</em> 88 (4): 485–504. <a
+href="https://doi.org/10.1002/ecm.1309">https://doi.org/10.1002/ecm.1309</a>.
 </div>
-<div id="ref-elith2006">
-<p>Elith, J., C. H. Graham, R. P. Anderson, M. Dudik, S. Ferrier, A. Guisan, R. J. Hijmans, et al. 2006. “Novel Methods Improve Prediction of Species’ Distribution from Occurence Data.” <em>Ecography</em> 29: 129–51.</p>
+<div id="ref-elith2006" class="csl-entry">
+Elith, J., C. H. Graham, R. P. Anderson, M. Dudik, S. Ferrier, A.
+Guisan, R. J. Hijmans, et al. 2006. <span>“Novel Methods Improve
+Prediction of Species’ Distribution from Occurence Data.”</span>
+<em>Ecography</em> 29: 129–51.
 </div>
-<div id="ref-Gillings2019">
-<p>Gillings, S., D. E. Balmer, B. J. Caffrey, I. S. Downie, D. W. Gibbons, P. C. Lack, J. B. Reid, J. T. R. Sharrock, R. L. Swann, and R. J. Fuller. 2019. “Breeding and Wintering Bird Distributions in Britain and Ireland from Citizen Science Bird Atlases.” <em>Global Ecology and Biogeography</em> 28 (7): 866–74. <a href="https://doi.org/10.1111/geb.12906">https://doi.org/10.1111/geb.12906</a>.</p>
+<div id="ref-Gillings2019" class="csl-entry">
+Gillings, S., D. E. Balmer, B. J. Caffrey, I. S. Downie, D. W. Gibbons,
+P. C. Lack, J. B. Reid, J. T. R. Sharrock, R. L. Swann, and R. J.
+Fuller. 2019. <span>“Breeding and Wintering Bird Distributions in
+Britain and Ireland from Citizen Science Bird Atlases.”</span>
+<em>Global Ecology and Biogeography</em> 28 (7): 866–74. <a
+href="https://doi.org/10.1111/geb.12906">https://doi.org/10.1111/geb.12906</a>.
 </div>
-<div id="ref-Guisan2017">
-<p>Guisan, A., W. Thuiller, and N. E. Zimmermann. 2017. <em>Habitat Suitability and Distribution Models with Applications in R</em>. Cambride University Press.</p>
+<div id="ref-Guisan2017" class="csl-entry">
+Guisan, A., W. Thuiller, and N. E. Zimmermann. 2017. <em>Habitat
+Suitability and Distribution Models with Applications in r</em>.
+Cambride University Press.
 </div>
-<div id="ref-Thuiller2019">
-<p>Thuiller, W., M. Guéguen, J. Renaud, D. N. Karger, and N. E. Zimmermann. 2019. “Uncertainty in Ensembles of Global Biodiversity Scenarios.” <em>Nature Communications</em> 10: 1446.</p>
+<div id="ref-Thuiller2019" class="csl-entry">
+Thuiller, W., M. Guéguen, J. Renaud, D. N. Karger, and N. E. Zimmermann.
+2019. <span>“Uncertainty in Ensembles of Global Biodiversity
+Scenarios.”</span> <em>Nature Communications</em> 10: 1446.
 </div>
-<div id="ref-Thuiller2009">
-<p>Thuiller, W., B. Lafourcade, R. Engler, and M. B. Araujo. 2009. “BIOMOD - a Platform for Ensemble Forecasting of Species Distributions.” <em>Ecography</em> 32: 369–73.</p>
+<div id="ref-Thuiller2009" class="csl-entry">
+Thuiller, W., B. Lafourcade, R. Engler, and M. B. Araujo. 2009.
+<span>“BIOMOD - a Platform for Ensemble Forecasting of Species
+Distributions.”</span> <em>Ecography</em> 32: 369–73.
 </div>
-<div id="ref-Vuuren2013">
-<p>Vuuren, D. P. van, and T. R. Carter. 2013. “Climate and Socio-Economic Scenarios for Climate Change Research and Assessment: Reconciling the New with the Old.” <em>Climatic Change</em> 122 (November): 415–29.</p>
+<div id="ref-Vuuren2013" class="csl-entry">
+Vuuren, D. P. van, and T. R. Carter. 2013. <span>“Climate and
+Socio-Economic Scenarios for Climate Change Research and Assessment:
+Reconciling the New with the Old.”</span> <em>Climatic Change</em> 122
+(November): 415–29.
 </div>
 </div>
 </div>
@@ -841,7 +992,7 @@ spplot(r_ens_bin)   </code></pre>
 <br>
 <hr />
 <div id="footer">
-<p>Damaris Zurell 2021 <a href="http://creativecommons.org/licenses/by/4.0/" >(CC BY 4.0)</a>.  </p>
+<p>Damaris Zurell 2022 <a href="http://creativecommons.org/licenses/by/4.0/" >(CC BY 4.0)</a>.  </p>
 </div>
 
 </html>
