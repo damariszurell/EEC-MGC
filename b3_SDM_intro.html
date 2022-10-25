@@ -663,7 +663,7 @@ plot(bg,col=&#39;grey&#39;,axes=F,legend=F)
 
 # Plot presences in red and absences in black
 plot(extend(terra::rast(sp_dat[,1:3], crs=crs(bg), type=&#39;xyz&#39;), bg), col=c(&#39;black&#39;,&#39;red&#39;), legend=F,add=T)</code></pre>
-<p><img src="b3_SDM_intro_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="b3_SDM_intro_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 </div>
 <div id="model-fitting" class="section level1" number="4">
 <h1><span class="header-section-number">4</span> Model fitting</h1>
@@ -790,8 +790,8 @@ summary( glm(Turdus_torquatus ~ bio1 * bio8 * bio17, family=&quot;binomial&quot;
 summary( glm(Turdus_torquatus ~ bio1 + bio8 + bio17 + 
                bio1:bio8 + bio1:bio17 + bio8:bio17, 
              family=&quot;binomial&quot;, data= sp_dat) )</code></pre>
-<div class="alert alert-info">
-<p><em><strong>Exercise:</strong></em></p>
+<div class="alert alert-success" role="alert">
+<p><strong>Test yourself</strong></p>
 <p>Compare the different models above.</p>
 <ul>
 <li>Which model is the best in terms of AIC?</li>
@@ -853,7 +853,7 @@ cor_mat &lt;- cor(sp_dat[,-c(1:3)], method=&#39;spearman&#39;)
 # We can visualise this correlation matrix. For better visibility, 
 # we plot the correlation coefficients as percentages.
 corrplot.mixed(cor_mat, tl.pos=&#39;lt&#39;, tl.cex=0.6, number.cex=0.5, addCoefasPercent=T)</code></pre>
-<p><img src="b3_SDM_intro_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="b3_SDM_intro_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>Several predictor variables are highly correlated. One way to deal
 with this issue is to remove the “less important” variable from the
 highly correlated pairs. For this, we need to assess variable

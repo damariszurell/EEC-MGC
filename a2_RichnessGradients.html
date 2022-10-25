@@ -542,7 +542,7 @@ convert this new data frame into a raster object and map this.</p>
 <pre class="r"><code>r_richness &lt;- terra::rast(richness, crs = proj_UK, type = &quot;xyz&quot;)
 plot(r_richness)</code></pre>
 <p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<div class="alert alert-info">
+<div class="alert alert-success" role="alert">
 <p>How is bird species richness distributed in Britain?</p>
 </div>
 </div>
@@ -564,7 +564,7 @@ ggplot(data = richness, mapping = aes(x = NORTHING, y = richness)) +
   xlab(&#39;Latitude (UK NORTHING)&#39;) + 
   ylab(&#39;Species richness&#39;)</code></pre>
 <p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<div class="alert alert-info">
+<div class="alert alert-success" role="alert">
 <p>Compare your latitudinal richness gradient with <span
 class="citation">Gaston (2000)</span> and discuss.</p>
 </div>
@@ -589,7 +589,7 @@ plot(clim)</code></pre>
 <p>To plot the relationship between species richness and summer
 temperature, we have to extract the climate data for all cells in
 Britain and join these with the species richness data.</p>
-<div class="alert alert-info">
+<div class="alert alert-success" role="alert">
 <p>Look up the definition of the bioclimatic variables again. Which one
 is summer temperature?</p>
 </div>
@@ -605,7 +605,7 @@ ggplot(data = richness2, mapping = aes(x = bio10/10, y = richness)) +
 <p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>Dont’ forget to save the species-climate data frame for later:</p>
 <pre class="r"><code>save(richness2,file=&#39;data/UK_bird_richness_clim.RData&#39;)</code></pre>
-<div class="alert alert-info">
+<div class="alert alert-success" role="alert">
 <p>Compare this species-energy relationship with <span
 class="citation">Gaston (2000)</span> and discuss.</p>
 </div>

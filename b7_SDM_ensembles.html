@@ -582,7 +582,7 @@ m_brt &lt;- gbm.step(data = sp_train,
     bag.fraction = 0.75,
     learning.rate = 0.001,
     verbose=F)</code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 <div id="model-assessment" class="section level2" number="2.3">
 <h2><span class="header-section-number">2.3</span> Model assessment</h2>
@@ -632,13 +632,13 @@ summary(pred_testdata)</code></pre>
 ##  Mean   :0.21083   Mean   :0.5440   Mean   :0.4999623   Mean   :0.5007960  
 ##  3rd Qu.:0.33193   3rd Qu.:0.7012   3rd Qu.:0.8040124   3rd Qu.:0.8025983  
 ##  Max.   :0.94118   Max.   :0.7329   Max.   :0.9070566   Max.   :0.9005589  
-##       cart               rf              brt             maxent       
-##  Min.   :0.02273   Min.   :0.0000   Min.   :0.1204   Min.   :0.01877  
-##  1st Qu.:0.20000   1st Qu.:0.1229   1st Qu.:0.1815   1st Qu.:0.22899  
-##  Median :0.75000   Median :0.6020   Median :0.6003   Median :0.43513  
-##  Mean   :0.52357   Mean   :0.5115   Mean   :0.5112   Mean   :0.37117  
-##  3rd Qu.:0.85047   3rd Qu.:0.8416   3rd Qu.:0.8061   3rd Qu.:0.54487  
-##  Max.   :0.85047   Max.   :0.9781   Max.   :0.8211   Max.   :0.58623</code></pre>
+##       cart               rf                 brt             maxent       
+##  Min.   :0.02273   Min.   :0.0003333   Min.   :0.1312   Min.   :0.01877  
+##  1st Qu.:0.20000   1st Qu.:0.1095042   1st Qu.:0.1914   1st Qu.:0.22899  
+##  Median :0.75000   Median :0.6169167   Median :0.6003   Median :0.43513  
+##  Mean   :0.52357   Mean   :0.5113702   Mean   :0.5134   Mean   :0.37117  
+##  3rd Qu.:0.85047   3rd Qu.:0.8407542   3rd Qu.:0.8031   3rd Qu.:0.54487  
+##  Max.   :0.85047   Max.   :0.9776500   Max.   :0.8140   Max.   :0.58623</code></pre>
 <p>As we have stored the maxSens+Spec threshold for each model, we can
 also threshold the predictions to obtain predicted presences and
 absences.</p>
@@ -663,7 +663,7 @@ summary(binpred_testdata)</code></pre>
 ##  Min.   :0.0000   Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
 ##  1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000  
 ##  Median :0.0000   Median :1.0000   Median :1.0000   Median :1.0000  
-##  Mean   :0.4222   Mean   :0.5667   Mean   :0.5222   Mean   :0.5222  
+##  Mean   :0.4222   Mean   :0.5333   Mean   :0.5222   Mean   :0.5222  
 ##  3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000  
 ##  Max.   :1.0000   Max.   :1.0000   Max.   :1.0000   Max.   :1.0000</code></pre>
 </div>
@@ -713,33 +713,33 @@ al. 2009)</span>.</p>
 
 # performance measures for &quot;mean of probabilities&quot;
 (perf_mean_prob &lt;- evalSDM(sp_test$Emberiza_citrinella, mean_prob))</code></pre>
-<pre><code>##        AUC       TSS     Kappa      Sens      Spec       PCC        D2 thresh
-## 1 0.874504 0.6904762 0.6884273 0.8571429 0.8333333 0.8444444 0.3217438   0.53</code></pre>
+<pre><code>##         AUC    TSS  Kappa      Sens      Spec       PCC        D2 thresh
+## 1 0.8735119 0.6875 0.6875 0.8333333 0.8541667 0.8444444 0.3206901   0.54</code></pre>
 <pre class="r"><code># performance measures for &quot;median of probabilities&quot;:
 (perf_median_prob &lt;- evalSDM(sp_test$Emberiza_citrinella, median_prob))</code></pre>
-<pre><code>##         AUC       TSS     Kappa      Sens      Spec       PCC        D2 thresh
-## 1 0.8819444 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667 0.3475024   0.55</code></pre>
+<pre><code>##         AUC       TSS     Kappa      Sens   Spec       PCC        D2 thresh
+## 1 0.8794643 0.7172619 0.7119645 0.9047619 0.8125 0.8555556 0.3452144   0.53</code></pre>
 <pre class="r"><code># performance measures for &quot;weighted mean of probabilities&quot;:
 (perf_wmean_prob &lt;- evalSDM(sp_test$Emberiza_citrinella, wmean_prob))</code></pre>
 <pre><code>##         AUC       TSS     Kappa      Sens      Spec       PCC        D2 thresh
-## 1 0.8769841 0.6964286 0.6902655 0.9047619 0.7916667 0.8444444 0.3320276  0.505</code></pre>
+## 1 0.8764881 0.6964286 0.6902655 0.9047619 0.7916667 0.8444444 0.3309532    0.5</code></pre>
 <pre class="r"><code># performance measures for &quot;committee average&quot;:
 (perf_committee_prob &lt;- evalSDM(sp_test$Emberiza_citrinella, committee_av))</code></pre>
-<pre><code>##        AUC       TSS     Kappa      Sens      Spec       PCC         D2 thresh
-## 1 0.874752 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667 -0.2191851   0.56</code></pre>
+<pre><code>##        AUC       TSS     Kappa      Sens   Spec       PCC         D2 thresh
+## 1 0.875496 0.7172619 0.7119645 0.9047619 0.8125 0.8555556 -0.2181474  0.435</code></pre>
 <pre class="r"><code># Compare:
 (ens_perf &lt;- rbind(mean_prob = perf_mean_prob, median_prob = perf_median_prob, 
                     wmean_prob = perf_mean_prob, committee_av = perf_committee_prob))</code></pre>
 <pre><code>##                    AUC       TSS     Kappa      Sens      Spec       PCC
-## mean_prob    0.8745040 0.6904762 0.6884273 0.8571429 0.8333333 0.8444444
-## median_prob  0.8819444 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667
-## wmean_prob   0.8745040 0.6904762 0.6884273 0.8571429 0.8333333 0.8444444
-## committee_av 0.8747520 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667
+## mean_prob    0.8735119 0.6875000 0.6875000 0.8333333 0.8541667 0.8444444
+## median_prob  0.8794643 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
+## wmean_prob   0.8735119 0.6875000 0.6875000 0.8333333 0.8541667 0.8444444
+## committee_av 0.8754960 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
 ##                      D2 thresh
-## mean_prob     0.3217438   0.53
-## median_prob   0.3475024   0.55
-## wmean_prob    0.3217438   0.53
-## committee_av -0.2191851   0.56</code></pre>
+## mean_prob     0.3206901  0.540
+## median_prob   0.3452144  0.530
+## wmean_prob    0.3206901  0.540
+## committee_av -0.2181474  0.435</code></pre>
 <div id="visualising-response-surfaces" class="section level2"
 number="3.1">
 <h2><span class="header-section-number">3.1</span> Visualising response
@@ -789,35 +789,35 @@ wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;
           drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
           zlim = c(0, 1), main=&#39;Ensemble: mean prob&#39;, xlab=&#39;bio12&#39;, 
           ylab=&#39;bio9&#39;, screen=list(z = -120, x = -70, y = 3))</code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <pre class="r"><code># Plot ensemble of median probabilities:
 xyz$z &lt;- xyz_ensemble[,&#39;median_prob&#39;]
 wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
           drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
           zlim = c(0, 1), main=&#39;Ensemble: median prob&#39;, xlab=&#39;bio12&#39;, 
           ylab=&#39;bio9&#39;, screen=list(z = -120, x = -70, y = 3))</code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
 <pre class="r"><code># Plot ensemble of weighted mean probabilities:
 xyz$z &lt;- xyz_ensemble[,&#39;wmean_prob&#39;]
 wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
           drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
           zlim = c(0, 1), main=&#39;Ensemble: weighted mean prob&#39;, xlab=&#39;bio12&#39;, 
           ylab=&#39;bio9&#39;, screen=list(z = -120, x = -70, y = 3))</code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-11-3.png" width="672" /></p>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-12-3.png" width="672" /></p>
 <pre class="r"><code># Plot ensemble of committee average:
 xyz$z &lt;- xyz_ensemble[,&#39;committee_av&#39;]
 wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
           drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
           zlim = c(0, 1), main=&#39;Ensemble: committee average&#39;, xlab=&#39;bio12&#39;, 
           ylab=&#39;bio9&#39;, screen=list(z = -120, x = -70, y = 3))</code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-11-4.png" width="672" /></p>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-12-4.png" width="672" /></p>
 <pre class="r"><code># Plot standard deviation of mean probabilities. This gives us an indication where in environmental space we have highest uncertainty:
 xyz$z &lt;- xyz_ensemble[,&#39;sd_prob&#39;]
 wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
           drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
           zlim = c(0, 1), main=&#39;Ensemble: sd&#39;, xlab=&#39;bio12&#39;, ylab=&#39;bio9&#39;, 
           screen=list(z = -120, x = -70, y = 3))</code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-11-5.png" width="672" /></p>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-12-5.png" width="672" /></p>
 </div>
 <div id="mapping-ensemble-predictions" class="section level2"
 number="3.2">
@@ -854,10 +854,10 @@ r_preds_bin &lt;- terra::rast(env_preds_bin, crs=crs(bg))
 
 # Map predicted occurrence probabilities:
 spplot(r_preds)</code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <pre class="r"><code># Map predicted presences:
 spplot(r_preds_bin)</code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-13-2.png" width="672" /></p>
 <p>Now, we map the ensemble predictions.</p>
 <pre class="r"><code># We make ensembles:    
 env_ensemble &lt;- data.frame(bio_curr_df[,1:2], 
@@ -872,12 +872,12 @@ r_ens &lt;- terra::rast(env_ensemble, crs=crs(bg))
 
 # Map continuous ensemble predictions:
 spplot(r_ens[[1:4]])</code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p>Mapping the standard deviation of model predictions shows us the
 areas of highest deviation between model algorithms.</p>
 <pre class="r"><code># Map standard deviation across model algorithms:
 plot(r_ens[[&#39;sd_prob&#39;]])</code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <p>We can also derive binary ensemble predictions. We have already
 estimated the optimal thresholds when calculating the performance
 measures for the ensembles.</p>
@@ -891,7 +891,7 @@ r_ens_bin &lt;- terra::rast(env_ensemble_bin, crs=crs(bg))
 
 # Map predicted presence from ensembles:
 spplot(r_ens_bin)   </code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <p>In the previous practical, you ran three different SDM algorithms on

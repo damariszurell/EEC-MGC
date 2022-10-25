@@ -480,13 +480,13 @@ href="http://rspatial.org" class="uri">http://rspatial.org</a>.</p>
 
 # Check out the number of occurrences found in GBIF:
 occ_count()</code></pre>
-<pre><code>## [1] 2260246955</code></pre>
+<pre><code>## [1] 2275004213</code></pre>
 <pre class="r"><code># number of observations:
 occ_count(basisOfRecord=&#39;OBSERVATION&#39;)</code></pre>
 <pre><code>## [1] 23372979</code></pre>
 <pre class="r"><code># number of occurrences reported for Germany:
 occ_count(country=isocodes[grep(&quot;Germany&quot;, isocodes$name), &quot;code&quot;])</code></pre>
-<pre><code>## [1] 49290638</code></pre>
+<pre><code>## [1] 49292805</code></pre>
 <pre class="r"><code># number of observations reported for Germany:
 occ_count(country=isocodes[grep(&quot;Germany&quot;, isocodes$name), &quot;code&quot;],basisOfRecord=&#39;OBSERVATION&#39;)</code></pre>
 <pre><code>## [1] 155477</code></pre>
@@ -510,7 +510,7 @@ name_suggest(q=&#39;Sorex alpinus&#39;, rank=&#39;species&#39;)</code></pre>
 ## 1 2435986 Sorex alpinus SPECIES</code></pre>
 <pre class="r"><code># Check number of records - here filtered to those with coordinate information
 occ_search(scientificName = &quot;Sorex alpinus&quot;, hasCoordinate=T, limit = 10)</code></pre>
-<pre><code>## Records found [1270] 
+<pre><code>## Records found [1271] 
 ## Records returned [10] 
 ## No. unique hierarchies [1] 
 ## No. media records [10] 
@@ -537,8 +537,8 @@ occ_search(scientificName = &quot;Sorex alpinus&quot;, hasCoordinate=T, limit = 
 ## #   lifeStage &lt;chr&gt;, taxonKey &lt;int&gt;, kingdomKey &lt;int&gt;, phylumKey &lt;int&gt;,
 ## #   classKey &lt;int&gt;, orderKey &lt;int&gt;, familyKey &lt;int&gt;, genusKey &lt;int&gt;,
 ## #   speciesKey &lt;int&gt;, acceptedTaxonKey &lt;int&gt;, acceptedScientificName &lt;chr&gt;, …</code></pre>
-<div class="alert alert-info">
-<p><strong><em>Exercise:</em></strong></p>
+<div class="alert alert-success" role="alert">
+<p><strong>Test yourself</strong></p>
 <p>What does the argument <code>hasCoordinate=T</code> do? Look up the
 help page and explain.</p>
 </div>
@@ -555,7 +555,7 @@ basis of record etc. Take a look at the arguments you can set in
 <code>?occ_search</code> to get an overview. For example, we can limit
 the data to those observations that were done by humans:</p>
 <pre class="r"><code>occ_search(scientificName = &quot;Sorex alpinus&quot;, hasCoordinate=T, basisOfRecord=&#39;HUMAN_OBSERVATION&#39;, limit = 10)</code></pre>
-<pre><code>## Records found [613] 
+<pre><code>## Records found [614] 
 ## Records returned [10] 
 ## No. unique hierarchies [1] 
 ## No. media records [10] 
@@ -648,8 +648,8 @@ points(gbif_shrew$decimalLongitude[gbif_shrew_cleaned_coord$.summary], gbif_shre
 <p><img src="b1_SpeciesData_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <pre class="r"><code># Store the cleaned point locations in a new object
 gbif_shrew_cleaned &lt;- gbif_shrew[gbif_shrew_cleaned_coord$.summary,]</code></pre>
-<div class="alert alert-info">
-<p><em><strong>Exercise:</strong></em></p>
+<div class="alert alert-success" role="alert">
+<p><strong>Test yourself</strong></p>
 <p>Look up the options in <code>clean_coordinates()</code> and think
 about why I chose the specific tests and options.</p>
 </div>

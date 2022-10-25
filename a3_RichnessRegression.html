@@ -677,8 +677,8 @@ expectation: <span class="math display">\[D^2 = 1 -
 \frac{D(model)}{D(Null.model)}\]</span> The model output also provides
 the <code>Null deviance</code>, so we can easily calculate the explained
 deviance <span class="math inline">\(D^2\)</span>.</p>
-<div class="alert alert-info">
-<p><em><strong>Exercise:</strong></em></p>
+<div class="alert alert-success" role="alert">
+<p><strong>Test yourself</strong></p>
 <p>What is the explained deviance of above model?</p>
 </div>
 </div>
@@ -712,8 +712,8 @@ summary( glm(richness ~ bio10 + bio12, family=&quot;poisson&quot;, data= UK_bird
 
 # Fit two variables with linear and quadratic terms:
 summary( glm(richness ~ poly(bio10,2) + poly(bio12,2), family=&quot;poisson&quot;, data= UK_birdrichness_clim) )</code></pre>
-<div class="alert alert-info">
-<p><em><strong>Exercise:</strong></em></p>
+<div class="alert alert-success" role="alert">
+<p><strong>Test yourself</strong></p>
 <p>Compare the AIC of these models. Which model is the best in terms of
 AIC?</p>
 </div>
@@ -812,8 +812,8 @@ model output.</p>
 selection.</p>
 <pre class="r"><code>m_step &lt;- step(m_full)</code></pre>
 <p>In this case, the full model seems to be the best.</p>
-<div class="alert alert-info">
-<p><em><strong>Exercise:</strong></em></p>
+<div class="alert alert-success" role="alert">
+<p><strong>Test it yourself</strong></p>
 <p>Repeat the model selection using the <code>I()</code>specification of
 quadratic terms in the full model, meaning the formula should look like
 <code>richness ~ bio1 + I(bio1^2) + bio3 + I(bio3^2) +  ...</code></p>
@@ -909,7 +909,7 @@ rcorr.cens(m_step$fitted.values, UK_birdrichness_clim$richness)[1]</code></pre>
 <pre class="r"><code># On cross-validated data
 rcorr.cens(preds_cv, UK_birdrichness_clim$richness)[1]</code></pre>
 <pre><code>##   C Index 
-## 0.6903749</code></pre>
+## 0.6908181</code></pre>
 <p>The C-index looks very similar between predictions on training data
 and on cross-validation folds and reaches c. 0.7. This indicates that if
 we take two random observations from our data, then in 70% of the cases

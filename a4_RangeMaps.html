@@ -585,8 +585,8 @@ lynx_lynx &lt;- mammals[mammals$BINOMIAL==&#39;Lynx lynx&#39;,]
 map(&#39;world&#39;)
 plot(lynx_lynx, col=&#39;red&#39;, add=T)</code></pre>
 <p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<div class="alert alert-info">
-<p><em><strong>Exercise:</strong></em></p>
+<div class="alert alert-success" role="alert">
+<p><strong>Test it yourself</strong></p>
 <ul>
 <li>Select another mammal species and plot the range map.</li>
 </ul>
@@ -689,8 +689,8 @@ map(&#39;world&#39;,xlim = c(-100,-10),ylim = c(-60,15))
 plot(monkey_puzzle_SAm,col=&#39;red&#39;,add=T)
 points(terra::centroids(monkey_puzzle_SAm), col=&#39;blue&#39;,pch=&#39;+&#39;, cex=3)</code></pre>
 <p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-<div class="alert alert-info">
-<p><em><strong>Exercise:</strong></em></p>
+<div class="alert alert-success" role="alert">
+<p><strong>Test it yourself</strong></p>
 <ul>
 <li>Use the range map of the mammal species you selected earlier, and
 calculate the range size and range centroid. Add the point location of
@@ -741,8 +741,8 @@ plot(shrew_1deg, add=T, alpha=0.6, legend=F)</code></pre>
 <p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>Obviously, the margins of the range polgyon and the raster map differ
 at several places.</p>
-<div class="alert alert-info">
-<p><em><strong>Exercise:</strong></em></p>
+<div class="alert alert-success" role="alert">
+<p><strong>Test it yourself</strong></p>
 <p>Check out the help page <code>?rasterize</code> and find out what the
 argument <code>touches</code> is doing. Rasterise the shrew range map
 again with setting a different <code>touches</code> argument and map the
@@ -814,8 +814,8 @@ map(&#39;world&#39;,xlim = c(-100,-10),ylim = c(-60,15))
 plot(monkey_puzzle_SAm,col=&#39;blue&#39;,add=T)
 plot(r_monkey_puzzle, add=T, alpha=0.6, legend=F)</code></pre>
 <p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
-<div class="alert alert-info">
-<p><em><strong>Exercise:</strong></em></p>
+<div class="alert alert-success" role="alert">
+<p><strong>Test it yourself</strong></p>
 <ul>
 <li>Rasterise the range map of the mammal species you selected above.
 Try both approaches using the <code>terra</code> package and the
