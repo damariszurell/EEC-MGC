@@ -13,7 +13,7 @@
 
 <title>SDM assessment and prediction</title>
 
-<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -168,11 +168,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -201,8 +205,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -210,16 +214,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -606,7 +603,7 @@ my_preds &lt;- c(&#39;bio1&#39;, &#39;bio8&#39;)
 par(mfrow=c(1,2))
 
 # Plot the partial responses
-partial_response(m1, predictors = sp_dat[,my_preds])</code></pre>
+partial_response(m1, predictors = sp_dat[,my_preds], ylab=&#39;Occurrence probability&#39;)</code></pre>
 <p><img src="b4_SDM_eval_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>When you compare the response surface and the partial response
 curves, you see that the latter only give us an incomplete picture of
@@ -657,7 +654,6 @@ class="citation">(Roberts et al. 2017)</span>.</p>
 re-calibrate the model using only 4/5 of the original data and predict
 the model to the hold-out 1/5 of the data.</p>
 <pre class="r"><code>preds_cv &lt;- crossvalSDM(m1, traindat = sp_dat, colname_species = &#39;Turdus_torquatus&#39;, colname_pred = my_preds)</code></pre>
-<pre><code>## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
 <p>We receive a numeric vector of cross-validated prediction. Out of
 curiosity, let us compare the fitted values on the training data and the
 predictions on the cross-validation data. You should see that the
@@ -696,19 +692,19 @@ thresh_dat &lt;- data.frame(
         
 # Then, we find the optimal thresholds:     
 (thresh_cv &lt;- PresenceAbsence::optimal.thresholds(DATA= thresh_dat))</code></pre>
-<pre><code>##          Method       pred
-## 1       Default 0.50000000
-## 2     Sens=Spec 0.16000000
-## 3  MaxSens+Spec 0.13000000
-## 4      MaxKappa 0.20000000
-## 5        MaxPCC 0.79394737
-## 6  PredPrev=Obs 0.35500000
-## 7       ObsPrev 0.09900990
-## 8      MeanProb 0.09887094
-## 9    MinROCdist 0.16000000
-## 10      ReqSens 0.16000000
-## 11      ReqSpec 0.16000000
-## 12         Cost 0.81000000</code></pre>
+<pre><code>##          Method      pred
+## 1       Default 0.5000000
+## 2     Sens=Spec 0.1700000
+## 3  MaxSens+Spec 0.1700000
+## 4      MaxKappa 0.1700000
+## 5        MaxPCC 0.4950000
+## 6  PredPrev=Obs 0.3700000
+## 7       ObsPrev 0.0990099
+## 8      MeanProb 0.0981109
+## 9    MinROCdist 0.1700000
+## 10      ReqSens 0.1700000
+## 11      ReqSpec 0.1600000
+## 12         Cost 0.4950000</code></pre>
 <p>We can compare observed vs. predicted presences and absences based on
 these tresholds. For this, we take our predictions from the
 cross-validation. The comparison is easiest illustrated in a confusion
@@ -721,8 +717,8 @@ thresholds data frame):</p>
 <pre class="r"><code>(cmx_maxSSS &lt;- PresenceAbsence::cmx(DATA= thresh_dat, threshold=thresh_cv[3,2]))</code></pre>
 <pre><code>##          observed
 ## predicted   1   0
-##         1  27  47
-##         0   3 226</code></pre>
+##         1  26  36
+##         0   4 237</code></pre>
 <p>From such a confusion matrix, we can calculate different evaluation
 criteria. For example,<br />
 - the proportion of correctly classified test observations
@@ -733,22 +729,22 @@ sensitivity or true positive rate<br />
 specificity or true negative rate</p>
 <pre class="r"><code># Proportion of correctly classified observations
 PresenceAbsence::pcc(cmx_maxSSS, st.dev=F)</code></pre>
-<pre><code>## [1] 0.8349835</code></pre>
+<pre><code>## [1] 0.8679868</code></pre>
 <pre class="r"><code># Sensitivity = true positive rate
 PresenceAbsence::sensitivity(cmx_maxSSS, st.dev=F)</code></pre>
-<pre><code>## [1] 0.9</code></pre>
+<pre><code>## [1] 0.8666667</code></pre>
 <pre class="r"><code># Specificity = true negative rate
 PresenceAbsence::specificity(cmx_maxSSS, st.dev=F)</code></pre>
-<pre><code>## [1] 0.8278388</code></pre>
+<pre><code>## [1] 0.8681319</code></pre>
 <p>Other measures are <em>Kappa</em> and <em>TSS</em> (the true skill
 statistic). <span class="citation">Allouche, Tsoar, and Kadmon
 (2006)</span> explain how to calculate these.</p>
 <pre class="r"><code># Kappa
 PresenceAbsence::Kappa(cmx_maxSSS, st.dev=F)</code></pre>
-<pre><code>## [1] 0.4403812</code></pre>
+<pre><code>## [1] 0.4982613</code></pre>
 <pre class="r"><code># True skill statistic
 TSS(cmx_maxSSS) </code></pre>
-<pre><code>## [1] 0.7278388</code></pre>
+<pre><code>## [1] 0.7347985</code></pre>
 <p>According to <span class="citation">Araujo et al. (2005)</span>,
 <em>Kappa</em>&gt;0.4 indicate good predictions. For TSS, we often
 assume TSS&gt;0.5 to indicate good predictions.</p>
@@ -779,7 +775,7 @@ plot(roc_cv, col = &quot;grey70&quot;, lwd = 2)</code></pre>
 <p><img src="b4_SDM_eval_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <pre class="r"><code># Compute the AUC:
 AUC::auc(roc_cv)</code></pre>
-<pre><code>## [1] 0.897558</code></pre>
+<pre><code>## [1] 0.9013431</code></pre>
 <p>It seems our model is performing pretty well on hold-out data. We can
 thus attempt making predictions in space and time.</p>
 <p>Please be aware that many packages contain functions for evaluating
@@ -790,8 +786,8 @@ the <code>mecofun</code> package contains a function
 measures. By default, this function uses the <em>MaxSens+Spec</em>
 threshold.</p>
 <pre class="r"><code>evalSDM(sp_dat$Turdus_torquatus, preds_cv)</code></pre>
-<pre><code>##        AUC       TSS     Kappa Sens      Spec       PCC        D2 thresh
-## 1 0.897558 0.7278388 0.4403812  0.9 0.8278388 0.8349835 0.3363824   0.13</code></pre>
+<pre><code>##         AUC       TSS     Kappa      Sens      Spec       PCC       D2 thresh
+## 1 0.9013431 0.7347985 0.4982613 0.8666667 0.8681319 0.8679868 0.348283   0.17</code></pre>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <p>Use the <code>m_yellowhammer</code> model from the previous exercise

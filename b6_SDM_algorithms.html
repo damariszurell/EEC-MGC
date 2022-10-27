@@ -13,7 +13,7 @@
 
 <title>SDM algorithms</title>
 
-<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -168,11 +168,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -201,8 +205,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -210,16 +214,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -595,7 +592,7 @@ corresponding partial response plots.</p>
 
 # Plot partial response curves:
 par(mfrow=c(1,2)) 
-partial_response(m_bc, predictors = sp_train[,my_preds], main=&#39;BIOCLIM&#39;)</code></pre>
+partial_response(m_bc, predictors = sp_train[,my_preds], main=&#39;BIOCLIM&#39;, ylab=&#39;Occurrence probability&#39;)</code></pre>
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>Last, we validate model performance on the hold-out test data.</p>
 <pre class="r"><code># We use the default MaxSens+Spec threshold:
@@ -638,7 +635,7 @@ wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <pre class="r"><code># Plot partial response curves:
 par(mfrow=c(1,2)) 
-partial_response(m_dom, predictors = sp_train[,my_preds], main=&#39;DOMAIN&#39;)</code></pre>
+partial_response(m_dom, predictors = sp_train[,my_preds], main=&#39;DOMAIN&#39;, ylab=&#39;Occurrence probability&#39;)</code></pre>
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
 <pre class="r"><code># Performance measures
 (perf_dom &lt;- evalSDM(sp_test$Emberiza_citrinella, predict(m_dom, sp_test[,my_preds])))</code></pre>
@@ -712,7 +709,7 @@ wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <pre class="r"><code># Plot partial response curves:
 par(mfrow=c(1,2)) 
-partial_response(m_glm, predictors = sp_train[,my_preds], main=&#39;GLM&#39;)</code></pre>
+partial_response(m_glm, predictors = sp_train[,my_preds], main=&#39;GLM&#39;, ylab=&#39;Occurrence probability&#39;)</code></pre>
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
 <pre class="r"><code># Performance measures
 (perf_glm &lt;- evalSDM(sp_test$Emberiza_citrinella, predict(m_glm, sp_test[,my_preds], type=&#39;response&#39;) ))</code></pre>
@@ -755,7 +752,7 @@ wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <pre class="r"><code># Plot partial response curves:
 par(mfrow=c(1,2)) 
-partial_response(m_gam, predictors = sp_train[,my_preds], main=&#39;GAM&#39;)</code></pre>
+partial_response(m_gam, predictors = sp_train[,my_preds], main=&#39;GAM&#39;, ylab=&#39;Occurrence probability&#39;)</code></pre>
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-13-2.png" width="672" /></p>
 <pre class="r"><code># Performance measures
 (perf_gam &lt;- evalSDM(sp_test$Emberiza_citrinella, predict(m_gam, sp_test[,my_preds], type=&#39;response&#39;) ))</code></pre>
@@ -840,7 +837,7 @@ wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-14-2.png" width="672" /></p>
 <pre class="r"><code># Plot partial response curves:
 par(mfrow=c(1,2)) 
-partial_response(m_cart, predictors = sp_train[,my_preds], main=&#39;CART&#39;)</code></pre>
+partial_response(m_cart, predictors = sp_train[,my_preds], main=&#39;CART&#39;, ylab=&#39;Occurrence probability&#39;)</code></pre>
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-14-3.png" width="672" /></p>
 <pre class="r"><code># Performance measures of GAM with spline-smoother 
 (perf_cart &lt;- evalSDM(sp_test$Emberiza_citrinella, predict(m_cart, sp_test[,my_preds]) ))</code></pre>
@@ -887,19 +884,19 @@ m_rf &lt;- randomForest( x=sp_train[,my_preds], y=sp_train$Emberiza_citrinella,
 # Variable importance:
 importance(m_rf,type=1)</code></pre>
 <pre><code>##        %IncMSE
-## bio12 70.09372
-## bio9  16.06231</code></pre>
+## bio12 68.05580
+## bio9  15.55716</code></pre>
 <pre class="r"><code>varImpPlot(m_rf)</code></pre>
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <pre class="r"><code># Look at single trees:
 head(getTree(m_rf,1,T))</code></pre>
 <pre><code>##   left daughter right daughter split var split point status prediction
-## 1             2              3     bio12   1233.1503     -3 0.61611374
-## 2             4              5     bio12    875.9535     -3 0.80645161
-## 3             6              7     bio12   1465.1206     -3 0.08928571
-## 4             8              9     bio12    660.0751     -3 0.90265487
-## 5            10             11     bio12   1144.2964     -3 0.54761905
-## 6            12             13     bio12   1454.7626     -3 0.17241379</code></pre>
+## 1             2              3      bio9    7.045709     -3  0.5592417
+## 2             4              5     bio12  752.727325     -3  0.8833333
+## 3             6              7     bio12 1071.290039     -3  0.4304636
+## 4             8              9      bio9    6.071526     -3  0.9107143
+## 5             0              0      &lt;NA&gt;    0.000000     -1  0.5000000
+## 6            10             11      bio9   13.934988     -3  0.7837838</code></pre>
 <pre class="r"><code># Now, we plot the response surface:
 xyz$z &lt;- predict(m_rf, xyz, type=&#39;response&#39;)
 wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
@@ -909,12 +906,12 @@ wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-15-2.png" width="672" /></p>
 <pre class="r"><code># Plot partial response curves:
 par(mfrow=c(1,2)) 
-partial_response(m_rf, predictors = sp_train[,my_preds], main=&#39;Random Forest&#39;)</code></pre>
+partial_response(m_rf, predictors = sp_train[,my_preds], main=&#39;Random Forest&#39;, ylab=&#39;Occurrence probability&#39;)</code></pre>
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-15-3.png" width="672" /></p>
 <pre class="r"><code># Performance measures of RF
 (perf_rf &lt;- evalSDM(sp_test$Emberiza_citrinella, predict(m_rf, sp_test[,my_preds],  type=&#39;response&#39;) ))</code></pre>
-<pre><code>##         AUC       TSS     Kappa      Sens Spec PCC       D2 thresh
-## 1 0.8308532 0.6071429 0.6017699 0.8571429 0.75 0.8 0.183038  0.545</code></pre>
+<pre><code>##        AUC       TSS     Kappa      Sens      Spec PCC         D2 thresh
+## 1 0.828869 0.6041667 0.6005917 0.8333333 0.7708333 0.8 0.09078249   0.58</code></pre>
 <pre class="r"><code># Map predictions:
 r_rf_bin &lt;- r_rf_pred &lt;- terra::rast(cbind(bio_curr_df[,1:2],
                                  predict(m_rf, bio_curr_df,type=&#39;response&#39;)),
@@ -994,16 +991,16 @@ m_brt &lt;- gbm.step(data = sp_train,
 <pre class="r"><code># Variable importance:
 m_brt$contributions</code></pre>
 <pre><code>##         var   rel.inf
-## bio12 bio12 93.463138
-## bio9   bio9  6.536862</code></pre>
+## bio12 bio12 93.311114
+## bio9   bio9  6.688886</code></pre>
 <pre class="r"><code># Interactions (not very meaningful here with only 2 predictors):
 gbm.interactions(m_brt)$interactions</code></pre>
 <pre><code>##       bio12  bio9
-## bio12     0 23.47
+## bio12     0 25.06
 ## bio9      0  0.00</code></pre>
 <pre class="r"><code>gbm.interactions(m_brt)$rank.list</code></pre>
 <pre><code>##   var1.index var1.names var2.index var2.names int.size
-## 1          2       bio9          1      bio12    23.47
+## 1          2       bio9          1      bio12    25.06
 ## 2          3       &lt;NA&gt;          0                0.00</code></pre>
 <pre class="r"><code># dismo provides some build-in functions for plotting response:
 gbm.plot(m_brt, n.plots=2, write.title = FALSE)</code></pre>
@@ -1019,12 +1016,12 @@ wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-16-4.png" width="672" /></p>
 <pre class="r"><code># Plot partial response curves:
 par(mfrow=c(1,2)) 
-partial_response(m_brt, predictors = sp_train[,my_preds], main=&#39;BRT&#39;)</code></pre>
+partial_response(m_brt, predictors = sp_train[,my_preds], main=&#39;BRT&#39;, ylab=&#39;Occurrence probability&#39;)</code></pre>
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-16-5.png" width="672" /></p>
 <pre class="r"><code># Performance measures of BRT
 (perf_brt &lt;- evalSDM(sp_test$Emberiza_citrinella, predict.gbm(m_brt, sp_test[,my_preds], n.trees=m_brt$gbm.call$best.trees, type=&#39;response&#39;) ))</code></pre>
 <pre><code>##         AUC       TSS     Kappa      Sens   Spec       PCC        D2 thresh
-## 1 0.8831845 0.7172619 0.7119645 0.9047619 0.8125 0.8555556 0.3455624   0.58</code></pre>
+## 1 0.8836806 0.7172619 0.7119645 0.9047619 0.8125 0.8555556 0.3459783   0.58</code></pre>
 <pre class="r"><code># Map predictions:
 r_brt_bin &lt;- r_brt_pred &lt;- terra::rast(cbind(bio_curr_df[,1:2],
                                   predict.gbm(m_brt, bio_curr_df,
@@ -1119,7 +1116,7 @@ wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <pre class="r"><code># Plot partial response curves:
 par(mfrow=c(1,2)) 
-partial_response(m_maxent, predictors = sp_train[,my_preds], main=&#39;Maxent&#39;)</code></pre>
+partial_response(m_maxent, predictors = sp_train[,my_preds], main=&#39;Maxent&#39;, ylab=&#39;Occurrence probability&#39;)</code></pre>
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-17-2.png" width="672" /></p>
 <pre class="r"><code># Performance measures of Maxent
 (perf_maxent &lt;- evalSDM(sp_test$Emberiza_citrinella, predict(m_maxent, sp_test[,my_preds],  type=&#39;logistic&#39;) ))</code></pre>
@@ -1148,8 +1145,8 @@ ensembles in the next tutorial.</p>
 ## glm    0.8903770 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.37029784
 ## gam    0.8859127 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.36548148
 ## cart   0.8196925 0.5922619 0.5958084 0.7380952 0.8541667 0.8000000  0.16934395
-## rf     0.8308532 0.6071429 0.6017699 0.8571429 0.7500000 0.8000000  0.18303802
-## brt    0.8831845 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.34556241
+## rf     0.8288690 0.6041667 0.6005917 0.8333333 0.7708333 0.8000000  0.09078249
+## brt    0.8836806 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.34597835
 ## maxent 0.8774802 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.25816707
 ##        thresh
 ## bc      0.175
@@ -1157,7 +1154,7 @@ ensembles in the next tutorial.</p>
 ## glm     0.525
 ## gam     0.530
 ## cart    0.800
-## rf      0.545
+## rf      0.580
 ## brt     0.580
 ## maxent  0.410</code></pre>
 <pre class="r"><code># We add a column containing the names of the algorithm
