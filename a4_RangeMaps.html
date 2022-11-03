@@ -904,7 +904,7 @@ PRESENCE, ORIGIN and SEASONAL information should be used and which not
 # Subset the SpatVector
 artibeus_spp &lt;- mammals[grep(&#39;Artibeus&#39;,mammals$BINOMIAL),]
 
-# Convert to SpatialPolygonsDataFrame
+# Convert to SpatialPolygonsDataFrame from raster package
 artibeus_spp &lt;- as(artibeus_spp, &quot;Spatial&quot;)
 
 # Rasterize the ranges using the letsR package
