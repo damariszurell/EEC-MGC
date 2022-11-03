@@ -13,7 +13,7 @@
 
 <title>Species range maps</title>
 
-<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -168,11 +168,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -201,8 +205,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -210,16 +214,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -507,7 +504,7 @@ recognized as <code>SpatVector</code> object.</p>
 ##  values      : 29660 Sorex alpinus        1      1        1     IUCN       2008
 ##         citation source dist_comm (and 17 more)
 ##            &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;              
-##  IUCN (Internat~</code></pre>
+##  IUCN (Internat~     NA        NA</code></pre>
 <pre class="r"><code># Plot the Central Europe
 library(maps)
 map(&#39;world&#39;,xlim=c(5,30), ylim=c(40,55))
@@ -542,9 +539,9 @@ understand the different values these attributes can be coded as.</p>
 ##                Amblysomus mar~        1      1        1     IUCN  2008
 ##         CITATION SOURCE DIST_COMM ISLAND (and 4 more)
 ##            &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;             
-##  IUCN (Internat~                                     
-##  IUCN (Internat~                                     
-##  IUCN (Internat~</code></pre>
+##  IUCN (Internat~     NA        NA     NA             
+##  IUCN (Internat~     NA        NA     NA             
+##  IUCN (Internat~     NA        NA     NA</code></pre>
 <pre class="r"><code># Inspect attribute table
 terra::head(mammals)</code></pre>
 <pre><code>##                     BINOMIAL PRESENCE ORIGIN SEASONAL COMPILER YEAR
@@ -555,26 +552,28 @@ terra::head(mammals)</code></pre>
 ## 5 Amblysomus septentrionalis        1      1        1     IUCN 2008
 ## 6 Amblysomus septentrionalis        1      1        1     IUCN 2008
 ##                                                CITATION SOURCE DIST_COMM ISLAND
-## 1 IUCN (International Union for Conservation of Nature)                        
-## 2 IUCN (International Union for Conservation of Nature)                        
-## 3 IUCN (International Union for Conservation of Nature)                        
-## 4 IUCN (International Union for Conservation of Nature)                        
-## 5 IUCN (International Union for Conservation of Nature)                        
-## 6 IUCN (International Union for Conservation of Nature)                        
+## 1 IUCN (International Union for Conservation of Nature)   &lt;NA&gt;      &lt;NA&gt;   &lt;NA&gt;
+## 2 IUCN (International Union for Conservation of Nature)   &lt;NA&gt;      &lt;NA&gt;   &lt;NA&gt;
+## 3 IUCN (International Union for Conservation of Nature)   &lt;NA&gt;      &lt;NA&gt;   &lt;NA&gt;
+## 4 IUCN (International Union for Conservation of Nature)   &lt;NA&gt;      &lt;NA&gt;   &lt;NA&gt;
+## 5 IUCN (International Union for Conservation of Nature)   &lt;NA&gt;      &lt;NA&gt;   &lt;NA&gt;
+## 6 IUCN (International Union for Conservation of Nature)   &lt;NA&gt;      &lt;NA&gt;   &lt;NA&gt;
 ##   SUBSPECIES SUBPOP  SHAPE_area SHAPE_len
-## 1                    4.93503476 15.575123
-## 2                   19.94471634 28.392110
-## 3                    0.12779360  1.902574
-## 4                    0.09936845  1.655898
-## 5                    0.25763915  2.078154
-## 6                    2.70333866  7.080348</code></pre>
+## 1       &lt;NA&gt;   &lt;NA&gt;  4.93503476 15.575123
+## 2       &lt;NA&gt;   &lt;NA&gt; 19.94471634 28.392110
+## 3       &lt;NA&gt;   &lt;NA&gt;  0.12779360  1.902574
+## 4       &lt;NA&gt;   &lt;NA&gt;  0.09936845  1.655898
+## 5       &lt;NA&gt;   &lt;NA&gt;  0.25763915  2.078154
+## 6       &lt;NA&gt;   &lt;NA&gt;  2.70333866  7.080348</code></pre>
 <p>We can search for specific species or species groups in the attribute
 table in different ways:</p>
 <pre class="r"><code># Range map for the species &#39;Lynx lynx&#39;
 terra::subset(mammals, mammals$BINOMIAL == &quot;Lynx lynx&quot;)
 
 # Show all entries for the species with the word &#39;Lynx&#39; in their name
-grep(&#39;Lynx&#39;,mammals@data$BINOMIAL)
+grep(&#39;Lynx&#39;,mammals$BINOMIAL, value=T)
+
+# Range map for all species with the word &#39;Lynx&#39; in their name
 mammals[grep(&#39;Lynx&#39;, mammals$BINOMIAL),]</code></pre>
 <p>We can use the attribute table subsets to select specific polygons
 that we want to look at.</p>
@@ -650,7 +649,7 @@ hectars.</p>
 <pre class="r"><code># Range area of alpine shrew in square kilometers:
 terra::expanse(shrew, unit=&quot;km&quot;)</code></pre>
 <pre><code>## [1] 490543.3</code></pre>
-<pre class="r"><code># Range area of monkey puzzle in square meters:
+<pre class="r"><code># Range area of monkey puzzle in square kilometers:
 terra::expanse(monkey_puzzle_terra, unit=&quot;km&quot;)</code></pre>
 <pre><code>## [1] 5783633</code></pre>
 <p>We can also very easily calculate the centre of gravity or range
@@ -667,7 +666,7 @@ terra::centroids(shrew)</code></pre>
 ##  values      : 29660 Sorex alpinus        1      1        1     IUCN       2008
 ##         citation source dist_comm (and 17 more)
 ##            &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;              
-##  IUCN (Internat~</code></pre>
+##  IUCN (Internat~     NA        NA</code></pre>
 <pre class="r"><code># Map the species range and add the centroid to the map
 map(&#39;world&#39;,xlim=c(5,30), ylim=c(40,55))
 plot(shrew, col=&#39;red&#39;, add=T)
@@ -783,9 +782,9 @@ values(shrew)</code></pre>
 <pre><code>##   id_no      binomial presence origin seasonal compiler yrcompiled
 ## 1 29660 Sorex alpinus        1      1        1     IUCN       2008
 ##                                                citation source dist_comm island
-## 1 IUCN (International Union for Conservation of Nature)                        
+## 1 IUCN (International Union for Conservation of Nature)   &lt;NA&gt;      &lt;NA&gt;   &lt;NA&gt;
 ##   subspecies subpop            legend tax_comm  kingdom   phylum    class
-## 1                   Extant (resident)          ANIMALIA CHORDATA MAMMALIA
+## 1       &lt;NA&gt;   &lt;NA&gt; Extant (resident)     &lt;NA&gt; ANIMALIA CHORDATA MAMMALIA
 ##         order_    family genus category marine terrestial freshwater SHAPE_Leng
 ## 1 EULIPOTYPHLA SORICIDAE Sorex       NT  False       True      False   88.67521
 ##   SHAPE_Area
@@ -887,18 +886,26 @@ PRESENCE, ORIGIN and SEASONAL information should be used and which not
 <p>As the <code>letsR</code> package does not work with
 <code>SpatRaster</code> objects yet, we have to use the older
 <code>raster</code> package to prepare the range map data.</p>
-<pre><code>## class       : SpatialPolygonsDataFrame 
-## features    : 43444 
-## extent      : -180.0001, 180.0025, -56.66595, 90  (xmin, xmax, ymin, ymax)
-## crs         : +proj=longlat +datum=WGS84 +no_defs 
-## variables   : 14
-## names       :           BINOMIAL, PRESENCE, ORIGIN, SEASONAL,                      COMPILER, YEAR,                               CITATION,                         SOURCE,                                                                              DIST_COMM, ISLAND,    SUBSPECIES, SUBPOP,    SHAPE_area,         SHAPE_len 
-## min values  : Abditomys latidens,        1,      1,        1,          Biodiversitas Brazil, 2008,                   Biodiversitas Brazil, African Elephant Database 2007, A free-ranging herd of D. b. michaeli occurs in a private game reserve in South Africa,   &#39;Eau, &quot;vacuum&quot; zone,     NA,  4.313328e-12, 2.52232707544e-05 
-## max values  :  Zyzomys woodwardi,        6,      6,        5, Wildlife Conservation Society, 2010, Wildlife Conservation Society and IUCN,            Wilting et al. 2010,                                                                            Zagros Mtns,   Zuna,  zanzibaricus,     NA, 6464.56233215,     6198.71426035</code></pre>
-<pre class="r"><code># prepare raster version of the mammals shapefile
-(mammals_raster &lt;- raster::shapefile(&#39;data/MAMMTERR.shp&#39;))</code></pre>
-<pre class="r"><code># Subset the SpatialPolygonsDataFrame
-artibeus_spp &lt;- mammals_raster[grep(&#39;Artibeus&#39;,mammals_raster@data$BINOMIAL),]
+<!-- ```{r echo=F} -->
+<!-- (mammals_raster <- raster::shapefile(paste0(path,'MAMMTERR.shp'))) -->
+<!-- ``` -->
+<!-- ```{r echo=F, eval=F} -->
+<!-- library(raster) -->
+<!-- (mammals_raster <- as(mammals,"Spatial")) -->
+<!-- # first subset SpatVector and then convert to SpatialPolygonsDataFrame -->
+<!-- artibeus_spp <- as(mammals[grep('Artibeus',mammals$BINOMIAL),], "Spatial") -->
+<!-- ``` -->
+<!-- ```{r eval=F, echo=F} -->
+<!-- # prepare raster version of the mammals shapefile -->
+<!-- (mammals_raster <- raster::shapefile('data/MAMMTERR.shp')) -->
+<!-- ``` -->
+<pre class="r"><code>library(raster)
+
+# Subset the SpatVector
+artibeus_spp &lt;- mammals[grep(&#39;Artibeus&#39;,mammals$BINOMIAL),]
+
+# Convert to SpatialPolygonsDataFrame
+artibeus_spp &lt;- as(artibeus_spp, &quot;Spatial&quot;)
 
 # Rasterize the ranges using the letsR package
 r_artibeus_spp &lt;- lets.presab(artibeus_spp, resol=2, 
@@ -906,12 +913,12 @@ r_artibeus_spp &lt;- lets.presab(artibeus_spp, resol=2,
 
 # Map the species richness
 plot(r_artibeus_spp)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <pre class="r"><code># Map single species - here, just the first two
 par(mfrow=c(1,2))
 plot(r_artibeus_spp, name = &quot;Artibeus amplus&quot;)
 plot(r_artibeus_spp, name = &quot;Artibeus anderseni&quot;)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-18-2.png" width="672" /></p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-16-2.png" width="672" /></p>
 <pre class="r"><code># Look at structure of the object and at the presence-absence matrix
 str(r_artibeus_spp, 1)</code></pre>
 <pre><code>## List of 3
