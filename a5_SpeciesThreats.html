@@ -13,7 +13,7 @@
 
 <title>Species threats</title>
 
-<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -168,11 +168,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -201,8 +205,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -210,16 +214,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -460,7 +457,7 @@ these criteria, species are classified into nine different categories
 although strictly only five categories describe the conservation status
 - from least concern to critically endangered [Fig. 1; <span
 class="citation">IUCN (2012)</span>].</p>
-<p><img src="figures/redlist.png" title="**Figure 1. The IUCN red list categories. Adapted from [@IUCN2012].**" alt="**Figure 1. The IUCN red list categories. Adapted from [@IUCN2012].**" width="70%" /></p>
+<p><img src="figures/redlist.png" alt="**Figure 1. The IUCN red list categories. Adapted from [@IUCN2012].**" width="70%" /></p>
 <p>The IUCN distinguishes five criteria that are used to classify
 species into one of the three threatened categories (Fig. 1; <span
 class="citation">IUCN (2012)</span>):</p>
@@ -541,40 +538,40 @@ in:</p>
 this to the information given on the IUCN website, e.g. for the <a
 href="https://www.iucnredlist.org/species/22728432/132658315#conservation-actions">Balearic
 Shearwater</a>.</p>
+<pre><code>##              authority published_year assessment_date category criteria
+## 1  (Pontoppidan, 1763)           2018      2018-08-07       LC     &lt;NA&gt;
+## 2     (Linnaeus, 1758)           2018      2018-08-07       LC     &lt;NA&gt;
+## 3       (Pallas, 1764)           2019      2016-10-01       LC     &lt;NA&gt;
+## 4     (Linnaeus, 1758)           2019      2019-08-11       LC     &lt;NA&gt;
+## 5          Brehm, 1831           2018      2018-08-07       LC     &lt;NA&gt;
+## 6     (Linnaeus, 1761)           2018      2018-08-07       LC     &lt;NA&gt;
+## 7     (Brünnich, 1764)           2018      2018-08-17       LC     &lt;NA&gt;
+## 8     (Linnaeus, 1758)           2018      2018-08-07       LC     &lt;NA&gt;
+## 9     (Linnaeus, 1758)           2018      2018-08-10       LC     &lt;NA&gt;
+## 10    (Linnaeus, 1758)           2019      2018-08-09       LC     &lt;NA&gt;
+##    population_trend marine_system freshwater_system terrestrial_system
+## 1        Decreasing          TRUE              TRUE               TRUE
+## 2        Decreasing          TRUE              TRUE               TRUE
+## 3        Decreasing          TRUE              TRUE               TRUE
+## 4           Unknown          TRUE              TRUE               TRUE
+## 5           Unknown          TRUE              TRUE               TRUE
+## 6        Increasing          TRUE             FALSE               TRUE
+## 7           Unknown          TRUE             FALSE               TRUE
+## 8           Unknown          TRUE             FALSE               TRUE
+## 9        Increasing          TRUE             FALSE               TRUE
+## 10       Increasing          TRUE              TRUE               TRUE
+##                  assessor                     reviewer
+## 1  BirdLife International              Westrip, J.R.S.
+## 2  BirdLife International                   Martin, R.
+## 3  BirdLife International Butchart, S.H.M. &amp; Symes, A.
+## 4  BirdLife International                    Smith, D.
+## 5  BirdLife International                   Hermes, C.
+## 6  BirdLife International              Westrip, J.R.S.
+## 7  BirdLife International                 Wheatley, H.
+## 8  BirdLife International              Westrip, J.R.S.
+## 9  BirdLife International                   Hermes, C.
+## 10 BirdLife International              Westrip, J.R.S.</code></pre>
 <pre class="r"><code>redlist_status[1:10,10:20]</code></pre>
-<pre><code>##              authority published_year assessment_date category
-## 1  (Pontoppidan, 1763)           2018      2018-08-07       LC
-## 2     (Linnaeus, 1758)           2018      2018-08-07       LC
-## 3     (Brünnich, 1764)           2018      2018-08-07       LC
-## 4         (Gray, 1859)           2018      2018-08-07       NT
-## 5     (Linnaeus, 1758)           2016      2016-10-01       LC
-## 6       (Pallas, 1764)           2017      2016-10-01       LC
-## 7     (Linnaeus, 1758)           2018      2018-08-07       LC
-## 8     (Boddaert, 1783)           2018      2018-08-07       LC
-## 9     (Linnaeus, 1758)           2018      2018-08-07       VU
-## 10         Brehm, 1831           2018      2018-08-07       LC
-##             criteria population_trend marine_system freshwater_system
-## 1               &lt;NA&gt;       Decreasing          TRUE              TRUE
-## 2               &lt;NA&gt;       Decreasing          TRUE              TRUE
-## 3               &lt;NA&gt;           Stable          TRUE              TRUE
-## 4               &lt;NA&gt;       Decreasing          TRUE              TRUE
-## 5               &lt;NA&gt;           Stable         FALSE              TRUE
-## 6               &lt;NA&gt;       Decreasing          TRUE              TRUE
-## 7               &lt;NA&gt;          Unknown          TRUE              TRUE
-## 8               &lt;NA&gt;       Decreasing          TRUE              TRUE
-## 9  A2abce+3bce+4abce       Decreasing          TRUE              TRUE
-## 10              &lt;NA&gt;          Unknown          TRUE              TRUE
-##    terrestrial_system               assessor                 reviewer
-## 1                TRUE BirdLife International              Westrip, J.
-## 2                TRUE BirdLife International               Martin, R.
-## 3                TRUE BirdLife International              Westrip, J.
-## 4                TRUE BirdLife International              Westrip, J.
-## 5                TRUE BirdLife International Butchart, S. &amp; Symes, A.
-## 6                TRUE BirdLife International Butchart, S. &amp; Symes, A.
-## 7                TRUE BirdLife International              Westrip, J.
-## 8                TRUE BirdLife International              Westrip, J.
-## 9                TRUE BirdLife International              Westrip, J.
-## 10               TRUE BirdLife International               Hermes, C.</code></pre>
 <div id="iucn-population-trends" class="section level2" number="1.1">
 <h2><span class="header-section-number">1.1</span> IUCN population
 trends</h2>
@@ -591,7 +588,7 @@ range sizes (extent of occurrence, EOO).</p>
 
 # area against trend
 ggplot(data = redlist_status, mapping = aes(x = population_trend, y = eoo_km2)) + geom_boxplot() + xlab(&#39;Population trend&#39;) + ylab(&#39;Extent of occurrence [km2]&#39;)</code></pre>
-<p><img src="a5_SpeciesThreats_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="a5_SpeciesThreats_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>If we want to plot the relation between (global) population trend and
 British range sizes, we first have to calculate these ranges sizes.</p>
 <pre class="r"><code># Calculate British range sizes from the distribution atlas
@@ -600,7 +597,7 @@ area &lt;- data.frame(spp=spp, area=colSums(bird_dist[,-c(1:3)]))
 # Merge the range size information with the redlist table
 area &lt;- merge(area, redlist_status[,c(&#39;scientific_name&#39;,&#39;population_trend&#39;,&#39;eoo_km2&#39;)],by.x=&#39;spp&#39;,by.y=&#39;scientific_name&#39;)
 ggplot(data = area, mapping = aes(x = population_trend, y = area*100)) + geom_boxplot() + xlab(&#39;Population trend&#39;) + ylab(&#39;Distribution area [km2] in UK&#39;)</code></pre>
-<p><img src="a5_SpeciesThreats_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="a5_SpeciesThreats_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <div class="alert alert-info">
 <p><strong>Exercise:</strong></p>
 <p>The redlist table also contains information, for example on realm
@@ -626,14 +623,8 @@ richness of these species per cell and map this.</p>
 <p>For example, we can extract all species that are classified as
 vulnerable:</p>
 <pre class="r"><code>(subset(redlist_status,category==&#39;VU&#39;)$scientific_name)</code></pre>
-<pre><code>##  [1] &quot;Podiceps auritus&quot;            &quot;Anser erythropus&quot;           
-##  [3] &quot;Branta ruficollis&quot;           &quot;Aythya ferina&quot;              
-##  [5] &quot;Polysticta stelleri&quot;         &quot;Clangula hyemalis&quot;          
-##  [7] &quot;Melanitta fusca&quot;             &quot;Otis tarda&quot;                 
-##  [9] &quot;Rissa tridactyla&quot;            &quot;Fratercula arctica&quot;         
-## [11] &quot;Streptopelia turtur&quot;         &quot;Bubo scandiacus&quot;            
-## [13] &quot;Emberiza rustica&quot;            &quot;Marmaronetta angustirostris&quot;
-## [15] &quot;Branta sandvicensis&quot;         &quot;Syrmaticus reevesii&quot;</code></pre>
+<pre><code>## [1] &quot;Branta ruficollis&quot;   &quot;Aythya ferina&quot;       &quot;Rissa tridactyla&quot;   
+## [4] &quot;Fratercula arctica&quot;  &quot;Streptopelia turtur&quot;</code></pre>
 <p>Using the red list information we can then map hotspots of species,
 meaning the species richness of species falling into different red list
 categories.</p>
@@ -654,7 +645,7 @@ spplot( c(
   terra::rast(data.frame(bird_dist[,2:3], log_VU=log(rowSums(bird_dist[,vu_spp]))), type=&#39;xyz&#39;),
   terra::rast(data.frame(bird_dist[,2:3], log_LC=log(rowSums(bird_dist[,lc_spp]))), type=&#39;xyz&#39;)),
   main=&#39;log( species richness)&#39;)</code></pre>
-<p><img src="a5_SpeciesThreats_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="a5_SpeciesThreats_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <div class="alert alert-info">
 <p><strong>Exercise:</strong></p>
 <p>Map species richness of all species belonging to the threatened
@@ -698,7 +689,7 @@ rl_threats(&#39;Gavia stellata&#39;, key= MY_IUCN_REDLIST_KEY)</code></pre>
 ## 6   Minority (&lt;50%) Slow, Significant Declines Low Impact: 5       NA
 ## 7   Minority (&lt;50%) Slow, Significant Declines Low Impact: 5       NA</code></pre>
 <pre class="r"><code># Download red list threats for all species
-redlist_threats &lt;- do.call(rbind,lapply(seq_len(length(spp)),FUN=function(i){xi &lt;- rl_threats(spp[i], key= MY_IUCN_REDLIST_KEY); if(length(xi$result)) {data.frame(species=spp[i],speccode=speccodes[i],xi$result) }}))</code></pre>
+redlist_threats &lt;- do.call(rbind,lapply(seq_len(length(spp)),FUN=function(i){xi &lt;- rl_threats(spp[i], key= MY_IUCN_REDLIST_KEY); if(length(xi$result)) {data.frame(species=spp[i],xi$result) }}))</code></pre>
 <p>Course participants can download the data from moodle and read it
 in:</p>
 <pre class="r"><code>redlist_threats &lt;- read.table(&#39;data/UK_birds_redlist_threats.csv&#39;, header=T, sep=&#39;,&#39;)</code></pre>
@@ -719,47 +710,47 @@ Shearwater</a> example, and at the <a
 href="https://www.iucnredlist.org/resources/threat-classification-scheme">Threat
 Classification Scheme</a>.</p>
 <pre class="r"><code>redlist_threats[sample(nrow(redlist_threats),10),-c(1:2)]</code></pre>
-<pre><code>##       code                                                          title
-## 1098 5.1.1                        Intentional use (species is the target)
-## 786    8.1 Invasive non-native/alien species/diseases (Crassostrea gigas)
-## 664    5.1                         Hunting &amp; trapping terrestrial animals
-## 13   9.2.1                                                     Oil spills
-## 1245   9.4                                          Garbage &amp; solid waste
-## 1214 8.1.2                                 Named species (Neovison vison)
-## 933   11.1                                  Habitat shifting &amp; alteration
-## 1414 5.1.1                        Intentional use (species is the target)
-## 773    2.1                            Annual &amp; perennial non-timber crops
-## 818  8.1.2                          Named species (Clostridium botulinum)
-##       timing             scope                   severity         score
-## 1098 Ongoing   Minority (&lt;50%) Slow, Significant Declines Low Impact: 5
-## 786  Ongoing   Minority (&lt;50%)                    Unknown       Unknown
-## 664  Ongoing   Minority (&lt;50%) Slow, Significant Declines Low Impact: 5
-## 13   Ongoing   Minority (&lt;50%) Slow, Significant Declines Low Impact: 5
-## 1245 Ongoing   Minority (&lt;50%)                    Unknown       Unknown
-## 1214 Ongoing   Minority (&lt;50%) Slow, Significant Declines Low Impact: 5
-## 933   Future      Whole (&gt;90%)                    Unknown       Unknown
-## 1414 Ongoing   Minority (&lt;50%) Slow, Significant Declines          &lt;NA&gt;
-## 773  Ongoing Majority (50-90%)                    Unknown       Unknown
-## 818   Future   Minority (&lt;50%)             Rapid Declines Low Impact: 4
-##                   invasive
-## 1098                  &lt;NA&gt;
-## 786      Crassostrea gigas
-## 664                   &lt;NA&gt;
-## 13                    &lt;NA&gt;
-## 1245                  &lt;NA&gt;
-## 1214        Neovison vison
-## 933                   &lt;NA&gt;
-## 1414                  &lt;NA&gt;
-## 773                   &lt;NA&gt;
-## 818  Clostridium botulinum</code></pre>
+<pre><code>##                                                          title
+## 337                         Named species (Accipiter gentilis)
+## 483 Unintentional effects: (subsistence/small scale) [harvest]
+## 499                        Annual &amp; perennial non-timber crops
+## 213                 Agro-industry grazing, ranching or farming
+## 815                     Hunting &amp; trapping terrestrial animals
+## 729                                          Roads &amp; railroads
+## 248                                      Agro-industry farming
+## 719                          Agricultural &amp; forestry effluents
+## 772                                                   Droughts
+## 290                     Hunting &amp; trapping terrestrial animals
+##                     timing             scope                   severity
+## 337                Ongoing   Minority (&lt;50%)        Negligible declines
+## 483                Ongoing   Minority (&lt;50%) Slow, Significant Declines
+## 499                Ongoing      Whole (&gt;90%) Slow, Significant Declines
+## 213                Ongoing   Minority (&lt;50%)        Negligible declines
+## 815                Ongoing   Minority (&lt;50%)             Rapid Declines
+## 729                Ongoing   Minority (&lt;50%)                    Unknown
+## 248                Ongoing Majority (50-90%) Slow, Significant Declines
+## 719                Ongoing   Minority (&lt;50%)        Negligible declines
+## 772 Past, Likely to Return   Minority (&lt;50%) Slow, Significant Declines
+## 290                Ongoing Majority (50-90%)        Negligible declines
+##                score           invasive
+## 337    Low Impact: 4 Accipiter gentilis
+## 483    Low Impact: 5               &lt;NA&gt;
+## 499 Medium Impact: 7               &lt;NA&gt;
+## 213    Low Impact: 4               &lt;NA&gt;
+## 815 Medium Impact: 6               &lt;NA&gt;
+## 729          Unknown               &lt;NA&gt;
+## 248 Medium Impact: 6               &lt;NA&gt;
+## 719    Low Impact: 4               &lt;NA&gt;
+## 772      Past Impact               &lt;NA&gt;
+## 290    Low Impact: 5               &lt;NA&gt;</code></pre>
 <p>We can extract many useful information from this table, for example,
 when specific threats occurred.</p>
 <pre class="r"><code>table(redlist_threats$timing)</code></pre>
 <pre><code>## 
 ##                   Future                  Ongoing   Past, Likely to Return 
-##                      142                     1362                       34 
+##                       58                      750                       18 
 ## Past, Unlikely to Return 
-##                       22</code></pre>
+##                        8</code></pre>
 <div class="alert alert-info">
 <p><strong>Exercise:</strong></p>
 <p>Explore the threats table. For example,</p>
@@ -780,25 +771,25 @@ these species, compute the species richness and map this in space.</p>
 sort(table(subset(redlist_threats, species %in% spp &amp; timing==&#39;Ongoing&#39;)$title), decreasing=T)[1:10]</code></pre>
 <pre><code>## 
 ##         Hunting &amp; trapping terrestrial animals 
-##                                             58 
+##                                             63 
 ##        Intentional use (species is the target) 
-##                                             35 
+##                                             40 
 ##                Industrial &amp; military effluents 
+##                                             26 
+##              Agricultural &amp; forestry effluents 
+##                                             24 
+##            Annual &amp; perennial non-timber crops 
 ##                                             23 
+## Unintentional effects: (large scale) [harvest] 
+##                                             23 
+##                          Agro-industry farming 
+##                                             21 
 ##         Fishing &amp; harvesting aquatic resources 
 ##                                             21 
 ##                               Renewable energy 
 ##                                             21 
-## Unintentional effects: (large scale) [harvest] 
-##                                             21 
-##              Agricultural &amp; forestry effluents 
-##                                             20 
-##                        Recreational activities 
-##                                             20 
-##            Annual &amp; perennial non-timber crops 
-##                                             19 
-##                                     Oil spills 
-##                                             18</code></pre>
+##                      Herbicides and pesticides 
+##                                             20</code></pre>
 <pre class="r"><code># Identify the species experiencing threats from hunting
 spp_threat1 &lt;- sub(&#39; &#39;,&#39;_&#39;,subset(redlist_threats,title==&quot;Hunting &amp; trapping terrestrial animals&quot; &amp; species %in% spp)$species)
 # Identify the species experiencing threats from industry and military
@@ -806,10 +797,10 @@ spp_threat2 &lt;- sub(&#39; &#39;,&#39;_&#39;,subset(redlist_threats,title==&quo
 
 # Map species experiencing threats from hunting
 plot(terra::rast(data.frame(bird_dist[,2:3],rowSums(bird_dist[,spp_threat1])), type=&#39;xyz&#39;), main=&quot;Hunting &amp; trapping terrestrial animals&quot;)</code></pre>
-<p><img src="a5_SpeciesThreats_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p><img src="a5_SpeciesThreats_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 <pre class="r"><code># species experiencing threats from industry and military
 plot(terra::rast(data.frame(bird_dist[,2:3],rowSums(bird_dist[,spp_threat2])), type=&#39;xyz&#39;), main=&quot;Industrial &amp; military effluents&quot;)</code></pre>
-<p><img src="a5_SpeciesThreats_files/figure-html/unnamed-chunk-18-2.png" width="672" /></p>
+<p><img src="a5_SpeciesThreats_files/figure-html/unnamed-chunk-19-2.png" width="672" /></p>
 <div class="alert alert-info">
 <p><strong>Exercise:</strong></p>
 <ul>

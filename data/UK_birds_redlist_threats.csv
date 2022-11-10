@@ -1,0 +1,835 @@
+"species","code","title","timing","scope","severity","score","invasive"
+"Gavia stellata","11.1","Habitat shifting & alteration","Future","Majority (50-90%)","Negligible declines","Low Impact: 3",NA
+"Gavia stellata","3.3","Renewable energy","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Gavia stellata","4.3","Shipping lanes","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Gavia stellata","5.4","Fishing & harvesting aquatic resources","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Gavia stellata","5.4.4","Unintentional effects: (large scale) [harvest]","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Gavia stellata","9.2","Industrial & military effluents","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Gavia stellata","9.2.1","Oil spills","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Gavia arctica","11.1","Habitat shifting & alteration","Future","Whole (>90%)","Unknown","Unknown",NA
+"Gavia arctica","4.3","Shipping lanes","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Gavia arctica","5.4","Fishing & harvesting aquatic resources","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Gavia arctica","5.4.4","Unintentional effects: (large scale) [harvest]","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Gavia arctica","9.2","Industrial & military effluents","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Gavia arctica","9.2.1","Oil spills","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Podiceps cristatus","8.1","Invasive non-native/alien species/diseases (Oncorhynchus mykiss)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Oncorhynchus mykiss"
+"Podiceps cristatus","8.1.2","Named species (Oncorhynchus mykiss)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Oncorhynchus mykiss"
+"Podiceps nigricollis","11.5","Other impacts","Past, Likely to Return","Minority (<50%)","Negligible declines","Past Impact",NA
+"Fulmarus glacialis","5.4","Fishing & harvesting aquatic resources","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Fulmarus glacialis","5.4.4","Unintentional effects: (large scale) [harvest]","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Fulmarus glacialis","8.1","Invasive non-native/alien species/diseases","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Fulmarus glacialis","8.1","Invasive non-native/alien species/diseases (Felis catus)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Felis catus"
+"Fulmarus glacialis","8.1","Invasive non-native/alien species/diseases (Vulpes vulpes)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Vulpes vulpes"
+"Fulmarus glacialis","8.1.1","Unspecified species","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Fulmarus glacialis","8.1.2","Named species (Felis catus)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Felis catus"
+"Fulmarus glacialis","8.1.2","Named species (Vulpes vulpes)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Vulpes vulpes"
+"Fulmarus glacialis","9.2","Industrial & military effluents","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Fulmarus glacialis","9.2.1","Oil spills","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Fulmarus glacialis","9.4","Garbage & solid waste","Ongoing","Majority (50-90%)","Unknown","Unknown",NA
+"Puffinus puffinus","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Puffinus puffinus","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Puffinus puffinus","8.1","Invasive non-native/alien species/diseases (Felis catus)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Felis catus"
+"Puffinus puffinus","8.1","Invasive non-native/alien species/diseases (Sus domesticus)","Past, Unlikely to Return","Minority (<50%)","Rapid Declines","Past Impact","Sus domesticus"
+"Puffinus puffinus","8.1","Invasive non-native/alien species/diseases (Unspecified Rattus)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Unspecified Rattus"
+"Puffinus puffinus","8.1.2","Named species (Felis catus)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Felis catus"
+"Puffinus puffinus","8.1.2","Named species (Sus domesticus)","Past, Unlikely to Return","Minority (<50%)","Rapid Declines","Past Impact","Sus domesticus"
+"Puffinus puffinus","8.1.2","Named species (Unspecified Rattus)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Unspecified Rattus"
+"Puffinus puffinus","9.6","Excess energy","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Puffinus puffinus","9.6.1","Light pollution","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Hydrobates pelagicus","8.1","Invasive non-native/alien species/diseases (Felis catus)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Felis catus"
+"Hydrobates pelagicus","8.1.2","Named species (Felis catus)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Felis catus"
+"Hydrobates pelagicus","8.2","Problematic native species/diseases","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Hydrobates pelagicus","8.2.1","Unspecified species","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Morus bassanus","3.3","Renewable energy","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Morus bassanus","5.4","Fishing & harvesting aquatic resources","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Morus bassanus","5.4.4","Unintentional effects: (large scale) [harvest]","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Morus bassanus","9.4","Garbage & solid waste","Future","Majority (50-90%)","Unknown","Unknown",NA
+"Phalacrocorax carbo","5.4","Fishing & harvesting aquatic resources","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Phalacrocorax carbo","5.4.3","Unintentional effects: (subsistence/small scale) [harvest]","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Ardea cinerea","2.1","Annual & perennial non-timber crops","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Ardea cinerea","2.1.4","Scale Unknown/Unrecorded","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Ardea cinerea","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Ardea cinerea","5.1","Hunting & trapping terrestrial animals","Past, Likely to Return","Minority (<50%)","Slow, Significant Declines","Past Impact",NA
+"Ardea cinerea","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Ardea cinerea","5.1.3","Persecution/control","Past, Likely to Return","Minority (<50%)","Slow, Significant Declines","Past Impact",NA
+"Ardea cinerea","5.3","Logging & wood harvesting","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Ardea cinerea","5.3.4","Unintentional effects: (large scale) [harvest]","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Ardea cinerea","8.1","Invasive non-native/alien species/diseases","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Ardea cinerea","8.1","Invasive non-native/alien species/diseases (Clostridium botulinum)","Future","Minority (<50%)","Rapid Declines","Low Impact: 4","Clostridium botulinum"
+"Ardea cinerea","8.1.1","Unspecified species","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Ardea cinerea","8.1.2","Named species (Clostridium botulinum)","Future","Minority (<50%)","Rapid Declines","Low Impact: 4","Clostridium botulinum"
+"Ardea cinerea","8.5","Viral/prion-induced diseases","Future","Minority (<50%)","Rapid Declines","Low Impact: 4",NA
+"Ardea cinerea","8.5.2","Named species","Future","Minority (<50%)","Rapid Declines","Low Impact: 4",NA
+"Ardea cinerea","9.3","Agricultural & forestry effluents","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Ardea cinerea","9.3.2","Soil erosion, sedimentation","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Cygnus cygnus","11.1","Habitat shifting & alteration","Future","Whole (>90%)","Unknown",NA,NA
+"Anser brachyrhynchus","11.1","Habitat shifting & alteration","Future","Whole (>90%)","Unknown",NA,NA
+"Anser caerulescens","11.1","Habitat shifting & alteration","Future","Whole (>90%)","Unknown",NA,NA
+"Branta canadensis","11.1","Habitat shifting & alteration","Future","Whole (>90%)","Unknown",NA,NA
+"Branta leucopsis","11.1","Habitat shifting & alteration","Future","Whole (>90%)","Unknown",NA,NA
+"Branta ruficollis","11.1","Habitat shifting & alteration","Future","Majority (50-90%)","Rapid Declines","Low Impact: 5",NA
+"Branta ruficollis","3.1","Oil & gas drilling","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Branta ruficollis","3.3","Renewable energy","Future","Majority (50-90%)","Slow, Significant Declines","Low Impact: 4",NA
+"Branta ruficollis","5.1","Hunting & trapping terrestrial animals","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Branta ruficollis","5.1.2","Unintentional effects (species is not the target)","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Branta ruficollis","5.4","Fishing & harvesting aquatic resources","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Branta ruficollis","5.4.3","Unintentional effects: (subsistence/small scale) [harvest]","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Branta ruficollis","6.1","Recreational activities","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Branta ruficollis","6.3","Work & other activities","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Tadorna ferruginea","1.1","Housing & urban areas","Past, Likely to Return","Minority (<50%)","Slow, Significant Declines","Past Impact",NA
+"Tadorna ferruginea","2.3","Livestock farming & ranching","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Tadorna ferruginea","2.3.4","Scale Unknown/Unrecorded","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Tadorna ferruginea","3.2","Mining & quarrying","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Tadorna ferruginea","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Tadorna ferruginea","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Tadorna ferruginea","7.2","Dams & water management/use","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Tadorna ferruginea","7.2.4","Abstraction of surface water (unknown use)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Tadorna ferruginea","7.2.7","Abstraction of ground water (agricultural use)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Tadorna ferruginea","8.1","Invasive non-native/alien species/diseases","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Tadorna ferruginea","8.1","Invasive non-native/alien species/diseases (Tadorna cana)","Ongoing","Minority (<50%)","No decline","Low Impact: 4","Tadorna cana"
+"Tadorna ferruginea","8.1.1","Unspecified species","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Tadorna ferruginea","8.1.2","Named species (Tadorna cana)","Ongoing","Minority (<50%)","No decline","Low Impact: 4","Tadorna cana"
+"Tadorna ferruginea","8.5","Viral/prion-induced diseases","Past, Likely to Return","Majority (50-90%)","Slow, Significant Declines","Past Impact",NA
+"Tadorna ferruginea","8.5.2","Named species","Past, Likely to Return","Majority (50-90%)","Slow, Significant Declines","Past Impact",NA
+"Tadorna ferruginea","9.1","Domestic & urban waste water","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Tadorna ferruginea","9.1.3","Type Unknown/Unrecorded","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Mareca penelope","11.1","Habitat shifting & alteration","Future","Whole (>90%)","Unknown","Unknown",NA
+"Mareca penelope","6.1","Recreational activities","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Mareca penelope","7.2","Dams & water management/use","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Mareca penelope","7.2.7","Abstraction of ground water (agricultural use)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Mareca penelope","7.3","Other ecosystem modifications","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Mareca penelope","8.5","Viral/prion-induced diseases","Past, Likely to Return","Minority (<50%)","Rapid Declines","Past Impact",NA
+"Mareca penelope","8.5.2","Named species","Past, Likely to Return","Minority (<50%)","Rapid Declines","Past Impact",NA
+"Mareca penelope","9.2","Industrial & military effluents","Ongoing","Minority (<50%)","Rapid Declines","Medium Impact: 6",NA
+"Mareca penelope","9.2.1","Oil spills","Ongoing","Minority (<50%)","Rapid Declines","Medium Impact: 6",NA
+"Mareca penelope","9.2.3","Type Unknown/Unrecorded","Ongoing","Minority (<50%)","Rapid Declines","Medium Impact: 6",NA
+"Spatula querquedula","11.2","Droughts","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Spatula querquedula","5.1","Hunting & trapping terrestrial animals","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Spatula querquedula","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Spatula querquedula","5.1.1","Intentional use (species is the target)","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Spatula querquedula","5.1.2","Unintentional effects (species is not the target)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Spatula querquedula","6.3","Work & other activities","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Spatula querquedula","7.2","Dams & water management/use","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Spatula querquedula","7.2.10","Large dams","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Spatula querquedula","7.2.4","Abstraction of surface water (unknown use)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Spatula querquedula","7.3","Other ecosystem modifications","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Spatula querquedula","8.1","Invasive non-native/alien species/diseases (Clostridium botulinum)","Past, Likely to Return","Minority (<50%)","Negligible declines","Past Impact","Clostridium botulinum"
+"Spatula querquedula","8.1","Invasive non-native/alien species/diseases (Neovison vison)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Neovison vison"
+"Spatula querquedula","8.1.2","Named species (Clostridium botulinum)","Past, Likely to Return","Minority (<50%)","Negligible declines","Past Impact","Clostridium botulinum"
+"Spatula querquedula","8.1.2","Named species (Neovison vison)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Neovison vison"
+"Spatula querquedula","8.5","Viral/prion-induced diseases","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Spatula querquedula","8.5","Viral/prion-induced diseases","Past, Likely to Return","Majority (50-90%)","Slow, Significant Declines","Past Impact",NA
+"Spatula querquedula","8.5.2","Named species","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Spatula querquedula","8.5.2","Named species","Past, Likely to Return","Majority (50-90%)","Slow, Significant Declines","Past Impact",NA
+"Spatula clypeata","4.2","Utility & service lines","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Spatula clypeata","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Spatula clypeata","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Spatula clypeata","8.1","Invasive non-native/alien species/diseases (Neovison vison)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Neovison vison"
+"Spatula clypeata","8.1.2","Named species (Neovison vison)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Neovison vison"
+"Spatula clypeata","8.5","Viral/prion-induced diseases","Future","Minority (<50%)","Slow, Significant Declines","Low Impact: 3",NA
+"Spatula clypeata","8.5.2","Named species","Future","Minority (<50%)","Slow, Significant Declines","Low Impact: 3",NA
+"Spatula clypeata","9.3","Agricultural & forestry effluents","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Spatula clypeata","9.3.1","Nutrient loads","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Aythya ferina","1.1","Housing & urban areas","Ongoing","Minority (<50%)","No decline","Low Impact: 4",NA
+"Aythya ferina","11.1","Habitat shifting & alteration","Ongoing","Unknown","Unknown","Unknown",NA
+"Aythya ferina","2.1","Annual & perennial non-timber crops","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Aythya ferina","2.1.2","Small-holder farming","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Aythya ferina","2.1.3","Agro-industry farming","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Aythya ferina","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Causing/Could cause fluctuations","Low Impact: 5",NA
+"Aythya ferina","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Aythya ferina","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Aythya ferina","5.1.2","Unintentional effects (species is not the target)","Ongoing","Minority (<50%)","Causing/Could cause fluctuations","Low Impact: 5",NA
+"Aythya ferina","5.4","Fishing & harvesting aquatic resources","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Aythya ferina","5.4.3","Unintentional effects: (subsistence/small scale) [harvest]","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Aythya ferina","6.1","Recreational activities","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Aythya ferina","8.1","Invasive non-native/alien species/diseases (Cyprinus carpio)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Cyprinus carpio"
+"Aythya ferina","8.1","Invasive non-native/alien species/diseases (Neovison vison)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Neovison vison"
+"Aythya ferina","8.1","Invasive non-native/alien species/diseases (Nyctereutes procyonoides)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Nyctereutes procyonoides"
+"Aythya ferina","8.1","Invasive non-native/alien species/diseases (Procyon lotor)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Procyon lotor"
+"Aythya ferina","8.1.2","Named species (Cyprinus carpio)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Cyprinus carpio"
+"Aythya ferina","8.1.2","Named species (Neovison vison)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Neovison vison"
+"Aythya ferina","8.1.2","Named species (Nyctereutes procyonoides)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Nyctereutes procyonoides"
+"Aythya ferina","8.1.2","Named species (Procyon lotor)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Procyon lotor"
+"Aythya ferina","8.2","Problematic native species/diseases (Sus scrofa)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Sus scrofa"
+"Aythya ferina","8.2","Problematic native species/diseases (Vulpes vulpes)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Vulpes vulpes"
+"Aythya ferina","8.2.2","Named species (Sus scrofa)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Sus scrofa"
+"Aythya ferina","8.2.2","Named species (Vulpes vulpes)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Vulpes vulpes"
+"Aythya ferina","8.5","Viral/prion-induced diseases","Future","Minority (<50%)","Rapid Declines","Low Impact: 4",NA
+"Aythya ferina","8.5.2","Named species","Future","Minority (<50%)","Rapid Declines","Low Impact: 4",NA
+"Aythya ferina","9.3","Agricultural & forestry effluents","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Aythya ferina","9.3.1","Nutrient loads","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Somateria mollissima","11.1","Habitat shifting & alteration","Ongoing","Whole (>90%)","Unknown","Unknown",NA
+"Somateria mollissima","2.4","Marine & freshwater aquaculture","Ongoing","Minority (<50%)","Causing/Could cause fluctuations","Low Impact: 5",NA
+"Somateria mollissima","2.4.2","Industrial aquaculture","Ongoing","Minority (<50%)","Causing/Could cause fluctuations","Low Impact: 5",NA
+"Somateria mollissima","3.2","Mining & quarrying","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Somateria mollissima","5.1","Hunting & trapping terrestrial animals","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Somateria mollissima","5.1.1","Intentional use (species is the target)","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Somateria mollissima","5.4","Fishing & harvesting aquatic resources","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Somateria mollissima","5.4.4","Unintentional effects: (large scale) [harvest]","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Somateria mollissima","6.1","Recreational activities","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Somateria mollissima","6.3","Work & other activities","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Somateria mollissima","8.1","Invasive non-native/alien species/diseases (Neovison vison)","Ongoing",NA,NA,"Low Impact: 3","Neovison vison"
+"Somateria mollissima","8.1","Invasive non-native/alien species/diseases (Vulpes lagopus)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Vulpes lagopus"
+"Somateria mollissima","8.1.2","Named species (Neovison vison)","Ongoing",NA,NA,"Low Impact: 3","Neovison vison"
+"Somateria mollissima","8.1.2","Named species (Vulpes lagopus)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Vulpes lagopus"
+"Somateria mollissima","8.2","Problematic native species/diseases (Haliaeetus albicilla)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Haliaeetus albicilla"
+"Somateria mollissima","8.2","Problematic native species/diseases (Pasteurella multocida)","Future","Majority (50-90%)","Rapid Declines","Low Impact: 5","Pasteurella multocida"
+"Somateria mollissima","8.2.2","Named species (Haliaeetus albicilla)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Haliaeetus albicilla"
+"Somateria mollissima","8.2.2","Named species (Pasteurella multocida)","Future","Majority (50-90%)","Rapid Declines","Low Impact: 5","Pasteurella multocida"
+"Somateria mollissima","8.5","Viral/prion-induced diseases","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Somateria mollissima","8.5.1","Unspecified species","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Somateria mollissima","9.2","Industrial & military effluents","Ongoing","Majority (50-90%)","Causing/Could cause fluctuations","Medium Impact: 6",NA
+"Somateria mollissima","9.2.1","Oil spills","Ongoing","Majority (50-90%)","Causing/Could cause fluctuations","Medium Impact: 6",NA
+"Somateria mollissima","9.4","Garbage & solid waste","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Melanitta nigra","11.1","Habitat shifting & alteration","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Melanitta nigra","11.5","Other impacts","Future","Majority (50-90%)","Unknown","Unknown",NA
+"Melanitta nigra","3.2","Mining & quarrying","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Melanitta nigra","3.3","Renewable energy","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Melanitta nigra","4.3","Shipping lanes","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Melanitta nigra","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Melanitta nigra","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Melanitta nigra","5.4","Fishing & harvesting aquatic resources","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Melanitta nigra","5.4.4","Unintentional effects: (large scale) [harvest]","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Melanitta nigra","8.5","Viral/prion-induced diseases","Future","Minority (<50%)","Rapid Declines","Low Impact: 4",NA
+"Melanitta nigra","8.5.2","Named species","Future","Minority (<50%)","Rapid Declines","Low Impact: 4",NA
+"Melanitta nigra","9.2","Industrial & military effluents","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Melanitta nigra","9.2.1","Oil spills","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Melanitta nigra","9.3","Agricultural & forestry effluents","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Melanitta nigra","9.3.4","Type Unknown/Unrecorded","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Bucephala clangula","2.2","Wood & pulp plantations","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Bucephala clangula","2.2.2","Agro-industry plantations","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Bucephala clangula","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Bucephala clangula","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Bucephala clangula","8.1","Invasive non-native/alien species/diseases (Perca fluviatilis)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Perca fluviatilis"
+"Bucephala clangula","8.1.2","Named species (Perca fluviatilis)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Perca fluviatilis"
+"Bucephala clangula","9.2","Industrial & military effluents","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Bucephala clangula","9.2.1","Oil spills","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Mergus serrator","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Mergus serrator","5.1.3","Persecution/control","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Mergus merganser","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Mergus merganser","5.1.3","Persecution/control","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Milvus milvus","2.1","Annual & perennial non-timber crops","Ongoing","Minority (<50%)","No decline","Low Impact: 4",NA
+"Milvus milvus","2.1.3","Agro-industry farming","Ongoing","Minority (<50%)","No decline","Low Impact: 4",NA
+"Milvus milvus","2.3","Livestock farming & ranching","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Milvus milvus","2.3.3","Agro-industry grazing, ranching or farming","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Milvus milvus","3.3","Renewable energy","Ongoing","Minority (<50%)","No decline","Low Impact: 4",NA
+"Milvus milvus","4.1","Roads & railroads","Ongoing","Majority (50-90%)","No decline","Low Impact: 5",NA
+"Milvus milvus","4.2","Utility & service lines","Ongoing","Majority (50-90%)","No decline","Low Impact: 5",NA
+"Milvus milvus","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Milvus milvus","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Milvus milvus","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Milvus milvus","5.1.3","Persecution/control","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Milvus milvus","5.3","Logging & wood harvesting","Ongoing","Majority (50-90%)","No decline","Low Impact: 5",NA
+"Milvus milvus","5.3.4","Unintentional effects: (large scale) [harvest]","Ongoing","Majority (50-90%)","No decline","Low Impact: 5",NA
+"Milvus milvus","9.3","Agricultural & forestry effluents","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Milvus milvus","9.3.3","Herbicides and pesticides","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Circus aeruginosus","1.1","Housing & urban areas","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Circus aeruginosus","11.2","Droughts","Future","Majority (50-90%)","Unknown","Unknown",NA
+"Circus aeruginosus","2.1","Annual & perennial non-timber crops","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Circus aeruginosus","2.1.3","Agro-industry farming","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Circus aeruginosus","2.3","Livestock farming & ranching","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Circus aeruginosus","2.3.2","Small-holder grazing, ranching or farming","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Circus aeruginosus","3.3","Renewable energy","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Circus aeruginosus","4.2","Utility & service lines","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Circus aeruginosus","5.1","Hunting & trapping terrestrial animals","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Circus aeruginosus","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Circus aeruginosus","5.1.2","Unintentional effects (species is not the target)","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Circus aeruginosus","5.1.3","Persecution/control","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Circus aeruginosus","5.3","Logging & wood harvesting","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Circus aeruginosus","5.3.3","Unintentional effects: (subsistence/small scale) [harvest]","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Circus aeruginosus","7.2","Dams & water management/use","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Circus aeruginosus","7.2.4","Abstraction of surface water (unknown use)","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Circus aeruginosus","9.1","Domestic & urban waste water","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Circus aeruginosus","9.1.1","Sewage","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Circus aeruginosus","9.2","Industrial & military effluents","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Circus aeruginosus","9.2.3","Type Unknown/Unrecorded","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Circus aeruginosus","9.3","Agricultural & forestry effluents","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Circus aeruginosus","9.3.3","Herbicides and pesticides","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Circus cyaneus","2.1","Annual & perennial non-timber crops","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Circus cyaneus","2.1.3","Agro-industry farming","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Circus cyaneus","2.2","Wood & pulp plantations","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Circus cyaneus","2.2.2","Agro-industry plantations","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Circus cyaneus","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Circus cyaneus","5.1.3","Persecution/control","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Circus cyaneus","7.1","Fire & fire suppression","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Circus cyaneus","7.1.1","Increase in fire frequency/intensity","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Circus cyaneus","7.2","Dams & water management/use","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Circus cyaneus","7.2.4","Abstraction of surface water (unknown use)","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Circus cyaneus","8.2","Problematic native species/diseases (Sus scrofa)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Sus scrofa"
+"Circus cyaneus","8.2.2","Named species (Sus scrofa)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Sus scrofa"
+"Accipiter gentilis","2.2","Wood & pulp plantations","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Accipiter gentilis","2.2.2","Agro-industry plantations","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Accipiter gentilis","3.3","Renewable energy","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Accipiter gentilis","5.1","Hunting & trapping terrestrial animals","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Accipiter gentilis","5.1.1","Intentional use (species is the target)","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Accipiter gentilis","5.1.3","Persecution/control","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Accipiter gentilis","5.3","Logging & wood harvesting","Ongoing","Majority (50-90%)","Unknown","Unknown",NA
+"Accipiter gentilis","5.3.4","Unintentional effects: (large scale) [harvest]","Ongoing","Majority (50-90%)","Unknown","Unknown",NA
+"Accipiter gentilis","6.3","Work & other activities","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Accipiter gentilis","7.1","Fire & fire suppression","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Accipiter gentilis","7.1.1","Increase in fire frequency/intensity","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Accipiter gentilis","8.2","Problematic native species/diseases (Bubo bubo)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Bubo bubo"
+"Accipiter gentilis","8.2.2","Named species (Bubo bubo)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Bubo bubo"
+"Accipiter gentilis","9.3","Agricultural & forestry effluents","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Accipiter gentilis","9.3.3","Herbicides and pesticides","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Accipiter nisus","2.2","Wood & pulp plantations","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Accipiter nisus","2.2.2","Agro-industry plantations","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Accipiter nisus","3.3","Renewable energy","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Accipiter nisus","5.1","Hunting & trapping terrestrial animals","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Accipiter nisus","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Accipiter nisus","5.1.2","Unintentional effects (species is not the target)","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Accipiter nisus","5.1.3","Persecution/control","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Accipiter nisus","7.1","Fire & fire suppression","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Accipiter nisus","7.1.1","Increase in fire frequency/intensity","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Accipiter nisus","9.3","Agricultural & forestry effluents","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Accipiter nisus","9.3.3","Herbicides and pesticides","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Buteo buteo","2.1","Annual & perennial non-timber crops","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Buteo buteo","2.1.3","Agro-industry farming","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Buteo buteo","3.3","Renewable energy","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Buteo buteo","4.1","Roads & railroads","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Buteo buteo","4.2","Utility & service lines","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Buteo buteo","5.1","Hunting & trapping terrestrial animals","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Buteo buteo","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Buteo buteo","5.1","Hunting & trapping terrestrial animals","Ongoing","Whole (>90%)","Negligible declines","Medium Impact: 6",NA
+"Buteo buteo","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Buteo buteo","5.1.2","Unintentional effects (species is not the target)","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Buteo buteo","5.1.3","Persecution/control","Ongoing","Whole (>90%)","Negligible declines","Medium Impact: 6",NA
+"Buteo buteo","9.3","Agricultural & forestry effluents","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Buteo buteo","9.3.3","Herbicides and pesticides","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Aquila chrysaetos","11.1","Habitat shifting & alteration","Ongoing","Whole (>90%)","Unknown","Unknown",NA
+"Aquila chrysaetos","11.2","Droughts","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Aquila chrysaetos","2.2","Wood & pulp plantations","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Aquila chrysaetos","2.2.2","Agro-industry plantations","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Aquila chrysaetos","2.3","Livestock farming & ranching","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Aquila chrysaetos","2.3.3","Agro-industry grazing, ranching or farming","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Aquila chrysaetos","3.3","Renewable energy","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Aquila chrysaetos","4.2","Utility & service lines","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Aquila chrysaetos","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Aquila chrysaetos","5.1.3","Persecution/control","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Aquila chrysaetos","8.5","Viral/prion-induced diseases","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Aquila chrysaetos","8.5.1","Unspecified species","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Aquila chrysaetos","9.3","Agricultural & forestry effluents","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Aquila chrysaetos","9.3.3","Herbicides and pesticides","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Pandion haliaetus","2.1","Annual & perennial non-timber crops","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Pandion haliaetus","2.1.4","Scale Unknown/Unrecorded","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Pandion haliaetus","2.2","Wood & pulp plantations","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Pandion haliaetus","2.2.3","Scale Unknown/Unrecorded","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Pandion haliaetus","3.3","Renewable energy","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Pandion haliaetus","5.1","Hunting & trapping terrestrial animals","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Pandion haliaetus","5.1.1","Intentional use (species is the target)","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Pandion haliaetus","5.1.2","Unintentional effects (species is not the target)","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Pandion haliaetus","5.1.3","Persecution/control","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Pandion haliaetus","6.1","Recreational activities","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Pandion haliaetus","9.3","Agricultural & forestry effluents","Past, Unlikely to Return","Minority (<50%)","Negligible declines","Past Impact",NA
+"Pandion haliaetus","9.3.3","Herbicides and pesticides","Past, Unlikely to Return","Minority (<50%)","Negligible declines","Past Impact",NA
+"Falco tinnunculus","2.1","Annual & perennial non-timber crops","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Falco tinnunculus","2.1.3","Agro-industry farming","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Falco tinnunculus","2.3","Livestock farming & ranching","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco tinnunculus","2.3.2","Small-holder grazing, ranching or farming","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco tinnunculus","3.3","Renewable energy","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco tinnunculus","4.2","Utility & service lines","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco tinnunculus","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Falco tinnunculus","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Falco tinnunculus","5.3","Logging & wood harvesting","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco tinnunculus","5.3.3","Unintentional effects: (subsistence/small scale) [harvest]","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco tinnunculus","7.1","Fire & fire suppression","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco tinnunculus","7.1.1","Increase in fire frequency/intensity","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco tinnunculus","8.2","Problematic native species/diseases (Accipiter gentilis)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Accipiter gentilis"
+"Falco tinnunculus","8.2.2","Named species (Accipiter gentilis)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Accipiter gentilis"
+"Falco tinnunculus","9.2","Industrial & military effluents","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Falco tinnunculus","9.2.3","Type Unknown/Unrecorded","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Falco tinnunculus","9.3","Agricultural & forestry effluents","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Falco tinnunculus","9.3.3","Herbicides and pesticides","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Falco columbarius","2.1","Annual & perennial non-timber crops","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco columbarius","2.1.3","Agro-industry farming","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco columbarius","2.3","Livestock farming & ranching","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Falco columbarius","2.3.3","Agro-industry grazing, ranching or farming","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Falco columbarius","3.3","Renewable energy","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco columbarius","4.2","Utility & service lines","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Falco columbarius","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco columbarius","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco columbarius","5.3","Logging & wood harvesting","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco columbarius","5.3.4","Unintentional effects: (large scale) [harvest]","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco columbarius","6.1","Recreational activities","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco columbarius","8.2","Problematic native species/diseases (Vulpes vulpes)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Vulpes vulpes"
+"Falco columbarius","8.2.2","Named species (Vulpes vulpes)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Vulpes vulpes"
+"Falco columbarius","9.2","Industrial & military effluents","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Falco columbarius","9.2.3","Type Unknown/Unrecorded","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Falco columbarius","9.3","Agricultural & forestry effluents","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco columbarius","9.3.3","Herbicides and pesticides","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco subbuteo","2.1","Annual & perennial non-timber crops","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco subbuteo","2.1.3","Agro-industry farming","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco subbuteo","3.3","Renewable energy","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco subbuteo","4.1","Roads & railroads","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco subbuteo","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco subbuteo","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Falco subbuteo","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Falco subbuteo","5.1.2","Unintentional effects (species is not the target)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco subbuteo","5.3","Logging & wood harvesting","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Falco subbuteo","5.3.4","Unintentional effects: (large scale) [harvest]","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Falco subbuteo","6.3","Work & other activities","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco subbuteo","8.2","Problematic native species/diseases (Accipiter gentilis)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Accipiter gentilis"
+"Falco subbuteo","8.2.2","Named species (Accipiter gentilis)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Accipiter gentilis"
+"Falco subbuteo","9.3","Agricultural & forestry effluents","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco subbuteo","9.3.3","Herbicides and pesticides","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco peregrinus","11.3","Temperature extremes","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Falco peregrinus","2.3","Livestock farming & ranching","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco peregrinus","2.3.2","Small-holder grazing, ranching or farming","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco peregrinus","3.3","Renewable energy","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco peregrinus","4.1","Roads & railroads","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco peregrinus","4.2","Utility & service lines","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco peregrinus","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco peregrinus","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Falco peregrinus","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Falco peregrinus","5.1.3","Persecution/control","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco peregrinus","5.3","Logging & wood harvesting","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco peregrinus","5.3.3","Unintentional effects: (subsistence/small scale) [harvest]","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco peregrinus","6.1","Recreational activities","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco peregrinus","6.3","Work & other activities","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco peregrinus","7.1","Fire & fire suppression","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco peregrinus","7.1.1","Increase in fire frequency/intensity","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco peregrinus","9.2","Industrial & military effluents","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco peregrinus","9.2.1","Oil spills","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Falco peregrinus","9.3","Agricultural & forestry effluents","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Falco peregrinus","9.3.3","Herbicides and pesticides","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Lagopus lagopus","11.1","Habitat shifting & alteration","Future","Whole (>90%)","Unknown",NA,NA
+"Lagopus muta","11.1","Habitat shifting & alteration","Future","Whole (>90%)","Unknown",NA,NA
+"Tetrao urogallus","11.3","Temperature extremes","Ongoing","Unknown","Unknown",NA,NA
+"Alectoris rufa","2.1","Annual & perennial non-timber crops","Ongoing","Majority (50-90%)","Rapid Declines","Medium Impact: 7",NA
+"Alectoris rufa","2.1.3","Agro-industry farming","Ongoing","Majority (50-90%)","Rapid Declines","Medium Impact: 7",NA
+"Alectoris rufa","2.3","Livestock farming & ranching","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Alectoris rufa","2.3.3","Agro-industry grazing, ranching or farming","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Alectoris rufa","5.1","Hunting & trapping terrestrial animals","Ongoing","Majority (50-90%)","Causing/Could cause fluctuations","Medium Impact: 6",NA
+"Alectoris rufa","5.1.1","Intentional use (species is the target)","Ongoing","Majority (50-90%)","Causing/Could cause fluctuations","Medium Impact: 6",NA
+"Alectoris rufa","8.3","Introduced genetic material","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Alectoris rufa","9.3","Agricultural & forestry effluents","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Alectoris rufa","9.3.3","Herbicides and pesticides","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Rallus aquaticus","11.3","Temperature extremes","Ongoing","Minority (<50%)","Rapid Declines",NA,NA
+"Rallus aquaticus","11.4","Storms & flooding","Future","Minority (<50%)","Rapid Declines",NA,NA
+"Porzana porzana","11.1","Habitat shifting & alteration","Future","Whole (>90%)","Slow, Significant Declines",NA,NA
+"Porzana porzana","7.2","Dams & water management/use","Future","Whole (>90%)","Slow, Significant Declines",NA,NA
+"Porzana porzana","7.2.4","Abstraction of surface water (unknown use)","Future","Whole (>90%)","Slow, Significant Declines",NA,NA
+"Crex crex","11.4","Storms & flooding","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Crex crex","2.1","Annual & perennial non-timber crops","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Crex crex","2.1.3","Agro-industry farming","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Crex crex","4.1","Roads & railroads","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Crex crex","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Crex crex","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Crex crex","6.1","Recreational activities","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Crex crex","7.3","Other ecosystem modifications","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Crex crex","8.1","Invasive non-native/alien species/diseases (Felis catus)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Felis catus"
+"Crex crex","8.1","Invasive non-native/alien species/diseases (Neovison vison)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Neovison vison"
+"Crex crex","8.1.2","Named species (Felis catus)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Felis catus"
+"Crex crex","8.1.2","Named species (Neovison vison)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Neovison vison"
+"Crex crex","8.2","Problematic native species/diseases","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Crex crex","8.2.1","Unspecified species","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Fulica atra","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Fulica atra","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Fulica atra","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Fulica atra","5.1.2","Unintentional effects (species is not the target)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Fulica atra","5.4","Fishing & harvesting aquatic resources","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Fulica atra","5.4.3","Unintentional effects: (subsistence/small scale) [harvest]","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Fulica atra","7.1","Fire & fire suppression","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Fulica atra","7.1.1","Increase in fire frequency/intensity","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Fulica atra","7.2","Dams & water management/use","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Fulica atra","7.2.3","Abstraction of surface water (agricultural use)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Fulica atra","7.3","Other ecosystem modifications","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Fulica atra","8.1","Invasive non-native/alien species/diseases (Neovison vison)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Neovison vison"
+"Fulica atra","8.1.2","Named species (Neovison vison)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Neovison vison"
+"Fulica atra","8.5","Viral/prion-induced diseases","Past, Likely to Return","Majority (50-90%)","Rapid Declines","Past Impact",NA
+"Fulica atra","8.5.2","Named species","Past, Likely to Return","Majority (50-90%)","Rapid Declines","Past Impact",NA
+"Fulica atra","9.2","Industrial & military effluents","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Fulica atra","9.2.1","Oil spills","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Haematopus ostralegus","11.1","Habitat shifting & alteration","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Haematopus ostralegus","11.2","Droughts","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Haematopus ostralegus","11.4","Storms & flooding","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Haematopus ostralegus","1.2","Commercial & industrial areas","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Haematopus ostralegus","2.1","Annual & perennial non-timber crops","Ongoing","Majority (50-90%)","Unknown","Unknown",NA
+"Haematopus ostralegus","2.1.3","Agro-industry farming","Ongoing","Majority (50-90%)","Unknown","Unknown",NA
+"Haematopus ostralegus","2.3","Livestock farming & ranching","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Haematopus ostralegus","2.3.4","Scale Unknown/Unrecorded","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Haematopus ostralegus","3.1","Oil & gas drilling","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Haematopus ostralegus","3.3","Renewable energy","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Haematopus ostralegus","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Haematopus ostralegus","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Haematopus ostralegus","5.4","Fishing & harvesting aquatic resources","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Haematopus ostralegus","5.4.4","Unintentional effects: (large scale) [harvest]","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Haematopus ostralegus","6.1","Recreational activities","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Haematopus ostralegus","7.2","Dams & water management/use","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Haematopus ostralegus","7.2.4","Abstraction of surface water (unknown use)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Haematopus ostralegus","8.1","Invasive non-native/alien species/diseases (Crassostrea gigas)","Ongoing","Minority (<50%)","Unknown","Unknown","Crassostrea gigas"
+"Haematopus ostralegus","8.1","Invasive non-native/alien species/diseases (Neovison vison)","Ongoing","Minority (<50%)","Unknown","Unknown","Neovison vison"
+"Haematopus ostralegus","8.1","Invasive non-native/alien species/diseases (Spartina alterniflora)","Ongoing","Minority (<50%)","Unknown","Unknown","Spartina alterniflora"
+"Haematopus ostralegus","8.1.2","Named species (Crassostrea gigas)","Ongoing","Minority (<50%)","Unknown","Unknown","Crassostrea gigas"
+"Haematopus ostralegus","8.1.2","Named species (Neovison vison)","Ongoing","Minority (<50%)","Unknown","Unknown","Neovison vison"
+"Haematopus ostralegus","8.1.2","Named species (Spartina alterniflora)","Ongoing","Minority (<50%)","Unknown","Unknown","Spartina alterniflora"
+"Haematopus ostralegus","8.2","Problematic native species/diseases (Unspecified CORVIDAE)","Ongoing","Minority (<50%)","Unknown","Unknown","Unspecified CORVIDAE"
+"Haematopus ostralegus","8.2","Problematic native species/diseases (Unspecified LARIDAE)","Ongoing","Unknown","Unknown","Unknown","Unspecified LARIDAE"
+"Haematopus ostralegus","8.2","Problematic native species/diseases (Vulpes vulpes)","Ongoing","Minority (<50%)","Unknown","Unknown","Vulpes vulpes"
+"Haematopus ostralegus","8.2.2","Named species (Unspecified CORVIDAE)","Ongoing","Minority (<50%)","Unknown","Unknown","Unspecified CORVIDAE"
+"Haematopus ostralegus","8.2.2","Named species (Unspecified LARIDAE)","Ongoing","Unknown","Unknown","Unknown","Unspecified LARIDAE"
+"Haematopus ostralegus","8.2.2","Named species (Vulpes vulpes)","Ongoing","Minority (<50%)","Unknown","Unknown","Vulpes vulpes"
+"Haematopus ostralegus","8.4","Problematic species/disease of unknown origin","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Haematopus ostralegus","8.4.1","Unspecified species","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Haematopus ostralegus","8.5","Viral/prion-induced diseases","Future","Majority (50-90%)","Slow, Significant Declines","Low Impact: 4",NA
+"Haematopus ostralegus","8.5.2","Named species","Future","Majority (50-90%)","Slow, Significant Declines","Low Impact: 4",NA
+"Haematopus ostralegus","9.1","Domestic & urban waste water","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Haematopus ostralegus","9.1.1","Sewage","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Haematopus ostralegus","9.2","Industrial & military effluents","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Haematopus ostralegus","9.2.1","Oil spills","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Haematopus ostralegus","9.2.3","Type Unknown/Unrecorded","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Haematopus ostralegus","9.3","Agricultural & forestry effluents","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Haematopus ostralegus","9.3.3","Herbicides and pesticides","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Charadrius dubius","5.4","Fishing & harvesting aquatic resources","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Charadrius dubius","5.4.3","Unintentional effects: (subsistence/small scale) [harvest]","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Charadrius dubius","5.4.4","Unintentional effects: (large scale) [harvest]","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Charadrius dubius","6.1","Recreational activities","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Charadrius dubius","7.2","Dams & water management/use","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Charadrius dubius","7.2.11","Dams (size unknown)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Charadrius dubius","7.2.4","Abstraction of surface water (unknown use)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Charadrius dubius","7.3","Other ecosystem modifications","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Charadrius dubius","8.1","Invasive non-native/alien species/diseases (Clostridium botulinum)","Future","Minority (<50%)","Rapid Declines","Low Impact: 4","Clostridium botulinum"
+"Charadrius dubius","8.1.2","Named species (Clostridium botulinum)","Future","Minority (<50%)","Rapid Declines","Low Impact: 4","Clostridium botulinum"
+"Charadrius dubius","9.2","Industrial & military effluents","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Charadrius dubius","9.2.1","Oil spills","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Charadrius dubius","9.3","Agricultural & forestry effluents","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Charadrius dubius","9.3.3","Herbicides and pesticides","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Charadrius hiaticula","11.1","Habitat shifting & alteration","Future","Whole (>90%)","Unknown",NA,NA
+"Pluvialis apricaria","11.1","Habitat shifting & alteration","Future","Whole (>90%)","Unknown",NA,NA
+"Pluvialis apricaria","11.5","Other impacts","Ongoing","Unknown","Unknown",NA,NA
+"Vanellus vanellus","2.1","Annual & perennial non-timber crops","Ongoing","Whole (>90%)","Slow, Significant Declines","Medium Impact: 7",NA
+"Vanellus vanellus","2.1.3","Agro-industry farming","Ongoing","Whole (>90%)","Slow, Significant Declines","Medium Impact: 7",NA
+"Vanellus vanellus","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Vanellus vanellus","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Vanellus vanellus","7.2","Dams & water management/use","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Vanellus vanellus","7.2.4","Abstraction of surface water (unknown use)","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Vanellus vanellus","7.3","Other ecosystem modifications","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Vanellus vanellus","8.1","Invasive non-native/alien species/diseases","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Vanellus vanellus","8.1.1","Unspecified species","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Vanellus vanellus","8.2","Problematic native species/diseases","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Vanellus vanellus","8.4","Problematic species/disease of unknown origin (Clostridium botulinum)","Ongoing","Minority (<50%)","Unknown","Unknown","Clostridium botulinum"
+"Vanellus vanellus","8.4.2","Named species (Clostridium botulinum)","Ongoing","Minority (<50%)","Unknown","Unknown","Clostridium botulinum"
+"Vanellus vanellus","8.5","Viral/prion-induced diseases","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Vanellus vanellus","8.5.2","Named species","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Vanellus vanellus","9.2","Industrial & military effluents","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Vanellus vanellus","9.2.1","Oil spills","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Calidris alpina","11.1","Habitat shifting & alteration","Future","Whole (>90%)","Unknown","Unknown",NA
+"Calidris alpina","2.2","Wood & pulp plantations","Future","Minority (<50%)","Slow, Significant Declines","Low Impact: 3",NA
+"Calidris alpina","2.2.3","Scale Unknown/Unrecorded","Future","Minority (<50%)","Slow, Significant Declines","Low Impact: 3",NA
+"Calidris alpina","5.2","Gathering terrestrial plants","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Calidris alpina","5.2.2","Unintentional effects (species is not the target)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Calidris alpina","6.1","Recreational activities","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Calidris alpina","6.2","War, civil unrest & military exercises","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Calidris alpina","7.2","Dams & water management/use","Future","Minority (<50%)","Slow, Significant Declines","Low Impact: 3",NA
+"Calidris alpina","7.2.7","Abstraction of ground water (agricultural use)","Future","Minority (<50%)","Slow, Significant Declines","Low Impact: 3",NA
+"Calidris alpina","7.3","Other ecosystem modifications","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Calidris alpina","8.1","Invasive non-native/alien species/diseases (Unspecified POACEAE)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Unspecified POACEAE"
+"Calidris alpina","8.1.2","Named species (Unspecified POACEAE)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Unspecified POACEAE"
+"Calidris alpina","8.5","Viral/prion-induced diseases","Past, Unlikely to Return","Majority (50-90%)","Slow, Significant Declines","Past Impact",NA
+"Calidris alpina","8.5.2","Named species","Past, Unlikely to Return","Majority (50-90%)","Slow, Significant Declines","Past Impact",NA
+"Calidris alpina","9.2","Industrial & military effluents","Past, Likely to Return","Minority (<50%)","Slow, Significant Declines","Past Impact",NA
+"Calidris alpina","9.2.1","Oil spills","Past, Likely to Return","Minority (<50%)","Slow, Significant Declines","Past Impact",NA
+"Limosa limosa","1.1","Housing & urban areas","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Limosa limosa","11.1","Habitat shifting & alteration","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Limosa limosa","1.2","Commercial & industrial areas","Ongoing","Minority (<50%)","Causing/Could cause fluctuations","Low Impact: 5",NA
+"Limosa limosa","1.3","Tourism & recreation areas","Ongoing","Minority (<50%)","Causing/Could cause fluctuations","Low Impact: 5",NA
+"Limosa limosa","2.1","Annual & perennial non-timber crops","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Limosa limosa","2.1.3","Agro-industry farming","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Limosa limosa","2.3","Livestock farming & ranching","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Limosa limosa","2.3","Livestock farming & ranching","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Limosa limosa","2.3.3","Agro-industry grazing, ranching or farming","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Limosa limosa","2.3.4","Scale Unknown/Unrecorded","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Limosa limosa","2.4","Marine & freshwater aquaculture","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Limosa limosa","2.4.2","Industrial aquaculture","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Limosa limosa","3.3","Renewable energy","Ongoing","Minority (<50%)","Causing/Could cause fluctuations","Low Impact: 5",NA
+"Limosa limosa","4.1","Roads & railroads","Ongoing","Minority (<50%)","Causing/Could cause fluctuations","Low Impact: 5",NA
+"Limosa limosa","4.4","Flight paths","Future","Minority (<50%)","Rapid Declines","Low Impact: 4",NA
+"Limosa limosa","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Rapid Declines","Medium Impact: 6",NA
+"Limosa limosa","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Rapid Declines","Medium Impact: 6",NA
+"Limosa limosa","6.1","Recreational activities","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Limosa limosa","6.3","Work & other activities","Ongoing","Unknown","Causing/Could cause fluctuations","Unknown",NA
+"Limosa limosa","7.1","Fire & fire suppression","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Limosa limosa","7.1.1","Increase in fire frequency/intensity","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Limosa limosa","7.2","Dams & water management/use","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Limosa limosa","7.2.4","Abstraction of surface water (unknown use)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Limosa limosa","7.2.8","Abstraction of ground water (unknown use)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Limosa limosa","8.1","Invasive non-native/alien species/diseases","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Limosa limosa","8.1.1","Unspecified species","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Limosa limosa","8.2","Problematic native species/diseases (Mustela erminea)","Ongoing","Minority (<50%)","Causing/Could cause fluctuations","Low Impact: 5","Mustela erminea"
+"Limosa limosa","8.2","Problematic native species/diseases (Mustela nivalis)","Ongoing","Minority (<50%)","Causing/Could cause fluctuations","Low Impact: 5","Mustela nivalis"
+"Limosa limosa","8.2.2","Named species (Mustela erminea)","Ongoing","Minority (<50%)","Causing/Could cause fluctuations","Low Impact: 5","Mustela erminea"
+"Limosa limosa","8.2.2","Named species (Mustela nivalis)","Ongoing","Minority (<50%)","Causing/Could cause fluctuations","Low Impact: 5","Mustela nivalis"
+"Limosa limosa","9.2","Industrial & military effluents","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Limosa limosa","9.2.3","Type Unknown/Unrecorded","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Numenius phaeopus","11.1","Habitat shifting & alteration","Future","Whole (>90%)","Unknown",NA,NA
+"Numenius arquata","1.1","Housing & urban areas","Ongoing","Minority (<50%)","Rapid Declines","Medium Impact: 6",NA
+"Numenius arquata","11.1","Habitat shifting & alteration","Future","Majority (50-90%)","Unknown","Unknown",NA
+"Numenius arquata","2.1","Annual & perennial non-timber crops","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Numenius arquata","2.1.3","Agro-industry farming","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Numenius arquata","2.3","Livestock farming & ranching","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Numenius arquata","2.3","Livestock farming & ranching","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Numenius arquata","2.3.2","Small-holder grazing, ranching or farming","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Numenius arquata","2.3.3","Agro-industry grazing, ranching or farming","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Numenius arquata","2.4","Marine & freshwater aquaculture","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Numenius arquata","2.4.2","Industrial aquaculture","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Numenius arquata","3.3","Renewable energy","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Numenius arquata","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Numenius arquata","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Numenius arquata","6.3","Work & other activities","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Numenius arquata","7.2","Dams & water management/use","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Numenius arquata","7.2","Dams & water management/use","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Numenius arquata","7.2.1","Abstraction of surface water (domestic use)","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Numenius arquata","7.2.10","Large dams","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Numenius arquata","8.2","Problematic native species/diseases","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Numenius arquata","8.2.1","Unspecified species","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Numenius arquata","8.5","Viral/prion-induced diseases","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Numenius arquata","8.5.2","Named species","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Numenius arquata","9.2","Industrial & military effluents","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Numenius arquata","9.2.3","Type Unknown/Unrecorded","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Tringa nebularia","6.3","Work & other activities","Ongoing","Minority (<50%)","Slow, Significant Declines",NA,NA
+"Tringa nebularia","7.3","Other ecosystem modifications","Ongoing","Minority (<50%)","Slow, Significant Declines",NA,NA
+"Tringa nebularia","9.1","Domestic & urban waste water","Ongoing","Minority (<50%)","Slow, Significant Declines",NA,NA
+"Tringa nebularia","9.1.3","Type Unknown/Unrecorded","Ongoing","Minority (<50%)","Slow, Significant Declines",NA,NA
+"Actitis hypoleucos","6.1","Recreational activities","Ongoing","Minority (<50%)","Negligible declines",NA,NA
+"Stercorarius parasiticus","11.1","Habitat shifting & alteration","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Stercorarius parasiticus","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Stercorarius parasiticus","5.1.3","Persecution/control","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Larus fuscus","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Larus fuscus","5.1.3","Persecution/control","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Larus fuscus","9.3","Agricultural & forestry effluents","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Larus fuscus","9.3.3","Herbicides and pesticides","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Larus argentatus","11.1","Habitat shifting & alteration","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Larus argentatus","3.3","Renewable energy","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Larus argentatus","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Larus argentatus","5.1.3","Persecution/control","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Larus argentatus","5.4","Fishing & harvesting aquatic resources","Ongoing","Minority (<50%)","Causing/Could cause fluctuations","Low Impact: 5",NA
+"Larus argentatus","5.4.4","Unintentional effects: (large scale) [harvest]","Ongoing","Minority (<50%)","Causing/Could cause fluctuations","Low Impact: 5",NA
+"Larus argentatus","8.2","Problematic native species/diseases (Clostridium botulinum)","Ongoing","Minority (<50%)","Causing/Could cause fluctuations","Low Impact: 5","Clostridium botulinum"
+"Larus argentatus","8.2.2","Named species (Clostridium botulinum)","Ongoing","Minority (<50%)","Causing/Could cause fluctuations","Low Impact: 5","Clostridium botulinum"
+"Larus argentatus","8.5","Viral/prion-induced diseases","Ongoing","Unknown","Unknown","Unknown",NA
+"Larus argentatus","8.5.2","Named species","Ongoing","Unknown","Unknown","Unknown",NA
+"Larus argentatus","9.2","Industrial & military effluents","Ongoing","Unknown","Unknown","Unknown",NA
+"Larus argentatus","9.2.1","Oil spills","Ongoing","Unknown","Unknown","Unknown",NA
+"Larus argentatus","9.4","Garbage & solid waste","Ongoing","Majority (50-90%)","Unknown","Unknown",NA
+"Larus marinus","5.4","Fishing & harvesting aquatic resources","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Larus marinus","5.4.4","Unintentional effects: (large scale) [harvest]","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Rissa tridactyla","11.1","Habitat shifting & alteration","Future","Majority (50-90%)","Rapid Declines","Low Impact: 5",NA
+"Rissa tridactyla","5.4","Fishing & harvesting aquatic resources","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Rissa tridactyla","5.4.4","Unintentional effects: (large scale) [harvest]","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Rissa tridactyla","8.5","Viral/prion-induced diseases","Future","Minority (<50%)","Unknown","Unknown",NA
+"Rissa tridactyla","8.5.2","Named species","Future","Minority (<50%)","Unknown","Unknown",NA
+"Rissa tridactyla","9.2","Industrial & military effluents","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Rissa tridactyla","9.2.1","Oil spills","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Thalasseus sandvicensis","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Thalasseus sandvicensis","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Thalasseus sandvicensis","6.1","Recreational activities","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Sterna dougallii","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Sterna dougallii","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Sterna dougallii","5.4","Fishing & harvesting aquatic resources","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Sterna dougallii","5.4.4","Unintentional effects: (large scale) [harvest]","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Sterna hirundo","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Sterna hirundo","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Sterna hirundo","6.1","Recreational activities","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Sterna paradisaea","11.1","Habitat shifting & alteration","Future","Majority (50-90%)","Unknown","Unknown",NA
+"Sterna paradisaea","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Sterna paradisaea","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Sterna paradisaea","5.4","Fishing & harvesting aquatic resources","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Sterna paradisaea","5.4.4","Unintentional effects: (large scale) [harvest]","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Sterna paradisaea","8.1","Invasive non-native/alien species/diseases (Neovison vison)","Ongoing","Minority (<50%)","Rapid Declines","Medium Impact: 6","Neovison vison"
+"Sterna paradisaea","8.1.2","Named species (Neovison vison)","Ongoing","Minority (<50%)","Rapid Declines","Medium Impact: 6","Neovison vison"
+"Sternula albifrons","1.1","Housing & urban areas","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Sternula albifrons","11.1","Habitat shifting & alteration","Ongoing","Unknown","Unknown","Unknown",NA
+"Sternula albifrons","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Sternula albifrons","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Sternula albifrons","6.1","Recreational activities","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Sternula albifrons","8.2","Problematic native species/diseases (Larus novaehollandiae)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Larus novaehollandiae"
+"Sternula albifrons","8.2","Problematic native species/diseases (Vulpes vulpes)","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6","Vulpes vulpes"
+"Sternula albifrons","8.2.2","Named species (Larus novaehollandiae)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Larus novaehollandiae"
+"Sternula albifrons","8.2.2","Named species (Vulpes vulpes)","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6","Vulpes vulpes"
+"Uria aalge","11.3","Temperature extremes","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Uria aalge","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Uria aalge","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Uria aalge","5.4","Fishing & harvesting aquatic resources","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Uria aalge","5.4.4","Unintentional effects: (large scale) [harvest]","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Uria aalge","9.2","Industrial & military effluents","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Uria aalge","9.2.1","Oil spills","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Alca torda","11.3","Temperature extremes","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Alca torda","11.4","Storms & flooding","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Alca torda","3.2","Mining & quarrying","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Alca torda","3.3","Renewable energy","Ongoing","Minority (<50%)","Causing/Could cause fluctuations","Low Impact: 5",NA
+"Alca torda","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Alca torda","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Alca torda","5.4","Fishing & harvesting aquatic resources","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Alca torda","5.4.4","Unintentional effects: (large scale) [harvest]","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Alca torda","8.1","Invasive non-native/alien species/diseases (Neovison vison)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Neovison vison"
+"Alca torda","8.1","Invasive non-native/alien species/diseases (Unspecified Rattus)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Unspecified Rattus"
+"Alca torda","8.1.2","Named species (Neovison vison)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Neovison vison"
+"Alca torda","8.1.2","Named species (Unspecified Rattus)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Unspecified Rattus"
+"Alca torda","9.2","Industrial & military effluents","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Alca torda","9.2","Industrial & military effluents","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Alca torda","9.2.1","Oil spills","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5",NA
+"Alca torda","9.2.3","Type Unknown/Unrecorded","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Cepphus grylle","5.4","Fishing & harvesting aquatic resources","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Cepphus grylle","5.4.4","Unintentional effects: (large scale) [harvest]","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Cepphus grylle","8.1","Invasive non-native/alien species/diseases (Neovison vison)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Neovison vison"
+"Cepphus grylle","8.1","Invasive non-native/alien species/diseases (Unspecified Rattus)","Ongoing","Minority (<50%)","Unknown","Unknown","Unspecified Rattus"
+"Cepphus grylle","8.1.2","Named species (Neovison vison)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Neovison vison"
+"Cepphus grylle","8.1.2","Named species (Unspecified Rattus)","Ongoing","Minority (<50%)","Unknown","Unknown","Unspecified Rattus"
+"Cepphus grylle","9.2","Industrial & military effluents","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Cepphus grylle","9.2","Industrial & military effluents","Ongoing","Minority (<50%)","Rapid Declines","Medium Impact: 6",NA
+"Cepphus grylle","9.2.1","Oil spills","Ongoing","Minority (<50%)","Rapid Declines","Medium Impact: 6",NA
+"Cepphus grylle","9.2.3","Type Unknown/Unrecorded","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Cepphus grylle","9.3","Agricultural & forestry effluents","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Cepphus grylle","9.3.3","Herbicides and pesticides","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Fratercula arctica","11.3","Temperature extremes","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Fratercula arctica","11.4","Storms & flooding","Ongoing","Minority (<50%)","Rapid Declines","Medium Impact: 6",NA
+"Fratercula arctica","3.3","Renewable energy","Ongoing","Minority (<50%)","Causing/Could cause fluctuations","Low Impact: 5",NA
+"Fratercula arctica","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Fratercula arctica","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Fratercula arctica","5.4","Fishing & harvesting aquatic resources","Ongoing","Unknown","Rapid Declines","Unknown",NA
+"Fratercula arctica","5.4.4","Unintentional effects: (large scale) [harvest]","Ongoing","Unknown","Rapid Declines","Unknown",NA
+"Fratercula arctica","6.1","Recreational activities","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Fratercula arctica","8.1","Invasive non-native/alien species/diseases (Neovison vison)","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6","Neovison vison"
+"Fratercula arctica","8.1","Invasive non-native/alien species/diseases (Unspecified Rattus)","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6","Unspecified Rattus"
+"Fratercula arctica","8.1.2","Named species (Neovison vison)","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6","Neovison vison"
+"Fratercula arctica","8.1.2","Named species (Unspecified Rattus)","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6","Unspecified Rattus"
+"Fratercula arctica","9.2","Industrial & military effluents","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Fratercula arctica","9.2.1","Oil spills","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Fratercula arctica","9.4","Garbage & solid waste","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Streptopelia turtur","11.2","Droughts","Ongoing","Majority (50-90%)","Unknown","Unknown",NA
+"Streptopelia turtur","11.3","Temperature extremes","Ongoing","Unknown","Unknown","Unknown",NA
+"Streptopelia turtur","2.1","Annual & perennial non-timber crops","Ongoing","Whole (>90%)","Rapid Declines","High Impact: 8",NA
+"Streptopelia turtur","2.1.3","Agro-industry farming","Ongoing","Whole (>90%)","Rapid Declines","High Impact: 8",NA
+"Streptopelia turtur","5.1","Hunting & trapping terrestrial animals","Ongoing","Whole (>90%)","Rapid Declines","High Impact: 8",NA
+"Streptopelia turtur","5.1.1","Intentional use (species is the target)","Ongoing","Whole (>90%)","Rapid Declines","High Impact: 8",NA
+"Streptopelia turtur","5.1.2","Unintentional effects (species is not the target)","Ongoing","Whole (>90%)","Rapid Declines","High Impact: 8",NA
+"Streptopelia turtur","8.2","Problematic native species/diseases (Streptopelia decaocto)","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5","Streptopelia decaocto"
+"Streptopelia turtur","8.2","Problematic native species/diseases (Trichomonas gallinae)","Ongoing","Minority (<50%)","Unknown","Unknown","Trichomonas gallinae"
+"Streptopelia turtur","8.2.2","Named species (Streptopelia decaocto)","Ongoing","Majority (50-90%)","Negligible declines","Low Impact: 5","Streptopelia decaocto"
+"Streptopelia turtur","8.2.2","Named species (Trichomonas gallinae)","Ongoing","Minority (<50%)","Unknown","Unknown","Trichomonas gallinae"
+"Streptopelia turtur","9.3","Agricultural & forestry effluents","Ongoing","Whole (>90%)","Rapid Declines","High Impact: 8",NA
+"Streptopelia turtur","9.3.3","Herbicides and pesticides","Ongoing","Whole (>90%)","Rapid Declines","High Impact: 8",NA
+"Asio otus","1.1","Housing & urban areas","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Asio otus","2.1","Annual & perennial non-timber crops","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Asio otus","2.1.3","Agro-industry farming","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Asio otus","4.1","Roads & railroads","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Asio otus","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Asio otus","5.1.2","Unintentional effects (species is not the target)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Asio otus","8.2","Problematic native species/diseases (Strix aluco)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Strix aluco"
+"Asio otus","8.2.2","Named species (Strix aluco)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Strix aluco"
+"Asio otus","9.3","Agricultural & forestry effluents","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Asio otus","9.3.3","Herbicides and pesticides","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Asio flammeus","1.1","Housing & urban areas","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Asio flammeus","11.3","Temperature extremes","Ongoing","Majority (50-90%)","Unknown","Unknown",NA
+"Asio flammeus","1.3","Tourism & recreation areas","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Asio flammeus","2.1","Annual & perennial non-timber crops","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Asio flammeus","2.1.3","Agro-industry farming","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Asio flammeus","2.3","Livestock farming & ranching","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Asio flammeus","2.3.3","Agro-industry grazing, ranching or farming","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Asio flammeus","3.3","Renewable energy","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Asio flammeus","4.1","Roads & railroads","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Asio flammeus","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Asio flammeus","5.1.3","Persecution/control","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Asio flammeus","7.2","Dams & water management/use","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Asio flammeus","7.2.4","Abstraction of surface water (unknown use)","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Asio flammeus","8.1","Invasive non-native/alien species/diseases (Canis familiaris)","Ongoing","Minority (<50%)","Unknown","Unknown","Canis familiaris"
+"Asio flammeus","8.1","Invasive non-native/alien species/diseases (Felis catus)","Ongoing","Minority (<50%)","Unknown","Unknown","Felis catus"
+"Asio flammeus","8.1.2","Named species (Canis familiaris)","Ongoing","Minority (<50%)","Unknown","Unknown","Canis familiaris"
+"Asio flammeus","8.1.2","Named species (Felis catus)","Ongoing","Minority (<50%)","Unknown","Unknown","Felis catus"
+"Asio flammeus","8.2","Problematic native species/diseases (Unspecified MEPHITIDAE)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Unspecified MEPHITIDAE"
+"Asio flammeus","8.2.2","Named species (Unspecified MEPHITIDAE)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Unspecified MEPHITIDAE"
+"Asio flammeus","9.3","Agricultural & forestry effluents","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Asio flammeus","9.3.3","Herbicides and pesticides","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Riparia riparia","11.2","Droughts","Past, Likely to Return","Minority (<50%)","Rapid Declines","Past Impact",NA
+"Riparia riparia","3.2","Mining & quarrying","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Riparia riparia","7.2","Dams & water management/use","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Riparia riparia","7.2.11","Dams (size unknown)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Riparia riparia","9.3","Agricultural & forestry effluents","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Riparia riparia","9.3.3","Herbicides and pesticides","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Hirundo rustica","11.3","Temperature extremes","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Hirundo rustica","2.3","Livestock farming & ranching","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Hirundo rustica","2.3.3","Agro-industry grazing, ranching or farming","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Hirundo rustica","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Hirundo rustica","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Hirundo rustica","5.1.3","Persecution/control","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Hirundo rustica","7.2","Dams & water management/use","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Hirundo rustica","7.2.3","Abstraction of surface water (agricultural use)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Hirundo rustica","8.1","Invasive non-native/alien species/diseases (Passer domesticus)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Passer domesticus"
+"Hirundo rustica","8.1.2","Named species (Passer domesticus)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Passer domesticus"
+"Hirundo rustica","9.3","Agricultural & forestry effluents","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Hirundo rustica","9.3.3","Herbicides and pesticides","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Delichon urbicum","11.4","Storms & flooding","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Delichon urbicum","8.2","Problematic native species/diseases (Passer domesticus)","Ongoing","Minority (<50%)","Causing/Could cause fluctuations","Low Impact: 5","Passer domesticus"
+"Delichon urbicum","8.2.2","Named species (Passer domesticus)","Ongoing","Minority (<50%)","Causing/Could cause fluctuations","Low Impact: 5","Passer domesticus"
+"Anthus pratensis","11.1","Habitat shifting & alteration","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Anthus pratensis","11.2","Droughts","Future","Minority (<50%)","Slow, Significant Declines","Low Impact: 3",NA
+"Anthus pratensis","11.4","Storms & flooding","Ongoing","Majority (50-90%)","Causing/Could cause fluctuations","Medium Impact: 6",NA
+"Anthus pratensis","2.1","Annual & perennial non-timber crops","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Anthus pratensis","2.1.3","Agro-industry farming","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Anthus pratensis","5.1","Hunting & trapping terrestrial animals","Ongoing","Unknown","Unknown","Unknown",NA
+"Anthus pratensis","5.1.3","Persecution/control","Ongoing","Unknown","Unknown","Unknown",NA
+"Motacilla alba","11.5","Other impacts","Ongoing","Whole (>90%)","Slow, Significant Declines","Medium Impact: 7",NA
+"Oenanthe oenanthe","1.1","Housing & urban areas","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Oenanthe oenanthe","11.2","Droughts","Past, Likely to Return","Minority (<50%)","Slow, Significant Declines","Past Impact",NA
+"Oenanthe oenanthe","2.1","Annual & perennial non-timber crops","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Oenanthe oenanthe","2.1.1","Shifting agriculture","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Oenanthe oenanthe","2.1.3","Agro-industry farming","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Oenanthe oenanthe","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Oenanthe oenanthe","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Turdus torquatus","11.3","Temperature extremes","Ongoing","Unknown","Unknown",NA,NA
+"Turdus merula","11.3","Temperature extremes","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Turdus merula","2.1","Annual & perennial non-timber crops","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Turdus merula","2.1.3","Agro-industry farming","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Turdus merula","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Turdus merula","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Unknown","Unknown",NA
+"Turdus merula","6.3","Work & other activities","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Turdus merula","8.2","Problematic native species/diseases","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Turdus merula","8.2.1","Unspecified species","Ongoing","Majority (50-90%)","Slow, Significant Declines","Medium Impact: 6",NA
+"Turdus iliacus","11.1","Habitat shifting & alteration","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Turdus iliacus","11.3","Temperature extremes","Ongoing","Majority (50-90%)","Causing/Could cause fluctuations","Medium Impact: 6",NA
+"Turdus iliacus","2.3","Livestock farming & ranching","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Turdus iliacus","2.3.1","Nomadic grazing","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Turdus iliacus","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Turdus iliacus","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Cisticola juncidis","11.1","Habitat shifting & alteration","Future","Minority (<50%)","Unknown",NA,NA
+"Phylloscopus collybita","11.1","Habitat shifting & alteration","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Phylloscopus collybita","11.2","Droughts","Ongoing","Minority (<50%)","Causing/Could cause fluctuations","Low Impact: 5",NA
+"Phylloscopus collybita","2.1","Annual & perennial non-timber crops","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Phylloscopus collybita","2.1.3","Agro-industry farming","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Phylloscopus collybita","8.2","Problematic native species/diseases (Phylloscopus trochilus)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Phylloscopus trochilus"
+"Phylloscopus collybita","8.2","Problematic native species/diseases (Regulus regulus)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Regulus regulus"
+"Phylloscopus collybita","8.2.2","Named species (Phylloscopus trochilus)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Phylloscopus trochilus"
+"Phylloscopus collybita","8.2.2","Named species (Regulus regulus)","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5","Regulus regulus"
+"Ficedula hypoleuca","11.5","Other impacts","Ongoing","Unknown","Unknown",NA,NA
+"Poecile montanus","11.5","Other impacts","Ongoing","Whole (>90%)","Unknown","Unknown",NA
+"Poecile montanus","5.3","Logging & wood harvesting","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Poecile montanus","5.3.4","Unintentional effects: (large scale) [harvest]","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Poecile montanus","8.2","Problematic native species/diseases (Dendrocopos major)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Dendrocopos major"
+"Poecile montanus","8.2","Problematic native species/diseases (Unspecified PARIDAE)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Unspecified PARIDAE"
+"Poecile montanus","8.2.2","Named species (Dendrocopos major)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Dendrocopos major"
+"Poecile montanus","8.2.2","Named species (Unspecified PARIDAE)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4","Unspecified PARIDAE"
+"Parus major","11.5","Other impacts","Ongoing","Unknown","Unknown",NA,NA
+"Sturnus vulgaris","2.3","Livestock farming & ranching","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Sturnus vulgaris","2.3.3","Agro-industry grazing, ranching or farming","Ongoing","Minority (<50%)","Slow, Significant Declines","Low Impact: 5",NA
+"Sturnus vulgaris","5.1","Hunting & trapping terrestrial animals","Past, Unlikely to Return","Minority (<50%)","Negligible declines","Past Impact",NA
+"Sturnus vulgaris","5.1.1","Intentional use (species is the target)","Past, Unlikely to Return","Minority (<50%)","Negligible declines","Past Impact",NA
+"Carduelis carduelis","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Rapid Declines","Medium Impact: 6",NA
+"Carduelis carduelis","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Rapid Declines","Medium Impact: 6",NA
+"Carduelis carduelis","5.1.2","Unintentional effects (species is not the target)","Ongoing","Minority (<50%)","Rapid Declines","Medium Impact: 6",NA
+"Plectrophenax nivalis","11.1","Habitat shifting & alteration","Future","Whole (>90%)","Unknown",NA,NA
+"Anser canagicus","11.1","Habitat shifting & alteration","Future","Majority (50-90%)","Slow, Significant Declines",NA,NA
+"Anser canagicus","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Slow, Significant Declines",NA,NA
+"Anser canagicus","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Slow, Significant Declines",NA,NA
+"Anser canagicus","9.2","Industrial & military effluents","Ongoing","Minority (<50%)","Slow, Significant Declines",NA,NA
+"Anser canagicus","9.2.1","Oil spills","Ongoing","Minority (<50%)","Slow, Significant Declines",NA,NA
+"Acanthis flammea","11.1","Habitat shifting & alteration","Future","Whole (>90%)","Unknown",NA,NA
+"Tadorna cana","11.1","Habitat shifting & alteration","Future","Whole (>90%)","Slow, Significant Declines","Low Impact: 5",NA
+"Tadorna cana","6.1","Recreational activities","Ongoing","Minority (<50%)","No decline","Low Impact: 4",NA
+"Tadorna cana","7.3","Other ecosystem modifications","Future","Majority (50-90%)","Slow, Significant Declines","Low Impact: 4",NA
+"Tadorna cana","8.1","Invasive non-native/alien species/diseases (Clostridium botulinum)","Future","Minority (<50%)","Rapid Declines","Low Impact: 4","Clostridium botulinum"
+"Tadorna cana","8.1","Invasive non-native/alien species/diseases (Tadorna ferruginea)","Ongoing","Minority (<50%)","No decline","Low Impact: 4","Tadorna ferruginea"
+"Tadorna cana","8.1.2","Named species (Clostridium botulinum)","Future","Minority (<50%)","Rapid Declines","Low Impact: 4","Clostridium botulinum"
+"Tadorna cana","8.1.2","Named species (Tadorna ferruginea)","Ongoing","Minority (<50%)","No decline","Low Impact: 4","Tadorna ferruginea"
+"Larus michahellis","5.1","Hunting & trapping terrestrial animals","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Larus michahellis","5.1.1","Intentional use (species is the target)","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
+"Larus michahellis","5.1.3","Persecution/control","Ongoing","Minority (<50%)","Negligible declines","Low Impact: 4",NA
