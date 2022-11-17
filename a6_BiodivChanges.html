@@ -13,7 +13,7 @@
 
 <title>Analysing biodiversity changes</title>
 
-<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -170,11 +170,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -203,8 +207,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -212,16 +216,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -466,9 +463,9 @@ original data are available through the British Trust of Ornithology
 href="https://www.bto.org/sites/default/files/atlas_open_data_files.zip">here</a>).
 To simplify matters, I have already filtered the data to contain only
 the relevant breeding records. These cleaned data are available <a
-href="https://damariszurell.github.io/EEC-Macro/data/UK_BBatlas_1968_2008.csv">here</a>.
-Please download the data and save them in an appropriate folder (e.g. in
-<em>data</em> folder).</p>
+href="data/UK_BBatlas_1968_2008.csv">here</a>. Please download the data
+and save them in an appropriate folder (e.g. in <em>data</em>
+folder).</p>
 <pre class="r"><code># Read in the distribution dataset:
 bird_dist &lt;- read.table(&#39;data/UK_BBatlas_1968_2008.csv&#39;,header=T, sep=&#39;,&#39;, stringsAsFactors = F)
 
@@ -526,7 +523,7 @@ changes</h1>
 time periods. For this, we first need to compute species richness per
 time period.</p>
 <pre class="r"><code>library(terra)</code></pre>
-<pre><code>## terra 1.5.21</code></pre>
+<pre><code>## terra 1.6.17</code></pre>
 <pre class="r"><code># Extract species occurrences per time period and compute species richness:
 birds_68 &lt;- subset(bird_dist,period==&#39;1968-72&#39;)
 birds_68$richness68 &lt;- rowSums(birds_68[,spp])
@@ -589,6 +586,9 @@ taxon-specific species richness changes</h2>
 families or orders, are responding to global change. The classification
 into family and order was provided in the red list status table from the
 previous session:</p>
+<!-- ```{r echo=F, eval=F} -->
+<!-- redlist_status <- read.table('/Users/zurell/data/Lehre/UP_Lehre/EEC/Macroecology/Pracs_Macro/05_IUCN_data/UK_birds_redlist_status.csv', header=T, sep=',') -->
+<!-- ``` -->
 <pre class="r"><code>redlist_status &lt;- read.table(&#39;data/UK_birds_redlist_status.csv&#39;, header=T, sep=&#39;,&#39;)</code></pre>
 <pre class="r"><code># Restrict red list table to those species that are found in UK:
 redlist_status &lt;- subset(redlist_status, scientific_name %in% spp_names)
@@ -596,51 +596,49 @@ redlist_status &lt;- subset(redlist_status, scientific_name %in% spp_names)
 # List number of bird species in different orders:
 table(redlist_status$order)</code></pre>
 <pre><code>## 
-##   ACCIPITRIFORMES      ANSERIFORMES    BUCEROTIFORMES  CAPRIMULGIFORMES 
-##                 9                36                 1                 2 
-##   CHARADRIIFORMES     COLUMBIFORMES     CORACIIFORMES      CUCULIFORMES 
-##                37                 5                 1                 1 
-##     FALCONIFORMES       GALLIFORMES       GAVIIFORMES        GRUIFORMES 
-##                 4                14                 2                 5 
-##     PASSERIFORMES    PELECANIFORMES        PICIFORMES  PODICIPEDIFORMES 
-##                91                 6                 4                 3 
-## PROCELLARIIFORMES    PSITTACIFORMES      STRIGIFORMES        SULIFORMES 
-##                 3                 4                 7                 2</code></pre>
+##   ACCIPITRIFORMES      ANSERIFORMES  CAPRIMULGIFORMES   CHARADRIIFORMES 
+##                 9                35                 2                33 
+##     COLUMBIFORMES     CORACIIFORMES      CUCULIFORMES     FALCONIFORMES 
+##                 5                 1                 1                 4 
+##       GALLIFORMES       GAVIIFORMES        GRUIFORMES     PASSERIFORMES 
+##                11                 2                 5                79 
+##    PELECANIFORMES        PICIFORMES  PODICIPEDIFORMES PROCELLARIIFORMES 
+##                 6                 3                 3                 3 
+##    PSITTACIFORMES      STRIGIFORMES        SULIFORMES 
+##                 1                 6                 2</code></pre>
 <pre class="r"><code># List number of bird species in different families:
 table(redlist_status$family)</code></pre>
 <pre><code>## 
 ##      ACCIPITRIDAE    ACROCEPHALIDAE      AEGITHALIDAE         ALAUDIDAE 
 ##                 8                 4                 1                 2 
 ##       ALCEDINIDAE           ALCIDAE          ANATIDAE          APODIDAE 
-##                 1                 4                36                 1 
+##                 1                 4                35                 1 
 ##          ARDEIDAE        BURHINIDAE       CALCARIIDAE     CAPRIMULGIDAE 
 ##                 5                 1                 1                 1 
 ##        CERTHIIDAE      CHARADRIIDAE         CINCLIDAE      CISTICOLIDAE 
-##                 2                 5                 1                 1 
+##                 2                 4                 1                 1 
 ##        COLUMBIDAE          CORVIDAE         CUCULIDAE       EMBERIZIDAE 
 ##                 5                 6                 1                 4 
 ##        FALCONIDAE      FRINGILLIDAE          GAVIIDAE    HAEMATOPODIDAE 
-##                 4                16                 2                 1 
-##      HIRUNDINIDAE      HYDROBATIDAE          LANIIDAE           LARIDAE 
-##                 3                 1                 1                13 
-##     LOCUSTELLIDAE      MOTACILLIDAE      MUSCICAPIDAE         NUMIDIDAE 
-##                 2                 6                 8                 1 
-##    ODONTOPHORIDAE         ORIOLIDAE       PANDIONIDAE         PANURIDAE 
-##                 1                 1                 1                 1 
-##           PARIDAE        PASSERIDAE PHALACROCORACIDAE       PHASIANIDAE 
-##                 6                 2                 1                12 
-##    PHYLLOSCOPIDAE           PICIDAE         PLOCEIDAE     PODICIPEDIDAE 
-##                 3                 4                 1                 3 
-##    PROCELLARIIDAE       PRUNELLIDAE       PSITTACIDAE          RALLIDAE 
-##                 2                 1                 4                 5 
-##  RECURVIROSTRIDAE         REGULIDAE         REMIZIDAE      SCOLOPACIDAE 
-##                 2                 2                 1                10 
+##                 4                10                 2                 1 
+##      HIRUNDINIDAE      HYDROBATIDAE           LARIDAE     LOCUSTELLIDAE 
+##                 3                 1                11                 2 
+##      MOTACILLIDAE      MUSCICAPIDAE         NUMIDIDAE         ORIOLIDAE 
+##                 6                 8                 1                 1 
+##       PANDIONIDAE         PANURIDAE           PARIDAE        PASSERIDAE 
+##                 1                 1                 6                 2 
+## PHALACROCORACIDAE       PHASIANIDAE    PHYLLOSCOPIDAE           PICIDAE 
+##                 1                10                 3                 3 
+##     PODICIPEDIDAE    PROCELLARIIDAE       PRUNELLIDAE       PSITTACIDAE 
+##                 3                 2                 1                 1 
+##          RALLIDAE  RECURVIROSTRIDAE         REGULIDAE      SCOLOPACIDAE 
+##                 5                 2                 2                 9 
 ##     SCOTOCERCIDAE          SITTIDAE    STERCORARIIDAE         STRIGIDAE 
-##                 1                 1                 1                 6 
+##                 1                 1                 1                 5 
 ##         STURNIDAE           SULIDAE         SYLVIIDAE THRESKIORNITHIDAE 
-##                 1                 1                 5                 1 
-##     TROGLODYTIDAE          TURDIDAE         TYTONIDAE          UPUPIDAE 
-##                 1                 6                 1                 1</code></pre>
+##                 1                 1                 2                 1 
+##     TROGLODYTIDAE          TURDIDAE         TYTONIDAE 
+##                 1                 6                 1</code></pre>
 <pre class="r"><code># List bird species in order ACCIPITRIFORMES:
 subset(redlist_status,order==&#39;ACCIPITRIFORMES&#39;)$scientific_name</code></pre>
 <pre><code>## [1] &quot;Milvus milvus&quot;        &quot;Circus aeruginosus&quot;   &quot;Circus cyaneus&quot;      
@@ -658,7 +656,7 @@ birds_68$sr_accipiter &lt;- rowSums(birds_68[,accipiter_spp])
 
 # Map ACCIPITRIFORMES species richness
 plot(terra::rast(birds_68[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;sr_accipiter&#39;)], type=&#39;xyz&#39;), main=&quot;Richness ACCIPITRIFORMES&quot;)</code></pre>
-<p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <div class="alert alert-info">
 <p><strong>Exercise: </strong></p>
 <ul>
@@ -710,7 +708,7 @@ for (t in c(&#39;1968-72&#39;, &#39;1988-91&#39;, &#39;2008-11&#39;)) {
 # plot changes in range size
 library(ggplot2)
 ggplot(data = acrocepha_rangesize, mapping = aes(x = rep(c(1968,1988,2008),4), y = log(rangesize), color=species)) + geom_line() + geom_point() + xlab(&#39;Year&#39;) + ylab(&#39;log(Range size [km^2])&#39;)</code></pre>
-<p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>We can also look at positions of range centres or boundaries. For
 simplicity, let’s analyses only the latitudinal (south-north)
 shifts.</p>
@@ -732,9 +730,9 @@ for (t in c(&#39;1968-72&#39;, &#39;1988-91&#39;, &#39;2008-11&#39;)) {
 
 # plot changes in range positions
 ggplot(data = acrocepha_rangelimits, mapping = aes(x = rep(c(1968,1988,2008),4), y = rangecentre, color=species)) + geom_line() + geom_point() + xlab(&#39;Year&#39;) + ylab(&#39;Range centre (Northing)&#39;) + ggtitle(&#39;Range centre&#39;)</code></pre>
-<p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <pre class="r"><code>ggplot(data = acrocepha_rangelimits, mapping = aes(x = rep(c(1968,1988,2008),4), y = leading_edge, color=species)) + geom_line() + geom_point() + xlab(&#39;Year&#39;) + ylab(&#39;Leading range edge (Northing)&#39;) + ggtitle(&#39;Leading range edge&#39;)</code></pre>
-<p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-14-2.png" width="672" /></p>
+<p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-13-2.png" width="672" /></p>
 <div class="alert alert-info">
 <p><strong>Exercise: </strong></p>
 <ul>
@@ -758,7 +756,7 @@ sedge_08 &lt;- terra::rast(subset(bird_dist,period==&#39;2008-11&#39;)[,c(&#39;E
 
 # Plot the range in different time periods
 spplot(c(sedge_68, sedge_88, sedge_08))</code></pre>
-<p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p>Now, we want to visualise where the range remained stable, and where
 cells were colonised or decolonised. The distribution data are binary
 containing <code>0</code> and <code>1</code>. For easy mapping, we apply
@@ -833,7 +831,7 @@ levels(diff_f) &lt;- rat
 library(rasterVis)
 custom.pal &lt;- c(&quot;grey75&quot;, &quot;coral&quot;, &quot;cyan3&quot;,&quot;grey25&quot;)
 levelplot(diff_f, margin=F, scales=list(draw=FALSE),col.regions=custom.pal,main=&#39;Sedge warbler range change (1968-2011)&#39;)</code></pre>
-<p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <div class="alert alert-success" role="alert">
 <p><strong>Test it yourself</strong></p>
 <ul>
