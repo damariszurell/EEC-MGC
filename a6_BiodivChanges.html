@@ -707,7 +707,7 @@ for (t in c(&#39;1968-72&#39;, &#39;1988-91&#39;, &#39;2008-11&#39;)) {
 
 # plot changes in range size
 library(ggplot2)
-ggplot(data = acrocepha_rangesize, mapping = aes(x = rep(c(1968,1988,2008),4), y = log(rangesize), color=species)) + geom_line() + geom_point() + xlab(&#39;Year&#39;) + ylab(&#39;log(Range size [km^2])&#39;)</code></pre>
+ggplot(data = acrocepha_rangesize, mapping = aes(x = rep(c(1968,1988,2008), length(acrocepha_spp)), y = log(rangesize), color=species)) + geom_line() + geom_point() + xlab(&#39;Year&#39;) + ylab(&#39;log(Range size [km^2])&#39;)</code></pre>
 <p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>We can also look at positions of range centres or boundaries. For
 simplicity, let’s analyses only the latitudinal (south-north)
@@ -729,9 +729,9 @@ for (t in c(&#39;1968-72&#39;, &#39;1988-91&#39;, &#39;2008-11&#39;)) {
 }
 
 # plot changes in range positions
-ggplot(data = acrocepha_rangelimits, mapping = aes(x = rep(c(1968,1988,2008),4), y = rangecentre, color=species)) + geom_line() + geom_point() + xlab(&#39;Year&#39;) + ylab(&#39;Range centre (Northing)&#39;) + ggtitle(&#39;Range centre&#39;)</code></pre>
+ggplot(data = acrocepha_rangelimits, mapping = aes(x = rep(c(1968,1988,2008), length(acrocepha_spp)), y = rangecentre, color=species)) + geom_line() + geom_point() + xlab(&#39;Year&#39;) + ylab(&#39;Range centre (Northing)&#39;) + ggtitle(&#39;Range centre&#39;)</code></pre>
 <p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
-<pre class="r"><code>ggplot(data = acrocepha_rangelimits, mapping = aes(x = rep(c(1968,1988,2008),4), y = leading_edge, color=species)) + geom_line() + geom_point() + xlab(&#39;Year&#39;) + ylab(&#39;Leading range edge (Northing)&#39;) + ggtitle(&#39;Leading range edge&#39;)</code></pre>
+<pre class="r"><code>ggplot(data = acrocepha_rangelimits, mapping = aes(x = rep(c(1968,1988,2008),length(acrocepha_spp)), y = leading_edge, color=species)) + geom_line() + geom_point() + xlab(&#39;Year&#39;) + ylab(&#39;Leading range edge (Northing)&#39;) + ggtitle(&#39;Leading range edge&#39;)</code></pre>
 <p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-13-2.png" width="672" /></p>
 <div class="alert alert-info">
 <p><strong>Exercise: </strong></p>
