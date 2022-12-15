@@ -13,7 +13,7 @@
 
 <title>Pseudo-absence and background data</title>
 
-<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -168,11 +168,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -201,8 +205,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -210,16 +214,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -873,11 +870,11 @@ sp_env$sp &lt;- &#39;Sorex_alpinus&#39;
 xy &lt;- thin(sp_env, lat.col=&#39;decimalLatitude&#39;,long.col=&#39;decimalLongitude&#39;,spec.col=&#39;sp&#39;, thin.par=30,reps=1, write.files=F,locs.thinned.list.return=T)</code></pre>
 <pre><code>## ********************************************** 
 ##  Beginning Spatial Thinning.
-##  Script Started at: Tue Oct 25 12:29:24 2022
+##  Script Started at: Thu Dec 15 09:37:50 2022
 ## lat.long.thin.count
-## 741 
+## 739 
 ##   1 
-## [1] &quot;Maximum number of records after thinning: 741&quot;
+## [1] &quot;Maximum number of records after thinning: 739&quot;
 ## [1] &quot;Number of data.frames with max records: 1&quot;
 ## [1] &quot;No files written for this run.&quot;</code></pre>
 <pre class="r"><code># Keep the coordinates with the most presence records
@@ -941,14 +938,18 @@ points(sp_thinned3[,1:2],pch=19,col=c(&#39;black&#39;,&#39;red&#39;)[as.factor(s
 the pseudo-absence data selection for this species, and run a GLM
 analysis.</p>
 <ul>
-<li>Choose a pseudo-absence/background data strategy for your species.
-Why is this the most appropriate?</li>
+<li>Decide on a pseudo-absence/background data strategy for your species
+(in the simplest case, just follow the strategy used in the example
+workflow in section 4). Prepare your dataset with presences,
+pseudo-absences and the corresponding climate data at those locations
+(following the workflow in section 4)</li>
 <li>Use the data and build a GLM. Remember the different steps of
 checking for multicollinearity, building the full model and simplifying
 it.</li>
 <li>Assess the predictive performance of that model.</li>
-<li>Make predictions to current climate. Where is the species predicted
-to occur on the Globe?</li>
+<li>Make predictions to current climate. Decide whether you want to make
+predictions to the entire globe or to a more restricted geographic area
+(e.g. the continent where your species occurs)?</li>
 </ul>
 </div>
 </div>
