@@ -598,18 +598,17 @@ points(bg_rand_exclp_e,pch=19,cex=0.3)
 plot(e, add=TRUE, col=&#39;red&#39;)</code></pre>
 <p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>Last, we could also restrict the random samples to within a certain
-buffer distance. For this, we first create a
-<code>SpatialPointsDataFrame</code>, then place a buffer around these
-and sample from within the buffer. The buffer can be interpreted as the
-area that was accessible to the species in the long-term past. Thus, the
-buffer helps accounting for biogeographic history by constraining
-absence points to those geographic area that could have been reached by
-the species given the movement capacity but excludes other areas. Of
-course, restricting the absences to a certain geographic rectangle can
-achieve a similar tasks but might be less accurate for complex
-geographies and large areas. For example, is Iceland accessible to
-European species or not?</p>
-<pre class="r"><code># Make SpatVector:
+buffer distance. For this, we first create a <code>SpatVector</code>,
+then place a buffer around these and sample from within the buffer. The
+buffer can be interpreted as the area that was accessible to the species
+in the long-term past. Thus, the buffer helps accounting for
+biogeographic history by constraining absence points to those geographic
+area that could have been reached by the species given the movement
+capacity but excludes other areas. Of course, restricting the absences
+to a certain geographic rectangle can achieve a similar tasks but might
+be less accurate for complex geographies and large areas. For example,
+is Iceland accessible to European species or not?</p>
+<pre class="r"><code># Create SpatVector object of known occurrences:
 pop_imag &lt;- terra::vect( as.matrix( sp[sp$sp==&#39;Populus_imagines&#39;,1:2]) , crs=crs(region))
 
 # Then, place a buffer of 200 km radius around our presence points
@@ -870,11 +869,11 @@ sp_env$sp &lt;- &#39;Sorex_alpinus&#39;
 xy &lt;- thin(sp_env, lat.col=&#39;decimalLatitude&#39;,long.col=&#39;decimalLongitude&#39;,spec.col=&#39;sp&#39;, thin.par=30,reps=1, write.files=F,locs.thinned.list.return=T)</code></pre>
 <pre><code>## ********************************************** 
 ##  Beginning Spatial Thinning.
-##  Script Started at: Thu Dec 15 09:37:50 2022
+##  Script Started at: Fri Dec 23 12:27:36 2022
 ## lat.long.thin.count
-## 739 
+## 758 
 ##   1 
-## [1] &quot;Maximum number of records after thinning: 739&quot;
+## [1] &quot;Maximum number of records after thinning: 758&quot;
 ## [1] &quot;Number of data.frames with max records: 1&quot;
 ## [1] &quot;No files written for this run.&quot;</code></pre>
 <pre class="r"><code># Keep the coordinates with the most presence records
