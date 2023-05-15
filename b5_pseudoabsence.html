@@ -13,7 +13,7 @@
 
 <title>Pseudo-absence and background data</title>
 
-<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -35,8 +35,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -736,7 +736,7 @@ do this by joining the species data with the environmental data
 Then, we can remove the duplicate cells.</p>
 <pre class="r"><code># We have already extracted environmental data and raster cellnumbers for the species data
 # Remember to remove any rows with duplicate cellnumbers if necessary:
-duplicated(gbif_shrew_cleaned$cells)</code></pre>
+duplicated(gbif_shrew_cleaned$cell)</code></pre>
 <pre><code>## logical(0)</code></pre>
 <pre class="r"><code># From now on, we just need the coordinates:
 gbif_shrew2 &lt;- gbif_shrew_cleaned[,c(&#39;decimalLongitude&#39;,&#39;decimalLatitude&#39;)]</code></pre>
@@ -869,11 +869,11 @@ sp_env$sp &lt;- &#39;Sorex_alpinus&#39;
 xy &lt;- thin(sp_env, lat.col=&#39;decimalLatitude&#39;,long.col=&#39;decimalLongitude&#39;,spec.col=&#39;sp&#39;, thin.par=30,reps=1, write.files=F,locs.thinned.list.return=T)</code></pre>
 <pre><code>## ********************************************** 
 ##  Beginning Spatial Thinning.
-##  Script Started at: Fri Dec 23 12:27:36 2022
+##  Script Started at: Mon May 15 18:25:48 2023
 ## lat.long.thin.count
-## 758 
+## 747 
 ##   1 
-## [1] &quot;Maximum number of records after thinning: 758&quot;
+## [1] &quot;Maximum number of records after thinning: 747&quot;
 ## [1] &quot;Number of data.frames with max records: 1&quot;
 ## [1] &quot;No files written for this run.&quot;</code></pre>
 <pre class="r"><code># Keep the coordinates with the most presence records
