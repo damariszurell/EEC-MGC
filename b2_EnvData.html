@@ -13,7 +13,7 @@
 
 <title>Environmental data</title>
 
-<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -35,8 +35,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -168,11 +168,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -201,8 +205,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -210,16 +214,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -483,7 +480,7 @@ think about your folder structure, where you want to store the climate
 data!</p>
 <pre class="r"><code>library(geodata)</code></pre>
 <pre><code>## Loading required package: terra</code></pre>
-<pre><code>## terra 1.5.21</code></pre>
+<pre><code>## terra 1.7.29</code></pre>
 <pre class="r"><code># Download global bioclimatic data from worldclim (you may have to set argument &#39;download=T&#39; for first download, if &#39;download=F&#39; it will attempt to read from file):
 clim &lt;- geodata::worldclim_global(var = &#39;bio&#39;, res = 10, download = F, path = &#39;data&#39;)
 
@@ -499,8 +496,8 @@ clim</code></pre>
 ##               wc2.1_10m_bio_3.tif  
 ##               ... and 16 more source(s)
 ## names       : wc2.1~bio_1, wc2.1~bio_2, wc2.1~bio_3, wc2.1~bio_4, wc2.1~bio_5, wc2.1~bio_6, ... 
-## min values  :  -54.724354,    1.000000,    9.131122,    0.000000,  -29.686001,  -72.500252, ... 
-## max values  :    30.98764,    21.14754,   100.00000,  2363.84595,    48.08275,    26.30000, ...</code></pre>
+## min values  :   -54.72435,     1.00000,    9.131122,       0.000,   -29.68600,   -72.50025, ... 
+## max values  :    30.98764,    21.14754,  100.000000,    2363.846,    48.08275,    26.30000, ...</code></pre>
 <pre class="r"><code># Can you explain, what a raster stack is?
 plot(clim)</code></pre>
 <p><img src="b2_EnvData_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
@@ -544,9 +541,9 @@ clim_fut</code></pre>
 ## extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 ## coord. ref. : lon/lat WGS 84 (EPSG:4326) 
 ## source      : wc2.1_10m_bioc_ACCESS-ESM1-5_ssp245_2041-2060.tif 
-## names       :  bio01,  bio02,  bio03,  bio04,  bio05,  bio06, ... 
-## min values  :  -52.8,    0.0,    0.3,   11.1,  -28.1,  -70.2, ... 
-## max values  :   33.3,   21.5,   94.7, 2299.4,   51.7,   26.2, ...</code></pre>
+## names       : bio01, bio02, bio03,  bio04, bio05, bio06, ... 
+## min values  : -52.8,   0.0,   0.3,   11.1, -28.1, -70.2, ... 
+## max values  :  33.3,  21.5,  94.7, 2299.4,  51.7,  26.2, ...</code></pre>
 <p>We see that the current and future climate <code>SpatRaster</code>
 objects have different layer names. This could cause problems in
 distribution modelling and we thus want make sure that they all have the
@@ -608,7 +605,7 @@ the <code>SpatRaster</code> objects also need to have the same spatial
 extent.</p>
 <pre class="r"><code># This produces an error that spatial extents do not match:
 env_cur &lt;- c(clim, trees_10min)</code></pre>
-<pre><code>## Error: [c] extents do not match</code></pre>
+<pre><code>## Error: [rast] extents do not match</code></pre>
 <pre class="r"><code># Which SpatRaster object has the larger extent?
 terra::ext(clim)</code></pre>
 <pre><code>## SpatExtent : -180, 180, -90, 90 (xmin, xmax, ymin, ymax)</code></pre>
@@ -621,7 +618,7 @@ terra::extend(trees_10min, clim)</code></pre>
 ## resolution  : 0.1666667, 0.1666667  (x, y)
 ## extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 ## coord. ref. : lon/lat WGS 84 (EPSG:4326) 
-## source      : memory 
+## source(s)   : memory
 ## name        : trees 
 ## min value   :     0 
 ## max value   :     1</code></pre>
@@ -684,11 +681,11 @@ GBIF and environmental data, we could potentially have multiple records
 in a single raster cell. As we have extracted the cell numbers from the
 <code>SpatRaster</code> object, checking for duplicates is very
 simple.</p>
-<pre class="r"><code># Check for duplicates
-duplicated(gbif_shrew2$cells)</code></pre>
-<pre><code>## logical(0)</code></pre>
+<pre class="r"><code># Check for duplicates - how many duplicates?
+sum(duplicated(gbif_shrew2$cell))</code></pre>
+<pre><code>## [1] 169</code></pre>
 <pre class="r"><code># Only retain non-duplicated cells (will not work in this example as we don&#39;t have duplicates):
-gbif_shrew_env &lt;- gbif_shrew2[!duplicated(gbif_shrew2$cells),]
+gbif_shrew_env &lt;- gbif_shrew2[!duplicated(gbif_shrew2$cell),]
 
 save(gbif_shrew2, gbif_shrew_cleaned,file=&#39;data/gbif_shrew_cleaned.RData&#39;)</code></pre>
 <div class="alert alert-info">
