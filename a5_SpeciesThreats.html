@@ -13,7 +13,7 @@
 
 <title>Species threats</title>
 
-<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.23/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -29,14 +29,14 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -457,7 +457,13 @@ these criteria, species are classified into nine different categories
 although strictly only five categories describe the conservation status
 - from least concern to critically endangered [Fig. 1; <span
 class="citation">IUCN (2012)</span>].</p>
-<p><img src="figures/redlist.png" alt="**Figure 1. The IUCN red list categories. Adapted from [@IUCN2012].**" width="70%" /></p>
+<div class="figure">
+<img src="figures/redlist.png" alt="**Figure 1. The IUCN red list categories. Adapted from [@IUCN2012].**" width="70%" />
+<p class="caption">
+<strong>Figure 1. The IUCN red list categories. Adapted from <span
+class="citation">(IUCN 2012)</span>.</strong>
+</p>
+</div>
 <p>The IUCN distinguishes five criteria that are used to classify
 species into one of the three threatened categories (Fig. 1; <span
 class="citation">IUCN (2012)</span>):</p>
@@ -629,7 +635,10 @@ vulnerable:</p>
 meaning the species richness of species falling into different red list
 categories.</p>
 <pre class="r"><code>library(terra)
-library(raster)
+library(tidyterra)  # for mapping
+
+# The coordinate reference system for the UK National Grid is:
+proj_UK &lt;- &#39;+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +datum=OSGB36 +units=m +no_defs&#39;
 
 # Identify all vulnerable species 
 vu_spp &lt;- subset(redlist_status,category==&#39;VU&#39;)$scientific_name
@@ -640,11 +649,22 @@ vu_spp &lt;- sub(&#39; &#39;,&#39;_&#39;, intersect(vu_spp,spp))
 lc_spp &lt;- subset(redlist_status,category==&#39;LC&#39;)$scientific_name
 lc_spp &lt;- sub(&#39; &#39;,&#39;_&#39;, intersect(lc_spp,spp))
 
-# Now, we extract the distribution data for the VU and LC species groups, make rasters, stack these and plot
-spplot( c(
-  terra::rast(data.frame(bird_dist[,2:3], log_VU=log(rowSums(bird_dist[,vu_spp]))), type=&#39;xyz&#39;),
-  terra::rast(data.frame(bird_dist[,2:3], log_LC=log(rowSums(bird_dist[,lc_spp]))), type=&#39;xyz&#39;)),
-  main=&#39;log( species richness)&#39;)</code></pre>
+# Now, we extract the distribution data for the VU and LC species groups, make SpatRasters and stack these
+spp_maps &lt;- c(
+  terra::rast(data.frame(bird_dist[,2:3], log_VU=log(rowSums(bird_dist[,vu_spp]))), crs=proj_UK, type=&#39;xyz&#39;),
+  terra::rast(data.frame(bird_dist[,2:3], log_LC=log(rowSums(bird_dist[,lc_spp]))), crs=proj_UK, type=&#39;xyz&#39;))
+
+# Plot the maps
+ggplot() +
+  geom_spatraster(data = spp_maps) +
+  facet_wrap(~lyr, ncol = 2) +
+ scale_fill_whitebox_c(
+    palette = &quot;muted&quot;
+  ) +
+  labs(
+    fill = &quot;log(richness)&quot;,
+    title = &quot;Richness according to red list category&quot;
+  )</code></pre>
 <p><img src="a5_SpeciesThreats_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <div class="alert alert-info">
 <p><strong>Exercise:</strong></p>
@@ -710,39 +730,39 @@ Shearwater</a> example, and at the <a
 href="https://www.iucnredlist.org/resources/threat-classification-scheme">Threat
 Classification Scheme</a>.</p>
 <pre class="r"><code>redlist_threats[sample(nrow(redlist_threats),10),-c(1:2)]</code></pre>
-<pre><code>##                                                          title
-## 337                         Named species (Accipiter gentilis)
-## 483 Unintentional effects: (subsistence/small scale) [harvest]
-## 499                        Annual &amp; perennial non-timber crops
-## 213                 Agro-industry grazing, ranching or farming
-## 815                     Hunting &amp; trapping terrestrial animals
-## 729                                          Roads &amp; railroads
-## 248                                      Agro-industry farming
-## 719                          Agricultural &amp; forestry effluents
-## 772                                                   Droughts
-## 290                     Hunting &amp; trapping terrestrial animals
-##                     timing             scope                   severity
-## 337                Ongoing   Minority (&lt;50%)        Negligible declines
-## 483                Ongoing   Minority (&lt;50%) Slow, Significant Declines
-## 499                Ongoing      Whole (&gt;90%) Slow, Significant Declines
-## 213                Ongoing   Minority (&lt;50%)        Negligible declines
-## 815                Ongoing   Minority (&lt;50%)             Rapid Declines
-## 729                Ongoing   Minority (&lt;50%)                    Unknown
-## 248                Ongoing Majority (50-90%) Slow, Significant Declines
-## 719                Ongoing   Minority (&lt;50%)        Negligible declines
-## 772 Past, Likely to Return   Minority (&lt;50%) Slow, Significant Declines
-## 290                Ongoing Majority (50-90%)        Negligible declines
+<pre><code>##                                                        title
+## 34                            Named species (Sus domesticus)
+## 731                                      Persecution/control
+## 205                                               Oil spills
+## 341                                Herbicides and pesticides
+## 500                                    Agro-industry farming
+## 504               Abstraction of surface water (unknown use)
+## 370 Problematic native species/diseases (Accipiter gentilis)
+## 346                                         Renewable energy
+## 580              Abstraction of surface water (domestic use)
+## 545                                             Flight paths
+##                       timing             scope                   severity
+## 34  Past, Unlikely to Return   Minority (&lt;50%)             Rapid Declines
+## 731                  Ongoing   Minority (&lt;50%)                    Unknown
+## 205                  Ongoing   Minority (&lt;50%)                    Unknown
+## 341                  Ongoing   Minority (&lt;50%) Slow, Significant Declines
+## 500                  Ongoing      Whole (&gt;90%) Slow, Significant Declines
+## 504                  Ongoing Majority (50-90%) Slow, Significant Declines
+## 370                  Ongoing   Minority (&lt;50%)        Negligible declines
+## 346                  Ongoing   Minority (&lt;50%)        Negligible declines
+## 580                  Ongoing   Minority (&lt;50%)                    Unknown
+## 545                   Future   Minority (&lt;50%)             Rapid Declines
 ##                score           invasive
-## 337    Low Impact: 4 Accipiter gentilis
-## 483    Low Impact: 5               &lt;NA&gt;
-## 499 Medium Impact: 7               &lt;NA&gt;
-## 213    Low Impact: 4               &lt;NA&gt;
-## 815 Medium Impact: 6               &lt;NA&gt;
-## 729          Unknown               &lt;NA&gt;
-## 248 Medium Impact: 6               &lt;NA&gt;
-## 719    Low Impact: 4               &lt;NA&gt;
-## 772      Past Impact               &lt;NA&gt;
-## 290    Low Impact: 5               &lt;NA&gt;</code></pre>
+## 34       Past Impact     Sus domesticus
+## 731          Unknown               &lt;NA&gt;
+## 205          Unknown               &lt;NA&gt;
+## 341    Low Impact: 5               &lt;NA&gt;
+## 500 Medium Impact: 7               &lt;NA&gt;
+## 504 Medium Impact: 6               &lt;NA&gt;
+## 370    Low Impact: 4 Accipiter gentilis
+## 346    Low Impact: 4               &lt;NA&gt;
+## 580          Unknown               &lt;NA&gt;
+## 545    Low Impact: 4               &lt;NA&gt;</code></pre>
 <p>We can extract many useful information from this table, for example,
 when specific threats occurred.</p>
 <pre class="r"><code>table(redlist_threats$timing)</code></pre>
@@ -796,10 +816,10 @@ spp_threat1 &lt;- sub(&#39; &#39;,&#39;_&#39;,subset(redlist_threats,title==&quo
 spp_threat2 &lt;- sub(&#39; &#39;,&#39;_&#39;,subset(redlist_threats,title==&quot;Industrial &amp; military effluents&quot; &amp; species %in% spp)$species)
 
 # Map species experiencing threats from hunting
-plot(terra::rast(data.frame(bird_dist[,2:3],rowSums(bird_dist[,spp_threat1])), type=&#39;xyz&#39;), main=&quot;Hunting &amp; trapping terrestrial animals&quot;)</code></pre>
+plot(terra::rast(data.frame(bird_dist[,2:3],rowSums(bird_dist[,spp_threat1])), crs=proj_UK, type=&#39;xyz&#39;), main=&quot;Hunting &amp; trapping terrestrial animals&quot;)</code></pre>
 <p><img src="a5_SpeciesThreats_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 <pre class="r"><code># species experiencing threats from industry and military
-plot(terra::rast(data.frame(bird_dist[,2:3],rowSums(bird_dist[,spp_threat2])), type=&#39;xyz&#39;), main=&quot;Industrial &amp; military effluents&quot;)</code></pre>
+plot(terra::rast(data.frame(bird_dist[,2:3],rowSums(bird_dist[,spp_threat2])), crs=proj_UK, type=&#39;xyz&#39;), main=&quot;Industrial &amp; military effluents&quot;)</code></pre>
 <p><img src="a5_SpeciesThreats_files/figure-html/unnamed-chunk-19-2.png" width="672" /></p>
 <div class="alert alert-info">
 <p><strong>Exercise:</strong></p>

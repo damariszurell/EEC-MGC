@@ -13,7 +13,7 @@
 
 <title>Analysing biodiversity changes</title>
 
-<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.23/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -29,7 +29,7 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
@@ -37,8 +37,8 @@
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -523,29 +523,45 @@ changes</h1>
 time periods. For this, we first need to compute species richness per
 time period.</p>
 <pre class="r"><code>library(terra)</code></pre>
-<pre><code>## terra 1.6.17</code></pre>
-<pre class="r"><code># Extract species occurrences per time period and compute species richness:
+<pre><code>## terra 1.7.39</code></pre>
+<pre class="r"><code># The coordinate reference system for the UK National Grid is:
+proj_UK &lt;- &#39;+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +datum=OSGB36 +units=m +no_defs&#39;
+
+# Extract species occurrences per time period and compute species richness:
 birds_68 &lt;- subset(bird_dist,period==&#39;1968-72&#39;)
 birds_68$richness68 &lt;- rowSums(birds_68[,spp])
 
-plot(terra::rast(birds_68[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness68&#39;)], type=&#39;xyz&#39;))</code></pre>
+plot(terra::rast(birds_68[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness68&#39;)], crs=proj_UK, type=&#39;xyz&#39;))</code></pre>
 <p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>We can make seperate species richness data frames as above, or
 continue working with the original data frame and simply add a column
 for species richness. In the latter case, we will have to subset the
 data for mapping.</p>
-<pre class="r"><code>library(raster)</code></pre>
-<pre><code>## Loading required package: sp</code></pre>
-<pre class="r"><code># Calculate species richness
+<pre class="r"><code>library(tidyterra)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;tidyterra&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter</code></pre>
+<pre class="r"><code>library(ggplot2)
+
+# Calculate species richness
 bird_dist$richness &lt;- rowSums(bird_dist[,spp])
 
 # Map species richness for different time periods
-spplot(c(
-  terra::rast(subset(bird_dist,period==&#39;1968-72&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)], type=&#39;xyz&#39;),
-  terra::rast(subset(bird_dist,period==&#39;1988-91&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)], type=&#39;xyz&#39;),
-  terra::rast(subset(bird_dist,period==&#39;2008-11&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)], type=&#39;xyz&#39;)),
-  names.attr = c(&#39;1968-72&#39;,&#39;1988-91&#39;,&#39;2008-11&#39;), main=&#39;Species richness&#39;
-  )</code></pre>
+richness_maps &lt;- c(
+  terra::rast(subset(bird_dist,period==&#39;1968-72&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)], crs=proj_UK, type=&#39;xyz&#39;),
+  terra::rast(subset(bird_dist,period==&#39;1988-91&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)], crs=proj_UK, type=&#39;xyz&#39;),
+  terra::rast(subset(bird_dist,period==&#39;2008-11&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)], crs=proj_UK, type=&#39;xyz&#39;))
+names(richness_maps) &lt;- c(&quot;richness 1968-72&quot;, &quot;richness 1988-91&quot;, &quot;richness 2008-11&quot;)
+
+ggplot() +
+  geom_spatraster(data = richness_maps) +
+  facet_wrap(~lyr, ncol = 3) +
+ scale_fill_whitebox_c(
+    palette = &quot;muted&quot;
+  ) +
+  labs(fill = &quot;Richness&quot;)</code></pre>
 <p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 </div>
 <div id="mapping-species-richness-changes" class="section level1"
@@ -564,7 +580,7 @@ cols.diff = colorRampPalette(
 richness between two periods and call this <code>change_richness</code>.
 Then we use our new colour palette for mapping the differences:</p>
 <pre class="r"><code># Calculate the difference in species richness between 1968 and 2011
-change_richness &lt;- terra::rast(subset(bird_dist,period==&#39;2008-11&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)], type=&#39;xyz&#39;) -
+change_richness &lt;- terra::rast(subset(bird_dist,period==&#39;2008-11&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)], crs=proj_UK, type=&#39;xyz&#39;) -
   terra::rast(subset(bird_dist,period==&#39;1968-72&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)], type=&#39;xyz&#39;)
 
 # Plot the species richness change between 1968 and 2011
@@ -655,7 +671,7 @@ accipiter_spp &lt;- sub(&#39; &#39;,&#39;_&#39;, accipiter_spp)
 birds_68$sr_accipiter &lt;- rowSums(birds_68[,accipiter_spp])
 
 # Map ACCIPITRIFORMES species richness
-plot(terra::rast(birds_68[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;sr_accipiter&#39;)], type=&#39;xyz&#39;), main=&quot;Richness ACCIPITRIFORMES&quot;)</code></pre>
+plot(terra::rast(birds_68[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;sr_accipiter&#39;)], crs=proj_UK, type=&#39;xyz&#39;), main=&quot;Richness ACCIPITRIFORMES&quot;)</code></pre>
 <p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <div class="alert alert-info">
 <p><strong>Exercise: </strong></p>
@@ -706,7 +722,6 @@ for (t in c(&#39;1968-72&#39;, &#39;1988-91&#39;, &#39;2008-11&#39;)) {
 }
 
 # plot changes in range size
-library(ggplot2)
 ggplot(data = acrocepha_rangesize, mapping = aes(x = rep(c(1968,1988,2008), length(acrocepha_spp)), y = log(rangesize), color=species)) + geom_line() + geom_point() + xlab(&#39;Year&#39;) + ylab(&#39;log(Range size [km^2])&#39;)</code></pre>
 <p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>We can also look at positions of range centres or boundaries. For
@@ -750,12 +765,24 @@ time and whether ranges are contracting or expanding. As an example,
 let’s continue analysing range changes in the sedge warbler
 (<em>Acrocephalus schoenobaenus</em>):</p>
 <pre class="r"><code># ranges sedge warbler
-sedge_68 &lt;- terra::rast(subset(bird_dist,period==&#39;1968-72&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;Acrocephalus_schoenobaenus&#39;)], type=&#39;xyz&#39;)
-sedge_88 &lt;- terra::rast(subset(bird_dist,period==&#39;1988-91&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;Acrocephalus_schoenobaenus&#39;)], type=&#39;xyz&#39;)
-sedge_08 &lt;- terra::rast(subset(bird_dist,period==&#39;2008-11&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;Acrocephalus_schoenobaenus&#39;)], type=&#39;xyz&#39;)
+sedge_68 &lt;- terra::rast(subset(bird_dist,period==&#39;1968-72&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;Acrocephalus_schoenobaenus&#39;)], crs=proj_UK, type=&#39;xyz&#39;)
+sedge_88 &lt;- terra::rast(subset(bird_dist,period==&#39;1988-91&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;Acrocephalus_schoenobaenus&#39;)], crs=proj_UK, type=&#39;xyz&#39;)
+sedge_08 &lt;- terra::rast(subset(bird_dist,period==&#39;2008-11&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;Acrocephalus_schoenobaenus&#39;)], crs=proj_UK, type=&#39;xyz&#39;)
+
+# stack the SpatRasters
+ranges_sedge &lt;- c(sedge_68, sedge_88, sedge_08)
+names(ranges_sedge) &lt;- c(&quot;Sedge warbler 1968-72&quot;, &quot;Sedge warbler 1988-91&quot;, &quot;Sedge warbler 2008-11&quot;)
 
 # Plot the range in different time periods
-spplot(c(sedge_68, sedge_88, sedge_08))</code></pre>
+ggplot() +
+  geom_spatraster(data = ranges_sedge) +
+  facet_wrap(~lyr, ncol = 3) +
+ scale_fill_whitebox_c(
+   direction=-1,
+   guide = guide_legend(reverse = TRUE),
+   n.breaks=2
+  ) +
+  labs(fill = &quot;Presence&quot;)</code></pre>
 <p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p>Now, we want to visualise where the range remained stable, and where
 cells were colonised or decolonised. The distribution data are binary
@@ -822,15 +849,17 @@ dummy &lt;- sedge_08
 values(dummy)[values(dummy)&gt;0 &amp; !is.na(values(dummy))] &lt;- 2
 
 # Sum up the layers. Values=1 indicate presence in 1968, values=2 presence in 2008, values=3 presence in both periods
-diff &lt;- raster(sedge_68+dummy)
-diff_f &lt;- as.factor(diff)
-rat &lt;- levels(diff_f)[[1]]
-rat[[&quot;diff&quot;]] &lt;- c(&quot;Absent&quot;, &quot;Extinction&quot;, &quot;Colonisation&quot;, &quot;Stable&quot;)
-levels(diff_f) &lt;- rat
+diff &lt;- sedge_68+dummy
 
-library(rasterVis)
-custom.pal &lt;- c(&quot;grey75&quot;, &quot;coral&quot;, &quot;cyan3&quot;,&quot;grey25&quot;)
-levelplot(diff_f, margin=F, scales=list(draw=FALSE),col.regions=custom.pal,main=&#39;Sedge warbler range change (1968-2011)&#39;)</code></pre>
+ggplot() +
+  geom_spatraster(data = diff) +
+ scale_fill_whitebox_c(
+   direction = -1,
+   guide = guide_legend(reverse = TRUE),
+   n.breaks=4,
+   labels = c(&quot;Absent&quot;, &quot;Extinction&quot;, &quot;Colonisation&quot;, &quot;Stable&quot;)
+  ) +
+  labs(fill = &quot;&quot;)</code></pre>
 <p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <div class="alert alert-success" role="alert">
 <p><strong>Test it yourself</strong></p>

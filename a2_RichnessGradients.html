@@ -13,7 +13,7 @@
 
 <title>Species richness gradients</title>
 
-<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.23/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -29,14 +29,14 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -168,11 +168,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -201,8 +205,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -210,16 +214,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -682,31 +679,40 @@ birds_68 &lt;- subset(bird_dist2,period==&#39;1968-72&#39;)
 birds_68$richness68 &lt;- rowSums(birds_68[,spp])
 
 # Convert to raster data and map:
-plot(terra::rast(birds_68[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness68&#39;)], type = &quot;xyz&quot;))</code></pre>
+plot(terra::rast(birds_68[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness68&#39;)], crs=proj_UK, type = &quot;xyz&quot;))</code></pre>
 <p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <ul>
 <li>Calculate species richness for all time periods and map them. The
 maps below are done by first creating a multi-layer SpatRaster object
-with <code>c()</code> and then using the function <code>spplot()</code>
-from the <code>raster</code> package. Of course, you can also plot the
-maps separately.</li>
+´dist_maps´ with <code>c()</code> and then using the code below. Of
+course, you can also plot the maps separately.</li>
 <li>Plot the latitudinal species richness gradients for at least one
 other time period.</li>
 <li>Plot species richness against annual precipitation sum. Compare with
 <span class="citation">Gaston (2000)</span> and discuss.</li>
 </ul>
 </div>
-<p>UK breeding bird richness mapped for all time periods using the
-function <code>spplot()</code> from the <code>raster</code> package:</p>
-<p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>UK breeding bird richness mapped for all time periods:</p>
+<pre class="r"><code>library(tidyterra)
+
+# Make a SpatRaster object &quot;dist_maps&quot; containing the species richness layers for the three time periods
+# Map the species richness maps for the 3 time periods:
+ggplot() +
+  geom_spatraster(data = dist_maps) +
+  facet_wrap(~lyr, ncol = 3) +
+ scale_fill_whitebox_c(
+    palette = &quot;muted&quot;
+  ) +
+  labs(fill = &quot;Richness&quot;)</code></pre>
+<p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p>Latitudinal species richness gradient in UK breeding birds across
 different time periods:</p>
-<p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p>Species-energy relationship of UK breeding birds across different
 time periods:</p>
-<p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>

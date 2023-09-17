@@ -13,7 +13,7 @@
 
 <title>Species range maps</title>
 
-<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.23/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -29,14 +29,14 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -507,7 +507,7 @@ recognized as <code>SpatVector</code> object.</p>
 ##  IUCN (Internat~     NA        NA</code></pre>
 <pre class="r"><code># Plot the Central Europe
 library(maps)
-map(&#39;world&#39;,xlim=c(5,30), ylim=c(40,55))
+maps::map(&#39;world&#39;,xlim=c(5,30), ylim=c(40,55))
 
 # Overlay the range of the Alpine Shrew
 plot(shrew, col=&#39;red&#39;, add=T)</code></pre>
@@ -581,7 +581,7 @@ that we want to look at.</p>
 lynx_lynx &lt;- mammals[mammals$BINOMIAL==&#39;Lynx lynx&#39;,]
 
 # Map the range
-map(&#39;world&#39;)
+maps::map(&#39;world&#39;)
 plot(lynx_lynx, col=&#39;red&#39;, add=T)</code></pre>
 <p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <div class="alert alert-success" role="alert">
@@ -602,32 +602,30 @@ we load the range map for the monkey puzzle tree (or Chilean pine -
 <pre class="r"><code>library(BIEN)
 
 # Load the range map for the monkey puzzle
-(monkey_puzzle_raster &lt;- BIEN_ranges_load_species(&#39;Araucaria_araucana&#39;))</code></pre>
-<pre><code>## class       : SpatialPolygonsDataFrame 
-## features    : 1 
-## extent      : -109.9819, -55.46083, -55.73974, 62.67197  (xmin, xmax, ymin, ymax)
-## crs         : +proj=longlat +datum=WGS84 +no_defs 
-## variables   : 1
-## names       :            species 
-## value       : Araucaria_araucana</code></pre>
-<p>Currently, the <code>BIEN</code>package still relies on the spatial R
-package <code>raster</code> that was the predeccesor of
-<code>terra</code> and is still being used by many packages. Here, we
-simply convert the <code>SpatialPolygonsDataFrame</code> object into the
-<code>SpatVector</code>object that we already know from the
+(monkey_puzzle_sf &lt;- BIEN_ranges_load_species(&#39;Araucaria_araucana&#39;))</code></pre>
+<pre><code>## Simple feature collection with 1 feature and 2 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -109.9819 ymin: -55.73974 xmax: -55.46083 ymax: 62.67197
+## Geodetic CRS:  WGS 84
+##              species  gid                       geometry
+## 1 Araucaria_araucana 6382 MULTIPOLYGON (((-72.94742 -...</code></pre>
+<p>The function <code>BIEN_ranges_load_species()</code> will output an
+<code>sf</code> polygon, which we simply convert into a
+<code>SpatVector</code> object that we already know from the
 <code>terra</code> package.</p>
 <pre class="r"><code># Change into SpatVector object (terra package)
-(monkey_puzzle_terra &lt;- terra::vect(monkey_puzzle_raster, crs=&#39;+proj=longlat +datum=WGS84&#39;))</code></pre>
+(monkey_puzzle_terra &lt;- terra::vect(monkey_puzzle_sf))</code></pre>
 <pre><code>##  class       : SpatVector 
 ##  geometry    : polygons 
-##  dimensions  : 1, 1  (geometries, attributes)
+##  dimensions  : 1, 2  (geometries, attributes)
 ##  extent      : -109.9819, -55.46083, -55.73974, 62.67197  (xmin, xmax, ymin, ymax)
-##  coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
-##  names       :            species
-##  type        :              &lt;chr&gt;
-##  values      : Araucaria_araucana</code></pre>
+##  coord. ref. : lon/lat WGS 84 (EPSG:4326) 
+##  names       :            species   gid
+##  type        :              &lt;chr&gt; &lt;int&gt;
+##  values      : Araucaria_araucana  6382</code></pre>
 <pre class="r"><code># Map
-map(&#39;world&#39;,xlim = c(-180,-20),ylim = c(-80,80))
+maps::map(&#39;world&#39;,xlim = c(-180,-20),ylim = c(-80,80))
 plot(monkey_puzzle_terra,col=&#39;red&#39;,add=T)</code></pre>
 <p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>The native range of the mokey puzzle is in the Chilean Andes, so
@@ -668,7 +666,7 @@ terra::centroids(shrew)</code></pre>
 ##            &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;              
 ##  IUCN (Internat~     NA        NA</code></pre>
 <pre class="r"><code># Map the species range and add the centroid to the map
-map(&#39;world&#39;,xlim=c(5,30), ylim=c(40,55))
+maps::map(&#39;world&#39;,xlim=c(5,30), ylim=c(40,55))
 plot(shrew, col=&#39;red&#39;, add=T)
 points(terra::centroids(shrew), col=&#39;blue&#39;,cex=3,pch=&quot;+&quot;)</code></pre>
 <p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
@@ -680,11 +678,11 @@ patches, the centroid might not even fall within an occupied patch.</p>
 also contain non-native areas. We can clip the range maps to a desired
 spatial extent and then only calculate the range centroid for this
 (presumed) native range.</p>
-<pre class="r"><code># Let&#39;s crop the range polygons to (rough coordinates of) South America
+<pre class="r"><code># Let&#39;s clip the range polygons to (rough coordinates of) South America
 monkey_puzzle_SAm &lt;- terra::intersect(monkey_puzzle_terra, ext(-85, -30, -55, 5))
 
 # Map the range and range centroid
-map(&#39;world&#39;,xlim = c(-100,-10),ylim = c(-60,15))
+maps::map(&#39;world&#39;,xlim = c(-100,-10),ylim = c(-60,15))
 plot(monkey_puzzle_SAm,col=&#39;red&#39;,add=T)
 points(terra::centroids(monkey_puzzle_SAm), col=&#39;blue&#39;,pch=&#39;+&#39;, cex=3)</code></pre>
 <p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
@@ -706,8 +704,8 @@ the range maps accurately represent species occurrences. <span
 class="citation">Hurlbert and Jetz (2007)</span> and <span
 class="citation">Jetz, McPherson, and Guralnick (2012)</span> define the
 minimum spatial resolution as 100-200km (1-2°), although also
-resolutions of 50km (0.5°) and finer have been used <span
-class="citation">(Krosby et al. 2015; Zurell et al. 2018)</span>.</p>
+resolutions of 50km (0.5°) have been used <span class="citation">(Krosby
+et al. 2015; Zurell et al. 2018)</span>.</p>
 <div id="rasterising-range-maps-with-terra" class="section level3"
 number="2.2.1">
 <h3><span class="header-section-number">2.2.1</span> Rasterising range
@@ -730,11 +728,11 @@ cells.</p>
 ## resolution  : 1, 1  (x, y)
 ## extent      : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
 ## coord. ref. : lon/lat WGS 84 
-## source      : memory 
+## source(s)   : memory
 ## name        : layer 
 ## min value   :     1 
 ## max value   :     1</code></pre>
-<pre class="r"><code>map(&#39;world&#39;,xlim=c(5,30), ylim=c(40,55))
+<pre class="r"><code>maps::map(&#39;world&#39;,xlim=c(5,30), ylim=c(40,55))
 plot(shrew, col=&#39;red&#39;, add=T)
 plot(shrew_1deg, add=T, alpha=0.6, legend=F)</code></pre>
 <p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
@@ -742,10 +740,13 @@ plot(shrew_1deg, add=T, alpha=0.6, legend=F)</code></pre>
 at several places.</p>
 <div class="alert alert-success" role="alert">
 <p><strong>Test it yourself</strong></p>
-<p>Check out the help page <code>?rasterize</code> and find out what the
-argument <code>touches</code> is doing. Rasterise the shrew range map
-again with setting a different <code>touches</code> argument and map the
-result. What is the difference?</p>
+<ul>
+<li>Check out the help page <code>?rasterize</code> and find out what
+the argument <code>touches</code> is doing. Rasterise the shrew range
+map again with setting a different <code>touches</code> argument and map
+the result. What is the difference?</li>
+<li>What does the <code>cover</code> argument do?</li>
+</ul>
 </div>
 <p>We look at a second example, the lynx:</p>
 <pre class="r"><code># Define an empty SpatRaster of the world at 2° spatial resolution
@@ -759,7 +760,7 @@ result. What is the difference?</p>
 lynx_lynx_2deg &lt;- terra::rasterize(lynx_lynx, r_2deg)
 
 # Map the occupied grid cells
-map(&#39;world&#39;)
+maps::map(&#39;world&#39;)
 plot(lynx_lynx_2deg, add = TRUE, legend = FALSE)</code></pre>
 <p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 </div>
@@ -769,13 +770,14 @@ number="2.2.2">
 maps with <code>letsR</code></h3>
 <p>There are also specific macroecological packages in R that facilitate
 working with range maps and rasterising them, for example the function
-<code>lets.presab()</code> in the <code>letsR</code> package. At the
-moment, this package still relies on the older spatial R package
-<code>raster</code>.</p>
-<pre class="r"><code>library(letsR)</code></pre>
-<pre><code>## Lade nötiges Paket: raster</code></pre>
-<pre><code>## Lade nötiges Paket: sp</code></pre>
-<pre class="r"><code>library(raster)
+<code>lets.presab()</code> in the <code>letsR</code> package.</p>
+<p>At the moment, this package still relies on the older spatial R
+package <code>raster</code> and is not available for the newest R
+version. We thus have to install an older version and need some
+workarounds for the older <code>raster</code> standards.</p>
+<pre class="r"><code>install_version(&quot;letsR&quot;, version = &quot;4.0&quot;, repos = &quot;http://cran.us.r-project.org&quot;)</code></pre>
+<pre class="r"><code>library(letsR)
+library(raster)
 
 # The lets.presab() function expects &quot;binomial&quot; as one specific column name in the Polygons data frame
 values(shrew)</code></pre>
@@ -790,12 +792,12 @@ values(shrew)</code></pre>
 ##   SHAPE_Area
 ## 1   57.94637</code></pre>
 <pre class="r"><code>values(monkey_puzzle_terra)</code></pre>
-<pre><code>##              species
-## 1 Araucaria_araucana</code></pre>
-<pre class="r"><code>monkey_puzzle_raster@data</code></pre>
-<pre><code>##              species
-## 1 Araucaria_araucana</code></pre>
-<pre class="r"><code># As the BIEN data do not contain &quot;binomial&quot; as column name, we have to add it:
+<pre><code>##              species  gid
+## 1 Araucaria_araucana 6382</code></pre>
+<pre class="r"><code># For data obtained from the &quot;BIEN&quot; package, we need to convert the sf object into a SpatialPolygonsDataFrame as lets.presab requires this type of object
+monkey_puzzle_raster &lt;- as(monkey_puzzle_sf, &quot;Spatial&quot;)
+
+# As the BIEN data do not contain &quot;binomial&quot; as column name, we have to add it:
 colnames(monkey_puzzle_raster@data) &lt;- &quot;binomial&quot;
 
 # We set the resolution to 1 degree (the default) and restrict the spatial extent to South America
@@ -809,10 +811,10 @@ r_monkey_puzzle</code></pre>
 ## Number of cells: 243
 ## Resolution: 1, 1 (x, y)</code></pre>
 <pre class="r"><code># Map the range and range centroid
-map(&#39;world&#39;,xlim = c(-100,-10),ylim = c(-60,15))
+maps::map(&#39;world&#39;,xlim = c(-100,-10),ylim = c(-60,15))
 plot(monkey_puzzle_SAm,col=&#39;blue&#39;,add=T)
 plot(r_monkey_puzzle, add=T, alpha=0.6, legend=F)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <div class="alert alert-success" role="alert">
 <p><strong>Test it yourself</strong></p>
 <ul>
@@ -859,23 +861,35 @@ look at the <em>Pinus</em> genus in the Americas</p>
 ## [76] &quot;Pinus_sylvestris&quot;     &quot;Pinus_tabuliformis&quot;   &quot;Pinus_taeda&quot;         
 ## [79] &quot;Pinus_tecunumanii&quot;    &quot;Pinus_teocote&quot;        &quot;Pinus_thunbergii&quot;    
 ## [82] &quot;Pinus_torreyana&quot;      &quot;Pinus_virginiana&quot;     &quot;Pinus_wallichiana&quot;</code></pre>
-<pre class="r"><code># Download the range maps for all Pinus species (as SpatialPolygonsDataFrame using the raster standard instead of terra)
+<pre class="r"><code># Download the range maps for all Pinus species - stored in sf object
 (pinus &lt;- BIEN_ranges_load_species(pinus_names))</code></pre>
-<pre><code>## class       : SpatialPolygonsDataFrame 
-## features    : 84 
-## extent      : -179.1256, 179.8453, -55.95014, 63.61258  (xmin, xmax, ymin, ymax)
-## crs         : +proj=longlat +datum=WGS84 +no_defs 
-## variables   : 1
-## names       :           species 
-## min values  :  Pinus_albicaulis 
-## max values  : Pinus_wallichiana</code></pre>
-<pre class="r"><code># As the BIEN data do not contain &quot;binomial&quot; as column name, we have to re-format the column names again before rasterising
-colnames(pinus@data) &lt;- &quot;binomial&quot;
-r_pinus &lt;- lets.presab(pinus, resol=1, xmn = -170, xmx = -10, ymn = -57, ymx = 60)
+<pre><code>## Simple feature collection with 84 features and 2 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -179.1256 ymin: -55.95014 xmax: 179.8453 ymax: 63.61258
+## Geodetic CRS:  WGS 84
+## First 10 features:
+##              species   gid                       geometry
+## 1   Pinus_albicaulis 69305 MULTIPOLYGON (((-115.5687 3...
+## 2     Pinus_aristata 69306 MULTIPOLYGON (((-108.3352 2...
+## 3    Pinus_arizonica 69307 MULTIPOLYGON (((-101.8346 1...
+## 4     Pinus_armandii 69308 MULTIPOLYGON (((-73.89339 4...
+## 5    Pinus_attenuata 69309 MULTIPOLYGON (((-108.6828 2...
+## 6   Pinus_ayacahuite 69310 MULTIPOLYGON (((-111.1281 3...
+## 7  Pinus_balfouriana 69311 MULTIPOLYGON (((-113.7281 2...
+## 8    Pinus_banksiana 69312 MULTIPOLYGON (((-66.87649 -...
+## 9       Pinus_brutia 69313 MULTIPOLYGON (((-117.0827 3...
+## 10    Pinus_bungeana 69319 MULTIPOLYGON (((-123.3073 4...</code></pre>
+<pre class="r"><code># Convert the sf object into a SpatialPolygonsDataFrame to be able to use the lets.presab function
+pinus_raster &lt;- as(pinus, &quot;Spatial&quot;)
+
+# As the BIEN data do not contain &quot;binomial&quot; as column name, we have to re-format the column names again before rasterising
+colnames(pinus_raster@data) &lt;- &quot;binomial&quot;
+r_pinus &lt;- lets.presab(pinus_raster, resol=1, xmn = -170, xmx = -10, ymn = -57, ymx = 60)
 
 # Plot species richness
 plot(r_pinus)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <p>In the <code>lets.presab()</code> function, we can also specify which
 PRESENCE, ORIGIN and SEASONAL information should be used and which not
 (see IUCN metadata on moodle). Let’s look at Neotropical fruit bats
@@ -902,32 +916,32 @@ PRESENCE, ORIGIN and SEASONAL information should be used and which not
 <pre class="r"><code>library(raster)
 
 # Subset the SpatVector
-artibeus_spp &lt;- mammals[grep(&#39;Artibeus&#39;,mammals$BINOMIAL),]
+artibeus_ranges &lt;- mammals[grep(&#39;Artibeus&#39;,mammals$BINOMIAL),]
 
 # Convert to SpatialPolygonsDataFrame from raster package
-artibeus_spp &lt;- as(artibeus_spp, &quot;Spatial&quot;)
+artibeus_ranges &lt;- as(artibeus_ranges, &quot;Spatial&quot;)
 
 # Rasterize the ranges using the letsR package
-r_artibeus_spp &lt;- lets.presab(artibeus_spp, resol=2, 
+r_artibeus &lt;- lets.presab(artibeus_ranges, resol=2, 
                               presence = 1, origin = 1, seasonal = 1)
 
 # Map the species richness
-plot(r_artibeus_spp)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+plot(r_artibeus)</code></pre>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <pre class="r"><code># Map single species - here, just the first two
 par(mfrow=c(1,2))
-plot(r_artibeus_spp, name = &quot;Artibeus amplus&quot;)
-plot(r_artibeus_spp, name = &quot;Artibeus anderseni&quot;)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-16-2.png" width="672" /></p>
+plot(r_artibeus, name = &quot;Artibeus amplus&quot;)
+plot(r_artibeus, name = &quot;Artibeus anderseni&quot;)</code></pre>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-17-2.png" width="672" /></p>
 <pre class="r"><code># Look at structure of the object and at the presence-absence matrix
-str(r_artibeus_spp, 1)</code></pre>
+str(r_artibeus, 1)</code></pre>
 <pre><code>## List of 3
 ##  $ Presence_and_Absence_Matrix: num [1:339, 1:22] -109 -109 -107 -105 -99 -83 -81 -105 -103 -99 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
-##  $ Richness_Raster            :Formal class &#39;RasterLayer&#39; [package &quot;raster&quot;] with 12 slots
+##  $ Richness_Raster            :Formal class &#39;RasterLayer&#39; [package &quot;raster&quot;] with 13 slots
 ##  $ Species_name               : chr [1:20] &quot;Artibeus amplus&quot; &quot;Artibeus anderseni&quot; &quot;Artibeus aztecus&quot; &quot;Artibeus cinereus&quot; ...
 ##  - attr(*, &quot;class&quot;)= chr &quot;PresenceAbsence&quot;</code></pre>
-<pre class="r"><code>head(r_artibeus_spp$Presence_and_Absence_Matrix)</code></pre>
+<pre class="r"><code>head(r_artibeus$Presence_and_Absence_Matrix)</code></pre>
 <pre><code>##      Longitude(x) Latitude(y) Artibeus amplus Artibeus anderseni
 ## [1,]         -109          27               0                  0
 ## [2,]         -109          25               0                  0
@@ -977,6 +991,93 @@ str(r_artibeus_spp, 1)</code></pre>
 ## [4,]                0
 ## [5,]                0
 ## [6,]                0</code></pre>
+</div>
+<div id="bulk-rasterising-multiple-species-range-maps-with-terra"
+class="section level3" number="2.2.4">
+<h3><span class="header-section-number">2.2.4</span> Bulk-rasterising
+multiple species range maps with <code>terra</code></h3>
+<p>Bulk-rasterising with <code>terra</code> is not as straight forward
+but requires some legwork.</p>
+<pre class="r"><code>library(tidyverse)
+
+# Extract the available Pinus species names
+pinus_names &lt;- BIEN_ranges_genus(&quot;Pinus&quot;,match_names_only = T)[,1]
+
+# Download the range maps for all Pinus species
+pinus &lt;- BIEN_ranges_load_species(pinus_names)
+
+# For sf objects, we can use tidyverse to subset single features (species)
+filter(pinus, species==&quot;Pinus_albicaulis&quot;)</code></pre>
+<pre><code>## Simple feature collection with 1 feature and 2 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -126.2099 ymin: 30.86017 xmax: -105.0399 ymax: 51.65776
+## Geodetic CRS:  WGS 84
+##            species   gid                       geometry
+## 1 Pinus_albicaulis 69305 MULTIPOLYGON (((-115.5687 3...</code></pre>
+<pre class="r"><code># Use &quot;sapply&quot; function to circle through all species and rasterise to 1 degree spatial resolution:
+r_1deg &lt;- terra::rast(res=1)
+r_pinus_terra &lt;- sapply(unique(pinus$species),FUN=function(sp) {
+  terra::rasterize(filter(pinus, species==sp), r_1deg, touches=T) 
+  })
+
+# Make a SpatRaster stack with all species occurrences
+r_pinus_terra &lt;- terra::rast(r_pinus_terra)
+
+# Calculate species richness
+r_pinus_richness &lt;- sum(r_pinus_terra,na.rm=T)
+
+# Plot species richness
+maps::map(&#39;world&#39;)
+plot(r_pinus_richness, add=T, alpha=0.8)</code></pre>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<pre class="r"><code># We can collate a data.frame with all species occurrences similar to the lets.presab output
+r_pinus_df &lt;- as.data.frame(r_pinus_terra, xy=T)</code></pre>
+<p>Let’s also look at the mammal example. Remember that we wanted to
+subset the data according to the IUCN information PRESENCE, ORIGIN and
+SEASONAL.</p>
+<pre class="r"><code># Subset the SpatVector
+artibeus_ranges &lt;- mammals[grep(&#39;Artibeus&#39;,mammals$BINOMIAL),]
+artibeus_ranges &lt;- subset(artibeus_ranges, artibeus_ranges$PRESENCE==1 &amp; artibeus_ranges$ORIGIN==1 &amp; artibeus_ranges$SEASONAL==1)
+
+# Artibeus species:
+unique(artibeus_ranges$BINOMIAL)</code></pre>
+<pre><code>##  [1] &quot;Artibeus amplus&quot;       &quot;Artibeus anderseni&quot;    &quot;Artibeus aztecus&quot;     
+##  [4] &quot;Artibeus cinereus&quot;     &quot;Artibeus concolor&quot;     &quot;Artibeus fimbriatus&quot;  
+##  [7] &quot;Artibeus fraterculus&quot;  &quot;Artibeus glaucus&quot;      &quot;Artibeus gnomus&quot;      
+## [10] &quot;Artibeus hirsutus&quot;     &quot;Artibeus incomitatus&quot;  &quot;Artibeus inopinatus&quot;  
+## [13] &quot;Artibeus jamaicensis&quot;  &quot;Artibeus lituratus&quot;    &quot;Artibeus obscurus&quot;    
+## [16] &quot;Artibeus phaeotis&quot;     &quot;Artibeus planirostris&quot; &quot;Artibeus rosenbergii&quot; 
+## [19] &quot;Artibeus toltecus&quot;     &quot;Artibeus watsoni&quot;</code></pre>
+<pre class="r"><code># As we saw above, for SpatVector objects, we can use &quot;subset&quot; to select specific rows
+subset(artibeus_ranges, artibeus_ranges$BINOMIAL==&quot;Artibeus amplus&quot;)</code></pre>
+<pre><code>##  class       : SpatVector 
+##  geometry    : polygons 
+##  dimensions  : 1, 14  (geometries, attributes)
+##  extent      : -77.9345, -55.3096, 0.9759356, 12.46334  (xmin, xmax, ymin, ymax)
+##  coord. ref. : lon/lat WGS 84 (EPSG:4326) 
+##  names       :        BINOMIAL PRESENCE ORIGIN SEASONAL COMPILER  YEAR
+##  type        :           &lt;chr&gt;    &lt;int&gt;  &lt;int&gt;    &lt;int&gt;    &lt;chr&gt; &lt;int&gt;
+##  values      : Artibeus amplus        1      1        1     IUCN  2008
+##         CITATION SOURCE DIST_COMM ISLAND (and 4 more)
+##            &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;             
+##  IUCN (Internat~     NA        NA     NA</code></pre>
+<pre class="r"><code># Use &quot;sapply&quot; function to circle through all species and rasterise to 1 degree spatial resolution:
+r_1deg &lt;- terra::rast(res=1)
+r_artibeus_terra &lt;- sapply(unique(artibeus_ranges$BINOMIAL),FUN=function(sp) {
+  terra::rasterize(subset(artibeus_ranges, artibeus_ranges$BINOMIAL==sp), r_1deg, touches=T) 
+  })
+
+# Make a SpatRaster stack with all species occurrences
+r_artibeus_terra &lt;- terra::rast(r_artibeus_terra)
+
+# Calculate species richness
+r_artibeus_richness &lt;- sum(r_artibeus_terra,na.rm=T)
+
+# Map the species richness
+maps::map(&#39;world&#39;)
+plot(r_artibeus_richness, add=T, alpha=0.8)</code></pre>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <ul>

@@ -13,7 +13,7 @@
 
 <title>SDM ensembles</title>
 
-<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.23/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -29,14 +29,14 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -168,11 +168,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -201,8 +205,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -210,16 +214,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -534,7 +531,7 @@ processed raster layers of current climate (see session 4).</p>
 <h2><span class="header-section-number">2.2</span> Model fitting</h2>
 <p>In the previous tutorial, we already fitted different model
 algorithms. Here, we refit them very quickly.</p>
-<pre class="r"><code># Our predictors:
+<pre class="r"><code># Our predictors, for simplicity we only use two:
 my_preds &lt;- c(&#39;bio12&#39;, &#39;bio9&#39;)
 
 
@@ -581,8 +578,8 @@ m_brt &lt;- gbm.step(data = sp_train,
     tree.complexity = 2,
     bag.fraction = 0.75,
     learning.rate = 0.001,
-    verbose=F)</code></pre>
-<p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+    verbose=F,
+    plot.main=F)</code></pre>
 </div>
 <div id="model-assessment" class="section level2" number="2.3">
 <h2><span class="header-section-number">2.3</span> Model assessment</h2>
@@ -596,8 +593,8 @@ in last session, and stored the results of the model validation:</p>
 ## 3    glm 0.8903770 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
 ## 4    gam 0.8859127 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
 ## 5   cart 0.8196925 0.5922619 0.5958084 0.7380952 0.8541667 0.8000000
-## 6     rf 0.8308532 0.6071429 0.6017699 0.8571429 0.7500000 0.8000000
-## 7    brt 0.8831845 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
+## 6     rf 0.8328373 0.6428571 0.6428571 0.8095238 0.8333333 0.8222222
+## 7    brt 0.8836806 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
 ## 8 maxent 0.8774802 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
 ##            D2 thresh
 ## 1 -0.37385682  0.175
@@ -605,8 +602,8 @@ in last session, and stored the results of the model validation:</p>
 ## 3  0.37029784  0.525
 ## 4  0.36548148  0.530
 ## 5  0.16934395  0.800
-## 6  0.18303802  0.545
-## 7  0.34556241  0.580
+## 6  0.18119327  0.630
+## 7  0.34316242  0.580
 ## 8  0.25816707  0.410</code></pre>
 </div>
 <div id="predictions" class="section level2" number="2.4">
@@ -632,13 +629,13 @@ summary(pred_testdata)</code></pre>
 ##  Mean   :0.21083   Mean   :0.5440   Mean   :0.4999623   Mean   :0.5007960  
 ##  3rd Qu.:0.33193   3rd Qu.:0.7012   3rd Qu.:0.8040124   3rd Qu.:0.8025983  
 ##  Max.   :0.94118   Max.   :0.7329   Max.   :0.9070566   Max.   :0.9005589  
-##       cart               rf                 brt             maxent       
-##  Min.   :0.02273   Min.   :0.0003333   Min.   :0.1312   Min.   :0.01877  
-##  1st Qu.:0.20000   1st Qu.:0.1095042   1st Qu.:0.1914   1st Qu.:0.22899  
-##  Median :0.75000   Median :0.6169167   Median :0.6003   Median :0.43513  
-##  Mean   :0.52357   Mean   :0.5113702   Mean   :0.5134   Mean   :0.37117  
-##  3rd Qu.:0.85047   3rd Qu.:0.8407542   3rd Qu.:0.8031   3rd Qu.:0.54487  
-##  Max.   :0.85047   Max.   :0.9776500   Max.   :0.8140   Max.   :0.58623</code></pre>
+##       cart               rf              brt             maxent       
+##  Min.   :0.02273   Min.   :0.0000   Min.   :0.1068   Min.   :0.01877  
+##  1st Qu.:0.20000   1st Qu.:0.1250   1st Qu.:0.1672   1st Qu.:0.22899  
+##  Median :0.75000   Median :0.5990   Median :0.5900   Median :0.43513  
+##  Mean   :0.52357   Mean   :0.5088   Mean   :0.5096   Mean   :0.37117  
+##  3rd Qu.:0.85047   3rd Qu.:0.8377   3rd Qu.:0.8115   3rd Qu.:0.54487  
+##  Max.   :0.85047   Max.   :0.9747   Max.   :0.8280   Max.   :0.58623</code></pre>
 <p>As we have stored the maxSens+Spec threshold for each model, we can
 also threshold the predictions to obtain predicted presences and
 absences.</p>
@@ -662,8 +659,8 @@ summary(binpred_testdata)</code></pre>
 ##       cart              rf              brt             maxent      
 ##  Min.   :0.0000   Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
 ##  1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000  
-##  Median :0.0000   Median :1.0000   Median :1.0000   Median :1.0000  
-##  Mean   :0.4222   Mean   :0.5333   Mean   :0.5222   Mean   :0.5222  
+##  Median :0.0000   Median :0.0000   Median :1.0000   Median :1.0000  
+##  Mean   :0.4222   Mean   :0.4667   Mean   :0.5222   Mean   :0.5222  
 ##  3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000  
 ##  Max.   :1.0000   Max.   :1.0000   Max.   :1.0000   Max.   :1.0000</code></pre>
 </div>
@@ -701,9 +698,8 @@ have many input data, models, and scenarios to put into your ensemble,
 this is easily becoming tedious. For that purpose, it will be very
 useful to automatise your code and write automatic functions. For an
 example for automatising your functions, have a look at the code that we
-published along with <span
-class="citation">(<strong>Zurell2019?</strong>)</span>, which you can
-obtain from the corresponding <a
+published along with <span class="citation">Zurell et al. (2020)</span>,
+which you can obtain from the corresponding <a
 href="https://github.com/damariszurell/SSDM-JSDM">github repository</a>.
 Also, there are packages like <code>biomod2</code> that make it easy to
 construct ensembles automatically <span class="citation">(Thuiller et
@@ -713,33 +709,33 @@ al. 2009)</span>.</p>
 
 # performance measures for &quot;mean of probabilities&quot;
 (perf_mean_prob &lt;- evalSDM(sp_test$Emberiza_citrinella, mean_prob))</code></pre>
-<pre><code>##         AUC    TSS  Kappa      Sens      Spec       PCC        D2 thresh
-## 1 0.8735119 0.6875 0.6875 0.8333333 0.8541667 0.8444444 0.3206901   0.54</code></pre>
+<pre><code>##        AUC      TSS     Kappa      Sens      Spec       PCC       D2 thresh
+## 1 0.875496 0.672619 0.6676514 0.8809524 0.7916667 0.8333333 0.322848  0.505</code></pre>
 <pre class="r"><code># performance measures for &quot;median of probabilities&quot;:
 (perf_median_prob &lt;- evalSDM(sp_test$Emberiza_citrinella, median_prob))</code></pre>
 <pre><code>##         AUC       TSS     Kappa      Sens   Spec       PCC        D2 thresh
-## 1 0.8794643 0.7172619 0.7119645 0.9047619 0.8125 0.8555556 0.3452144   0.53</code></pre>
+## 1 0.8814484 0.7172619 0.7119645 0.9047619 0.8125 0.8555556 0.3478301   0.52</code></pre>
 <pre class="r"><code># performance measures for &quot;weighted mean of probabilities&quot;:
 (perf_wmean_prob &lt;- evalSDM(sp_test$Emberiza_citrinella, wmean_prob))</code></pre>
 <pre><code>##         AUC       TSS     Kappa      Sens      Spec       PCC        D2 thresh
-## 1 0.8764881 0.6964286 0.6902655 0.9047619 0.7916667 0.8444444 0.3309532    0.5</code></pre>
+## 1 0.8769841 0.6964286 0.6902655 0.9047619 0.7916667 0.8444444 0.3330294    0.5</code></pre>
 <pre class="r"><code># performance measures for &quot;committee average&quot;:
 (perf_committee_prob &lt;- evalSDM(sp_test$Emberiza_citrinella, committee_av))</code></pre>
-<pre><code>##        AUC       TSS     Kappa      Sens   Spec       PCC         D2 thresh
-## 1 0.875496 0.7172619 0.7119645 0.9047619 0.8125 0.8555556 -0.2181474  0.435</code></pre>
+<pre><code>##         AUC       TSS     Kappa      Sens   Spec       PCC         D2 thresh
+## 1 0.8789683 0.7172619 0.7119645 0.9047619 0.8125 0.8555556 -0.2044004  0.435</code></pre>
 <pre class="r"><code># Compare:
 (ens_perf &lt;- rbind(mean_prob = perf_mean_prob, median_prob = perf_median_prob, 
                     wmean_prob = perf_mean_prob, committee_av = perf_committee_prob))</code></pre>
 <pre><code>##                    AUC       TSS     Kappa      Sens      Spec       PCC
-## mean_prob    0.8735119 0.6875000 0.6875000 0.8333333 0.8541667 0.8444444
-## median_prob  0.8794643 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
-## wmean_prob   0.8735119 0.6875000 0.6875000 0.8333333 0.8541667 0.8444444
-## committee_av 0.8754960 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
+## mean_prob    0.8754960 0.6726190 0.6676514 0.8809524 0.7916667 0.8333333
+## median_prob  0.8814484 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
+## wmean_prob   0.8754960 0.6726190 0.6676514 0.8809524 0.7916667 0.8333333
+## committee_av 0.8789683 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
 ##                      D2 thresh
-## mean_prob     0.3206901  0.540
-## median_prob   0.3452144  0.530
-## wmean_prob    0.3206901  0.540
-## committee_av -0.2181474  0.435</code></pre>
+## mean_prob     0.3228480  0.505
+## median_prob   0.3478301  0.520
+## wmean_prob    0.3228480  0.505
+## committee_av -0.2044004  0.435</code></pre>
 <div id="visualising-response-surfaces" class="section level2"
 number="3.1">
 <h2><span class="header-section-number">3.1</span> Visualising response
@@ -848,15 +844,44 @@ env_preds_bin &lt;- data.frame(bio_curr_df[,1:2],
     ifelse(env_preds[,alg]&gt;=comp_perf[comp_perf$alg==alg,&#39;thresh&#39;],1,0)
   }))
 
-# Make rasters from predictions:
+# Make SpatRasters from predictions:
 r_preds &lt;- terra::rast(env_preds, crs=crs(bg))
 r_preds_bin &lt;- terra::rast(env_preds_bin, crs=crs(bg))
 
 # Map predicted occurrence probabilities:
-spplot(r_preds)</code></pre>
+library(ggplot2)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;ggplot2&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:randomForest&#39;:
+## 
+##     margin</code></pre>
+<pre class="r"><code>library(tidyterra)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;tidyterra&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:raster&#39;:
+## 
+##     select</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter</code></pre>
+<pre class="r"><code>ggplot() +
+  geom_spatraster(data = r_preds) +
+  facet_wrap(~lyr, ncol = 4) +
+ scale_fill_whitebox_c(
+    palette = &quot;muted&quot;
+  ) +
+  labs(fill = &quot;Occ. prob.&quot;)</code></pre>
 <p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <pre class="r"><code># Map predicted presences:
-spplot(r_preds_bin)</code></pre>
+ggplot() +
+  geom_spatraster(data = r_preds_bin) +
+  facet_wrap(~lyr, ncol = 4) +
+ scale_fill_whitebox_c(
+    direction=-1,
+    guide = guide_legend(reverse = TRUE),
+     n.breaks=2
+  ) +
+  labs(fill = &quot;Predicted \npresence&quot;)</code></pre>
 <p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-13-2.png" width="672" /></p>
 <p>Now, we map the ensemble predictions.</p>
 <pre class="r"><code># We make ensembles:    
@@ -867,11 +892,17 @@ env_ensemble &lt;- data.frame(bio_curr_df[,1:2],
   committee_av = rowSums(env_preds_bin[,-c(1:2)])/ncol(env_preds_bin[,-c(1:2)]),
   sd_prob = apply(env_preds[,-c(1:2)], 1, sd))
 
-# Make rasters from ensemble predictions:
+# Make SpatRasters from ensemble predictions:
 r_ens &lt;- terra::rast(env_ensemble, crs=crs(bg))
 
 # Map continuous ensemble predictions:
-spplot(r_ens[[1:4]])</code></pre>
+ggplot() +
+  geom_spatraster(data = r_ens[[1:4]]) +
+  facet_wrap(~lyr, ncol = 4) +
+ scale_fill_whitebox_c(
+    palette = &quot;muted&quot;
+  ) +
+  labs(fill = &quot;Occ. prob.&quot;)</code></pre>
 <p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p>Mapping the standard deviation of model predictions shows us the
 areas of highest deviation between model algorithms.</p>
@@ -886,11 +917,19 @@ env_ensemble_bin &lt;- data.frame(bio_curr_df[,1:2],
     sapply(c(&#39;mean_prob&#39;, &#39;median_prob&#39;, &#39;wmean_prob&#39;), 
            FUN=function(x){ifelse(env_ensemble[,x]&gt;= ens_perf[x,&#39;thresh&#39;],1,0)}))
 
-# Make rasters:
+# Make SpatRasters:
 r_ens_bin &lt;- terra::rast(env_ensemble_bin, crs=crs(bg))
 
 # Map predicted presence from ensembles:
-spplot(r_ens_bin)   </code></pre>
+ggplot() +
+  geom_spatraster(data = r_ens_bin) +
+  facet_wrap(~lyr, ncol = 3) +
+ scale_fill_whitebox_c(
+    direction=-1,
+    guide = guide_legend(reverse = TRUE),
+     n.breaks=2
+  ) +
+  labs(fill = &quot;Predicted \npresence&quot;)</code></pre>
 <p><img src="b7_SDM_ensembles_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
@@ -982,6 +1021,13 @@ Vuuren, D. P. van, and T. R. Carter. 2013. <span>“Climate and
 Socio-Economic Scenarios for Climate Change Research and Assessment:
 Reconciling the New with the Old.”</span> <em>Climatic Change</em> 122
 (November): 415–29.
+</div>
+<div id="ref-Zurell2020" class="csl-entry">
+Zurell, D., N. E. Zimmermann, H. Gross, A. Baltensweiler, T. Sattler,
+and R. O. Wüest. 2020. <span>“Testing Species Assemblage Predictions
+from Stacked and Joint Species Distribution Models.”</span> <em>Journal
+of Biogeography</em> 47 (1): 101–13. <a
+href="https://doi.org/10.1111/jbi.13608">https://doi.org/10.1111/jbi.13608</a>.
 </div>
 </div>
 </div>
