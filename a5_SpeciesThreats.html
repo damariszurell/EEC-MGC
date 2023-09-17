@@ -663,7 +663,7 @@ ggplot() +
   ) +
   labs(
     fill = &quot;log(richness)&quot;,
-    title = &quot;Richness according to red list category&quot;
+    title = &quot;Richness per red list category&quot;
   )</code></pre>
 <p><img src="a5_SpeciesThreats_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <div class="alert alert-info">
@@ -730,39 +730,28 @@ Shearwater</a> example, and at the <a
 href="https://www.iucnredlist.org/resources/threat-classification-scheme">Threat
 Classification Scheme</a>.</p>
 <pre class="r"><code>redlist_threats[sample(nrow(redlist_threats),10),-c(1:2)]</code></pre>
-<pre><code>##                                                        title
-## 34                            Named species (Sus domesticus)
-## 731                                      Persecution/control
-## 205                                               Oil spills
-## 341                                Herbicides and pesticides
-## 500                                    Agro-industry farming
-## 504               Abstraction of surface water (unknown use)
-## 370 Problematic native species/diseases (Accipiter gentilis)
-## 346                                         Renewable energy
-## 580              Abstraction of surface water (domestic use)
-## 545                                             Flight paths
-##                       timing             scope                   severity
-## 34  Past, Unlikely to Return   Minority (&lt;50%)             Rapid Declines
-## 731                  Ongoing   Minority (&lt;50%)                    Unknown
-## 205                  Ongoing   Minority (&lt;50%)                    Unknown
-## 341                  Ongoing   Minority (&lt;50%) Slow, Significant Declines
-## 500                  Ongoing      Whole (&gt;90%) Slow, Significant Declines
-## 504                  Ongoing Majority (50-90%) Slow, Significant Declines
-## 370                  Ongoing   Minority (&lt;50%)        Negligible declines
-## 346                  Ongoing   Minority (&lt;50%)        Negligible declines
-## 580                  Ongoing   Minority (&lt;50%)                    Unknown
-## 545                   Future   Minority (&lt;50%)             Rapid Declines
-##                score           invasive
-## 34       Past Impact     Sus domesticus
-## 731          Unknown               &lt;NA&gt;
-## 205          Unknown               &lt;NA&gt;
-## 341    Low Impact: 5               &lt;NA&gt;
-## 500 Medium Impact: 7               &lt;NA&gt;
-## 504 Medium Impact: 6               &lt;NA&gt;
-## 370    Low Impact: 4 Accipiter gentilis
-## 346    Low Impact: 4               &lt;NA&gt;
-## 580          Unknown               &lt;NA&gt;
-## 545    Low Impact: 4               &lt;NA&gt;</code></pre>
+<pre><code>##                                          title                   timing
+## 387                    Work &amp; other activities                  Ongoing
+## 813     Hunting &amp; trapping terrestrial animals Past, Unlikely to Return
+## 727 Agro-industry grazing, ranching or farming                  Ongoing
+## 23                 Named species (Felis catus)                  Ongoing
+## 405                  Herbicides and pesticides                  Ongoing
+## 622     Hunting &amp; trapping terrestrial animals                  Ongoing
+## 226                                   Droughts                   Future
+## 372          Agricultural &amp; forestry effluents                  Ongoing
+## 702     Hunting &amp; trapping terrestrial animals                  Ongoing
+## 221                  Logging &amp; wood harvesting                  Ongoing
+##                 scope                   severity            score    invasive
+## 387   Minority (&lt;50%)        Negligible declines    Low Impact: 4        &lt;NA&gt;
+## 813   Minority (&lt;50%)        Negligible declines      Past Impact        &lt;NA&gt;
+## 727 Majority (50-90%) Slow, Significant Declines Medium Impact: 6        &lt;NA&gt;
+## 23    Minority (&lt;50%)        Negligible declines    Low Impact: 4 Felis catus
+## 405 Majority (50-90%) Slow, Significant Declines Medium Impact: 6        &lt;NA&gt;
+## 622   Minority (&lt;50%) Slow, Significant Declines    Low Impact: 5        &lt;NA&gt;
+## 226 Majority (50-90%)                    Unknown          Unknown        &lt;NA&gt;
+## 372   Minority (&lt;50%)        Negligible declines    Low Impact: 4        &lt;NA&gt;
+## 702      Whole (&gt;90%)             Rapid Declines   High Impact: 8        &lt;NA&gt;
+## 221 Majority (50-90%)                 No decline    Low Impact: 5        &lt;NA&gt;</code></pre>
 <p>We can extract many useful information from this table, for example,
 when specific threats occurred.</p>
 <pre class="r"><code>table(redlist_threats$timing)</code></pre>
