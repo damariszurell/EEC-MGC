@@ -7,5 +7,6 @@ data/IUCN_Sorex_alpinus.shx
 data/IUCN_Sorex_alpinus.shp
 data/IUCN_Sorex_alpinus.prj
 data/IUCN_Sorex_alpinus.dbf
-data/*.tif
 data/wc*
+data/WorldCover_trees_30s.tif
+
