@@ -1,0 +1,5 @@
+load("/Users/zurell/data/Lehre/UP_Lehre/EEC/Macroecology/mgc-course/data/gbif_shrew_cleaned.RData")
+ls()
+gbif_shrew_cleaned
+head(gbif_shrew_cleaned)
+head(gbif_shrew2)

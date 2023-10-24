@@ -13,7 +13,7 @@
 
 <title>Pseudo-absence and background data</title>
 
-<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -29,14 +29,18 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -433,6 +437,10 @@ div.tocify {
 </div>
 
 
+<script>
+  addClassKlippyTo("pre.r, pre.markdown");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
 <div class="alert alert-info">
 <p><strong>RStudio project</strong></p>
 <p>Open the RStudio project that we created in the first session. I
@@ -701,14 +709,14 @@ predictors.</p>
 <pre class="r"><code># Load the species presence data (here, the data set from session 1):
 load(&#39;data/gbif_shrew_cleaned.RData&#39;)
 
-head(gbif_shrew_cleaned[,1:4])</code></pre>
+head(gbif_shrew2[,1:4])</code></pre>
 <pre><code>##          key             scientificName decimalLatitude decimalLongitude
-## 1 3824140382 Sorex alpinus Schinz, 1837        48.65200         8.358008
-## 2 3784645455 Sorex alpinus Schinz, 1837        46.75777        11.317498
-## 3 3873231122 Sorex alpinus Schinz, 1837        46.54926        10.625149
-## 4 3881729801 Sorex alpinus Schinz, 1837        47.54320        10.693369
-## 5 3892282027 Sorex alpinus Schinz, 1837        46.56076         6.107981
-## 6 3902041214 Sorex alpinus Schinz, 1837        47.14652        12.712957</code></pre>
+## 1 4416901401 Sorex alpinus Schinz, 1837        47.03705         9.045486
+## 2 4156615500 Sorex alpinus Schinz, 1837        48.02569         8.125231
+## 3 4156625877 Sorex alpinus Schinz, 1837        48.02580         8.124819
+## 4 4416848466 Sorex alpinus Schinz, 1837        46.96636         9.000610
+## 5 4129978783 Sorex alpinus Schinz, 1837        47.05048        11.417289
+## 6 4133676752 Sorex alpinus Schinz, 1837        47.44182        13.660217</code></pre>
 <pre class="r"><code># Plot the species presences
 library(maptools)
 data(wrld_simpl)
@@ -736,16 +744,50 @@ do this by joining the species data with the environmental data
 Then, we can remove the duplicate cells.</p>
 <pre class="r"><code># We have already extracted environmental data and raster cellnumbers for the species data
 # Remember to remove any rows with duplicate cellnumbers if necessary:
-duplicated(gbif_shrew_cleaned$cell)</code></pre>
-<pre><code>## logical(0)</code></pre>
+duplicated(gbif_shrew2$cell)</code></pre>
+<pre><code>##   [1] FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [25] FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE
+##  [37] FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE
+##  [49] FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE
+##  [61] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE
+##  [73] FALSE FALSE  TRUE FALSE FALSE FALSE  TRUE  TRUE FALSE  TRUE FALSE  TRUE
+##  [85] FALSE FALSE FALSE  TRUE FALSE  TRUE  TRUE FALSE FALSE  TRUE FALSE FALSE
+##  [97] FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE
+## [109]  TRUE FALSE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE
+## [121]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE
+## [133] FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE
+## [145] FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE  TRUE
+## [157] FALSE  TRUE FALSE FALSE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE FALSE FALSE
+## [169]  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+## [181] FALSE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE FALSE FALSE
+## [193] FALSE FALSE  TRUE FALSE FALSE FALSE  TRUE FALSE FALSE  TRUE  TRUE FALSE
+## [205]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE FALSE  TRUE FALSE FALSE FALSE
+## [217] FALSE FALSE  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE FALSE  TRUE FALSE
+## [229] FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE
+## [241] FALSE  TRUE  TRUE  TRUE  TRUE FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE
+## [253] FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE FALSE FALSE
+## [265]  TRUE  TRUE FALSE  TRUE  TRUE  TRUE FALSE FALSE  TRUE FALSE FALSE  TRUE
+## [277]  TRUE FALSE FALSE  TRUE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE  TRUE
+## [289] FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [301] FALSE  TRUE FALSE FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE  TRUE  TRUE
+## [313] FALSE  TRUE  TRUE FALSE FALSE FALSE  TRUE  TRUE  TRUE FALSE FALSE FALSE
+## [325]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
+## [337] FALSE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE
+## [349]  TRUE  TRUE FALSE  TRUE FALSE FALSE FALSE  TRUE FALSE FALSE  TRUE  TRUE
+## [361]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE FALSE  TRUE
+## [373]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE
+## [385]  TRUE  TRUE  TRUE  TRUE FALSE FALSE  TRUE  TRUE  TRUE FALSE  TRUE FALSE
+## [397] FALSE  TRUE FALSE  TRUE  TRUE FALSE  TRUE FALSE FALSE  TRUE  TRUE  TRUE
+## [409]  TRUE FALSE FALSE</code></pre>
 <pre class="r"><code># From now on, we just need the coordinates:
-gbif_shrew2 &lt;- gbif_shrew_cleaned[,c(&#39;decimalLongitude&#39;,&#39;decimalLatitude&#39;)]</code></pre>
+gbif_shrew_coords &lt;- gbif_shrew2[,c(&#39;decimalLongitude&#39;,&#39;decimalLatitude&#39;)]</code></pre>
 <p>We place a buffer of 200 km around the shrew records and sample
 background points randomly from within the buffer but excluding presence
 locations (remember that also other pseudo-absence/background data
 strategies are possible).</p>
 <pre class="r"><code># Make SpatVector:
-presences &lt;- terra::vect( as.matrix(gbif_shrew2), crs=crs(clim))
+presences &lt;- terra::vect( as.matrix(gbif_shrew_coords), crs=crs(clim))
 
 # Then, place a buffer of 200 km radius around our presence points
 v_buf &lt;- terra::buffer(presences, width=200000)
@@ -759,16 +801,16 @@ plot(bg, col=&#39;grey90&#39;, legend=F)
 plot(region_buf, add=T, col=&#39;grey60&#39;, legend=F)
 
 # Randomly select background data within the buffer, excluding presence locations. We sample 10 times as many background data as we have presences.
-bg_rand_buf &lt;- dismo::randomPoints(raster(region_buf), length(presences)*10, p=gbif_shrew2)</code></pre>
-<pre><code>## Warning in dismo::randomPoints(raster(region_buf), length(presences) * 10, :
-## generated random points = 0.952272727272727 times requested number</code></pre>
+bg_rand_buf &lt;- dismo::randomPoints(raster::raster(region_buf), length(presences)*10, p=gbif_shrew_coords)</code></pre>
+<pre><code>## Warning in dismo::randomPoints(raster::raster(region_buf), length(presences) *
+## : generated random points = 0.915815085158151 times requested number</code></pre>
 <pre class="r"><code>points(bg_rand_buf, pch=19, cex=0.2)
 points(presences, pch=19, cex=0.5, col=&#39;red&#39;)</code></pre>
 <p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>Last, we need to join the presences and background data, and extract
 the environmental data.</p>
 <pre class="r"><code># First, we prepare the presences data to contain a column indicating 1 for presence.
-sp_env &lt;- data.frame(gbif_shrew2, occ=1)
+sp_env &lt;- data.frame(gbif_shrew_coords, occ=1)
 
 # Second, we make sure the background data have the same columns, and indicate 0 for absence.
 bg_rand_buf &lt;- data.frame(bg_rand_buf)
@@ -797,7 +839,7 @@ summary(sp_env)</code></pre>
 ##  Min.   : 2.750   Min.   :40.92   Min.   :0.00000  
 ##  1st Qu.: 7.583   1st Qu.:45.25   1st Qu.:0.00000  
 ##  Median :10.917   Median :46.92   Median :0.00000  
-##  Mean   :10.762   Mean   :47.02   Mean   :0.09503  
+##  Mean   :10.749   Mean   :47.01   Mean   :0.09844  
 ##  3rd Qu.:13.750   3rd Qu.:48.75   3rd Qu.:0.00000  
 ##  Max.   :18.583   Max.   :52.58   Max.   :1.00000</code></pre>
 <pre class="r"><code># Last, we join this combined data set with the climate data.
@@ -805,46 +847,46 @@ sp_env &lt;- cbind(sp_env, terra::extract(x = clim, y = sp_env[,c(&#39;decimalLo
 summary(sp_env)</code></pre>
 <pre><code>##  decimalLongitude decimalLatitude      occ                ID      
 ##  Min.   : 2.750   Min.   :40.92   Min.   :0.00000   Min.   :   1  
-##  1st Qu.: 7.583   1st Qu.:45.25   1st Qu.:0.00000   1st Qu.:1042  
-##  Median :10.917   Median :46.92   Median :0.00000   Median :2084  
-##  Mean   :10.762   Mean   :47.02   Mean   :0.09503   Mean   :2084  
-##  3rd Qu.:13.750   3rd Qu.:48.75   3rd Qu.:0.00000   3rd Qu.:3126  
-##  Max.   :18.583   Max.   :52.58   Max.   :1.00000   Max.   :4167  
+##  1st Qu.: 7.583   1st Qu.:45.25   1st Qu.:0.00000   1st Qu.:1044  
+##  Median :10.917   Median :46.92   Median :0.00000   Median :2088  
+##  Mean   :10.749   Mean   :47.01   Mean   :0.09844   Mean   :2088  
+##  3rd Qu.:13.750   3rd Qu.:48.75   3rd Qu.:0.00000   3rd Qu.:3132  
+##  Max.   :18.583   Max.   :52.58   Max.   :1.00000   Max.   :4175  
 ##  wc2.1_10m_bio_1  wc2.1_10m_bio_2  wc2.1_10m_bio_3 wc2.1_10m_bio_4
 ##  Min.   :-3.347   Min.   : 5.193   Min.   :24.74   Min.   :464.7  
-##  1st Qu.: 7.577   1st Qu.: 8.075   1st Qu.:31.28   1st Qu.:624.6  
-##  Median : 8.938   Median : 8.561   Median :32.60   Median :658.0  
-##  Mean   : 8.916   Mean   : 8.593   Mean   :32.62   Mean   :666.7  
-##  3rd Qu.:10.579   3rd Qu.: 9.182   3rd Qu.:33.87   3rd Qu.:706.1  
+##  1st Qu.: 7.565   1st Qu.: 8.075   1st Qu.:31.29   1st Qu.:624.5  
+##  Median : 8.936   Median : 8.561   Median :32.60   Median :657.8  
+##  Mean   : 8.912   Mean   : 8.593   Mean   :32.63   Mean   :666.5  
+##  3rd Qu.:10.577   3rd Qu.: 9.182   3rd Qu.:33.88   3rd Qu.:706.0  
 ##  Max.   :16.905   Max.   :11.446   Max.   :41.01   Max.   :819.1  
 ##  wc2.1_10m_bio_5  wc2.1_10m_bio_6   wc2.1_10m_bio_7 wc2.1_10m_bio_8 
 ##  Min.   : 7.883   Min.   :-13.749   Min.   :18.97   Min.   :-6.303  
-##  1st Qu.:21.878   1st Qu.: -4.501   1st Qu.:24.88   1st Qu.: 9.516  
-##  Median :23.524   Median : -2.989   Median :26.09   Median :14.251  
-##  Mean   :23.407   Mean   : -2.916   Mean   :26.32   Mean   :12.467  
-##  3rd Qu.:25.832   3rd Qu.: -1.126   3rd Qu.:27.67   3rd Qu.:16.568  
+##  1st Qu.:21.865   1st Qu.: -4.502   1st Qu.:24.88   1st Qu.: 9.468  
+##  Median :23.519   Median : -2.993   Median :26.09   Median :14.234  
+##  Mean   :23.403   Mean   : -2.918   Mean   :26.32   Mean   :12.448  
+##  3rd Qu.:25.830   3rd Qu.: -1.127   3rd Qu.:27.67   3rd Qu.:16.565  
 ##  Max.   :31.365   Max.   :  8.387   Max.   :32.22   Max.   :21.641  
 ##  wc2.1_10m_bio_9   wc2.1_10m_bio_10 wc2.1_10m_bio_11  wc2.1_10m_bio_12
 ##  Min.   :-9.6958   Min.   : 3.722   Min.   :-9.7354   Min.   : 217.0  
-##  1st Qu.: 0.9651   1st Qu.:15.857   1st Qu.:-0.7275   1st Qu.: 715.0  
-##  Median : 3.4396   Median :17.214   Median : 0.6776   Median : 852.0  
-##  Mean   : 5.5439   Mean   :17.213   Mean   : 0.9196   Mean   : 915.8  
-##  3rd Qu.: 6.3193   3rd Qu.:19.303   3rd Qu.: 2.6122   3rd Qu.:1082.0  
+##  1st Qu.: 0.9681   1st Qu.:15.845   1st Qu.:-0.7333   1st Qu.: 715.0  
+##  Median : 3.4552   Median :17.213   Median : 0.6764   Median : 853.0  
+##  Mean   : 5.5607   Mean   :17.209   Mean   : 0.9180   Mean   : 916.5  
+##  3rd Qu.: 6.3344   3rd Qu.:19.298   3rd Qu.: 2.6065   3rd Qu.:1083.0  
 ##  Max.   :24.3333   Max.   :24.333   Max.   :11.0833   Max.   :2334.0  
 ##  wc2.1_10m_bio_13 wc2.1_10m_bio_14 wc2.1_10m_bio_15 wc2.1_10m_bio_16
-##  Min.   : 28.0    Min.   :  4.00   Min.   : 4.41    Min.   : 77.0   
-##  1st Qu.: 83.0    1st Qu.: 36.00   1st Qu.:16.23    1st Qu.:226.0   
-##  Median :100.0    Median : 49.00   Median :23.09    Median :269.0   
-##  Mean   :107.5    Mean   : 50.18   Mean   :23.91    Mean   :295.8   
-##  3rd Qu.:126.0    3rd Qu.: 61.00   3rd Qu.:30.10    3rd Qu.:345.0   
-##  Max.   :278.0    Max.   :119.00   Max.   :61.70    Max.   :743.0   
+##  Min.   : 28.0    Min.   :  4.00   Min.   : 4.41    Min.   : 77     
+##  1st Qu.: 83.0    1st Qu.: 36.00   1st Qu.:16.22    1st Qu.:226     
+##  Median :100.0    Median : 49.00   Median :23.07    Median :269     
+##  Mean   :107.5    Mean   : 50.24   Mean   :23.89    Mean   :296     
+##  3rd Qu.:126.0    3rd Qu.: 61.00   3rd Qu.:30.06    3rd Qu.:345     
+##  Max.   :278.0    Max.   :119.00   Max.   :61.70    Max.   :743     
 ##  wc2.1_10m_bio_17 wc2.1_10m_bio_18 wc2.1_10m_bio_19      cell      
-##  Min.   : 25.0    Min.   : 31.0    Min.   : 36.0    Min.   :41864  
-##  1st Qu.:126.0    1st Qu.:195.0    1st Qu.:146.0    1st Qu.:49690  
-##  Median :164.0    Median :229.0    Median :189.0    Median :53464  
-##  Mean   :170.5    Mean   :252.7    Mean   :198.7    Mean   :53285  
-##  3rd Qu.:206.0    3rd Qu.:290.0    3rd Qu.:241.0    3rd Qu.:56898  
-##  Max.   :438.0    Max.   :573.0    Max.   :526.0    Max.   :65823</code></pre>
+##  Min.   : 25.0    Min.   : 31.0    Min.   : 36      Min.   :41864  
+##  1st Qu.:126.0    1st Qu.:195.0    1st Qu.:146      1st Qu.:49692  
+##  Median :164.0    Median :229.0    Median :189      Median :53471  
+##  Mean   :170.7    Mean   :252.7    Mean   :199      Mean   :53292  
+##  3rd Qu.:206.0    3rd Qu.:290.0    3rd Qu.:242      3rd Qu.:56898  
+##  Max.   :438.0    Max.   :573.0    Max.   :526      Max.   :65823</code></pre>
 <div id="spatial-thinning" class="section level2" number="4.1">
 <h2><span class="header-section-number">4.1</span> Spatial thinning</h2>
 <p>When we prepare our distribution data for species distribution
@@ -869,11 +911,11 @@ sp_env$sp &lt;- &#39;Sorex_alpinus&#39;
 xy &lt;- thin(sp_env, lat.col=&#39;decimalLatitude&#39;,long.col=&#39;decimalLongitude&#39;,spec.col=&#39;sp&#39;, thin.par=30,reps=1, write.files=F,locs.thinned.list.return=T)</code></pre>
 <pre><code>## ********************************************** 
 ##  Beginning Spatial Thinning.
-##  Script Started at: Mon May 15 18:25:48 2023
+##  Script Started at: Tue Oct 24 15:46:39 2023
 ## lat.long.thin.count
-## 747 
+## 743 
 ##   1 
-## [1] &quot;Maximum number of records after thinning: 747&quot;
+## [1] &quot;Maximum number of records after thinning: 743&quot;
 ## [1] &quot;Number of data.frames with max records: 1&quot;
 ## [1] &quot;No files written for this run.&quot;</code></pre>
 <pre class="r"><code># Keep the coordinates with the most presence records
@@ -907,7 +949,8 @@ final data frame to file or by saving the R object(s).</p>
 take quite long and needs a lot of memory space. A useful alternative
 function for spatial thinning is <code>gridSample()</code> in the
 <code>dismo</code> package.</p>
-<pre class="r"><code>xy &lt;- dismo::gridSample(sp_env[,c(&quot;decimalLongitude&quot;,&quot;decimalLatitude&quot;)], bg,chess=&#39;white&#39;)
+<pre class="r"><code># Thinning to a checkerboard pattern
+xy &lt;- dismo::gridSample(sp_env[,c(&quot;decimalLongitude&quot;,&quot;decimalLatitude&quot;)], bg,chess=&#39;white&#39;)
 sp_thinned2 &lt;- merge(xy,sp_env,by=c(&quot;decimalLongitude&quot;,&quot;decimalLatitude&quot;))
 
 # Plot the map and data

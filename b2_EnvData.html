@@ -13,7 +13,7 @@
 
 <title>Environmental data</title>
 
-<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -29,14 +29,18 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -433,6 +437,10 @@ div.tocify {
 </div>
 
 
+<script>
+  addClassKlippyTo("pre.r, pre.markdown");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
 <hr />
 <div class="alert alert-info">
 <p><strong>RStudio project</strong></p>
@@ -480,7 +488,7 @@ think about your folder structure, where you want to store the climate
 data!</p>
 <pre class="r"><code>library(geodata)</code></pre>
 <pre><code>## Loading required package: terra</code></pre>
-<pre><code>## terra 1.7.29</code></pre>
+<pre><code>## terra 1.7.46</code></pre>
 <pre class="r"><code># Download global bioclimatic data from worldclim (you may have to set argument &#39;download=T&#39; for first download, if &#39;download=F&#39; it will attempt to read from file):
 clim &lt;- geodata::worldclim_global(var = &#39;bio&#39;, res = 10, download = F, path = &#39;data&#39;)
 
@@ -650,27 +658,27 @@ gbif_shrew2 &lt;- gbif_shrew_cleaned[,
 # We also extract the cellnumbers as this allows checking for duplicates later.
 head(terra::extract(x = env_cur, 
     y = data.frame(gbif_shrew2[,c(&#39;decimalLongitude&#39;,&#39;decimalLatitude&#39;)]), cells=T ))</code></pre>
-<pre><code>##   ID     bio01    bio02    bio03    bio04    bio05     bio06    bio07
-## 1  1  7.270885 7.534187 31.68021 620.8614 20.47400  -3.30800 23.78200
-## 2  2  4.816854 8.241750 32.97227 642.4404 18.51350  -6.48250 24.99600
-## 3  3  1.933708 7.849333 32.20338 618.3358 15.02825  -9.34600 24.37425
-## 4  4  6.676677 8.420730 33.06688 647.4366 20.25700  -5.20875 25.46575
-## 5  5  6.212885 7.650979 31.76723 618.3282 19.67525  -4.40925 24.08450
-## 6  6 -1.754688 6.003083 28.10662 575.0613  9.43725 -11.92100 21.35825
-##         bio08     bio09     bio10       bio11 bio12 bio13 bio14    bio15 bio16
-## 1  0.93241668 11.987416 15.037042 -0.06904169  1647   163   106 12.67606   471
-## 2 12.81137466 -2.760458 12.811375 -2.76045823   718    97    29 40.07499   280
-## 3  9.63362503 -5.287750  9.633625 -5.28775024   602    72    32 27.13003   210
-## 4 14.64579201 -1.110458 14.645792 -1.11045825  1320   180    67 37.32344   518
-## 5 -0.03720826 13.678833 13.891167 -1.10304165  1419   137   102 10.11438   397
-## 6  5.29154158 -8.357875  5.291542 -8.35787487  1525   174    89 19.91471   490
-##   bio17 bio18 bio19     trees   cell
-## 1   357   393   446 0.8767838 536811
-## 2    96   280    96 0.5612405 560588
-## 3   108   210   108 0.4474288 562744
-## 4   214   518   214 0.4956300 549785
-## 5   326   334   382 0.7711515 562717
-## 6   296   490   296 0.1075802 556277</code></pre>
+<pre><code>##   ID    bio01    bio02    bio03    bio04    bio05    bio06    bio07      bio08
+## 1  1 6.218458 7.440792 31.85918 605.8054 18.89700 -4.45825 23.35525 13.7589169
+## 2  2 7.154459 8.365458 33.95176 614.9968 20.70625 -3.93300 24.63925  0.8864167
+## 3  3 7.154459 8.365458 33.95176 614.9968 20.70625 -3.93300 24.63925  0.8864167
+## 4  4 2.502896 6.938416 31.54722 566.5660 14.37500 -7.61875 21.99375  9.5671673
+## 5  5 4.237437 7.772583 31.97574 627.9045 17.49875 -6.80900 24.30775 11.9804583
+## 6  6 3.388250 8.198584 33.54644 619.1552 16.30225 -8.13725 24.43950 10.9958334
+##        bio09     bio10     bio11 bio12 bio13 bio14    bio15 bio16 bio17 bio18
+## 1 -0.1909583 13.758917 -0.922375  1636   193   100 23.04582   551   310   551
+## 2 11.7621250 14.922333 -0.062500  1377   138    91 12.41136   385   304   353
+## 3 11.7621250 14.922333 -0.062500  1377   138    91 12.41136   385   304   353
+## 4 -3.6100416  9.567167 -3.906833  1813   200   110 18.72311   573   354   573
+## 5 -3.1796250 11.980458 -3.179625  1009   137    43 38.40795   394   146   394
+## 6 -3.3333752 10.995833 -3.979792  1490   195    76 30.29223   543   262   543
+##   bio19     trees   cell
+## 1   318 0.4710940 556255
+## 2   369 0.7686102 543289
+## 3   369 0.7686102 543289
+## 4   361 0.3076328 558415
+## 5   146 0.5738233 556269
+## 6   265 0.5509280 551962</code></pre>
 <pre class="r"><code># Finally, we put species and environmental data into the same data frame:
 gbif_shrew2 &lt;- cbind(gbif_shrew2, terra::extract(x = env_cur, y = data.frame(gbif_shrew2[,c(&#39;decimalLongitude&#39;,&#39;decimalLatitude&#39;)]), cells=T ))</code></pre>
 <p>We now have to inspect the data again to see whether we have any
@@ -683,7 +691,7 @@ in a single raster cell. As we have extracted the cell numbers from the
 simple.</p>
 <pre class="r"><code># Check for duplicates - how many duplicates?
 sum(duplicated(gbif_shrew2$cell))</code></pre>
-<pre><code>## [1] 169</code></pre>
+<pre><code>## [1] 177</code></pre>
 <pre class="r"><code># Only retain non-duplicated cells (will not work in this example as we don&#39;t have duplicates):
 gbif_shrew_env &lt;- gbif_shrew2[!duplicated(gbif_shrew2$cell),]
 

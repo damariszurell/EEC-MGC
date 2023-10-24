@@ -13,7 +13,7 @@
 
 <title>SDM ensembles</title>
 
-<script src="site_libs/header-attrs-2.23/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -35,8 +35,12 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -433,6 +437,10 @@ div.tocify {
 </div>
 
 
+<script>
+  addClassKlippyTo("pre.r, pre.markdown");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
 <div class="alert alert-info">
 <p><strong>RStudio project</strong></p>
 <p>Open the RStudio project that we created in the first session. I
@@ -593,8 +601,8 @@ in last session, and stored the results of the model validation:</p>
 ## 3    glm 0.8903770 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
 ## 4    gam 0.8859127 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
 ## 5   cart 0.8196925 0.5922619 0.5958084 0.7380952 0.8541667 0.8000000
-## 6     rf 0.8328373 0.6428571 0.6428571 0.8095238 0.8333333 0.8222222
-## 7    brt 0.8836806 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
+## 6     rf 0.8338294 0.6458333 0.6439169 0.8333333 0.8125000 0.8222222
+## 7    brt 0.8831845 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
 ## 8 maxent 0.8774802 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
 ##            D2 thresh
 ## 1 -0.37385682  0.175
@@ -602,8 +610,8 @@ in last session, and stored the results of the model validation:</p>
 ## 3  0.37029784  0.525
 ## 4  0.36548148  0.530
 ## 5  0.16934395  0.800
-## 6  0.18119327  0.630
-## 7  0.34316242  0.580
+## 6  0.16438501  0.615
+## 7  0.34949617  0.580
 ## 8  0.25816707  0.410</code></pre>
 </div>
 <div id="predictions" class="section level2" number="2.4">
@@ -629,13 +637,13 @@ summary(pred_testdata)</code></pre>
 ##  Mean   :0.21083   Mean   :0.5440   Mean   :0.4999623   Mean   :0.5007960  
 ##  3rd Qu.:0.33193   3rd Qu.:0.7012   3rd Qu.:0.8040124   3rd Qu.:0.8025983  
 ##  Max.   :0.94118   Max.   :0.7329   Max.   :0.9070566   Max.   :0.9005589  
-##       cart               rf              brt             maxent       
-##  Min.   :0.02273   Min.   :0.0000   Min.   :0.1068   Min.   :0.01877  
-##  1st Qu.:0.20000   1st Qu.:0.1250   1st Qu.:0.1672   1st Qu.:0.22899  
-##  Median :0.75000   Median :0.5990   Median :0.5900   Median :0.43513  
-##  Mean   :0.52357   Mean   :0.5088   Mean   :0.5096   Mean   :0.37117  
-##  3rd Qu.:0.85047   3rd Qu.:0.8377   3rd Qu.:0.8115   3rd Qu.:0.54487  
-##  Max.   :0.85047   Max.   :0.9747   Max.   :0.8280   Max.   :0.58623</code></pre>
+##       cart               rf                 brt             maxent       
+##  Min.   :0.02273   Min.   :0.0003333   Min.   :0.1193   Min.   :0.01877  
+##  1st Qu.:0.20000   1st Qu.:0.1284375   1st Qu.:0.1769   1st Qu.:0.22899  
+##  Median :0.75000   Median :0.5960833   Median :0.5961   Median :0.43513  
+##  Mean   :0.52357   Mean   :0.5107167   Mean   :0.5108   Mean   :0.37117  
+##  3rd Qu.:0.85047   3rd Qu.:0.8444583   3rd Qu.:0.8070   3rd Qu.:0.54487  
+##  Max.   :0.85047   Max.   :0.9760833   Max.   :0.8191   Max.   :0.58623</code></pre>
 <p>As we have stored the maxSens+Spec threshold for each model, we can
 also threshold the predictions to obtain predicted presences and
 absences.</p>
@@ -660,7 +668,7 @@ summary(binpred_testdata)</code></pre>
 ##  Min.   :0.0000   Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
 ##  1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000  
 ##  Median :0.0000   Median :0.0000   Median :1.0000   Median :1.0000  
-##  Mean   :0.4222   Mean   :0.4667   Mean   :0.5222   Mean   :0.5222  
+##  Mean   :0.4222   Mean   :0.4889   Mean   :0.5222   Mean   :0.5222  
 ##  3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000  
 ##  Max.   :1.0000   Max.   :1.0000   Max.   :1.0000   Max.   :1.0000</code></pre>
 </div>
@@ -709,33 +717,33 @@ al. 2009)</span>.</p>
 
 # performance measures for &quot;mean of probabilities&quot;
 (perf_mean_prob &lt;- evalSDM(sp_test$Emberiza_citrinella, mean_prob))</code></pre>
-<pre><code>##        AUC      TSS     Kappa      Sens      Spec       PCC       D2 thresh
-## 1 0.875496 0.672619 0.6676514 0.8809524 0.7916667 0.8333333 0.322848  0.505</code></pre>
+<pre><code>##         AUC       TSS     Kappa      Sens      Spec       PCC        D2 thresh
+## 1 0.8759921 0.6904762 0.6884273 0.8571429 0.8333333 0.8444444 0.3223481   0.53</code></pre>
 <pre class="r"><code># performance measures for &quot;median of probabilities&quot;:
 (perf_median_prob &lt;- evalSDM(sp_test$Emberiza_citrinella, median_prob))</code></pre>
-<pre><code>##         AUC       TSS     Kappa      Sens   Spec       PCC        D2 thresh
-## 1 0.8814484 0.7172619 0.7119645 0.9047619 0.8125 0.8555556 0.3478301   0.52</code></pre>
+<pre><code>##         AUC       TSS     Kappa      Sens      Spec       PCC        D2 thresh
+## 1 0.8824405 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667 0.3492227   0.55</code></pre>
 <pre class="r"><code># performance measures for &quot;weighted mean of probabilities&quot;:
 (perf_wmean_prob &lt;- evalSDM(sp_test$Emberiza_citrinella, wmean_prob))</code></pre>
 <pre><code>##         AUC       TSS     Kappa      Sens      Spec       PCC        D2 thresh
-## 1 0.8769841 0.6964286 0.6902655 0.9047619 0.7916667 0.8444444 0.3330294    0.5</code></pre>
+## 1 0.8784722 0.6964286 0.6902655 0.9047619 0.7916667 0.8444444 0.3325669    0.5</code></pre>
 <pre class="r"><code># performance measures for &quot;committee average&quot;:
 (perf_committee_prob &lt;- evalSDM(sp_test$Emberiza_citrinella, committee_av))</code></pre>
-<pre><code>##         AUC       TSS     Kappa      Sens   Spec       PCC         D2 thresh
-## 1 0.8789683 0.7172619 0.7119645 0.9047619 0.8125 0.8555556 -0.2044004  0.435</code></pre>
+<pre><code>##        AUC       TSS     Kappa      Sens   Spec       PCC        D2 thresh
+## 1 0.875744 0.7172619 0.7119645 0.9047619 0.8125 0.8555556 -0.213853  0.435</code></pre>
 <pre class="r"><code># Compare:
 (ens_perf &lt;- rbind(mean_prob = perf_mean_prob, median_prob = perf_median_prob, 
                     wmean_prob = perf_mean_prob, committee_av = perf_committee_prob))</code></pre>
 <pre><code>##                    AUC       TSS     Kappa      Sens      Spec       PCC
-## mean_prob    0.8754960 0.6726190 0.6676514 0.8809524 0.7916667 0.8333333
-## median_prob  0.8814484 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
-## wmean_prob   0.8754960 0.6726190 0.6676514 0.8809524 0.7916667 0.8333333
-## committee_av 0.8789683 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
+## mean_prob    0.8759921 0.6904762 0.6884273 0.8571429 0.8333333 0.8444444
+## median_prob  0.8824405 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667
+## wmean_prob   0.8759921 0.6904762 0.6884273 0.8571429 0.8333333 0.8444444
+## committee_av 0.8757440 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
 ##                      D2 thresh
-## mean_prob     0.3228480  0.505
-## median_prob   0.3478301  0.520
-## wmean_prob    0.3228480  0.505
-## committee_av -0.2044004  0.435</code></pre>
+## mean_prob     0.3223481  0.530
+## median_prob   0.3492227  0.550
+## wmean_prob    0.3223481  0.530
+## committee_av -0.2138530  0.435</code></pre>
 <div id="visualising-response-surfaces" class="section level2"
 number="3.1">
 <h2><span class="header-section-number">3.1</span> Visualising response

@@ -13,7 +13,7 @@
 
 <title>SDM algorithms</title>
 
-<script src="site_libs/header-attrs-2.19/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -29,14 +29,18 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -433,6 +437,10 @@ div.tocify {
 </div>
 
 
+<script>
+  addClassKlippyTo("pre.r, pre.markdown");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
 <div class="alert alert-info">
 <p><strong>RStudio project</strong></p>
 <p>Open the RStudio project that we created in the first session. I
@@ -884,19 +892,19 @@ m_rf &lt;- randomForest( x=sp_train[,my_preds], y=sp_train$Emberiza_citrinella,
 # Variable importance:
 importance(m_rf,type=1)</code></pre>
 <pre><code>##        %IncMSE
-## bio12 68.94642
-## bio9  14.02256</code></pre>
+## bio12 68.67813
+## bio9  15.37542</code></pre>
 <pre class="r"><code>varImpPlot(m_rf)</code></pre>
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <pre class="r"><code># Look at single trees:
 head(getTree(m_rf,1,T))</code></pre>
 <pre><code>##   left daughter right daughter split var split point status prediction
-## 1             2              3     bio12 1072.039734     -3 0.55450237
-## 2             4              5     bio12  875.953491     -3 0.80000000
-## 3             6              7      bio9    9.857206     -3 0.16049383
-## 4             8              9     bio12  603.358917     -3 0.85576923
-## 5            10             11      bio9   11.157989     -3 0.57692308
-## 6            12             13     bio12 1259.303528     -3 0.02083333</code></pre>
+## 1             2              3      bio9    7.903094     -3  0.6445498
+## 2             4              5     bio12  660.075134     -3  0.9066667
+## 3             6              7      bio9   10.675570     -3  0.5000000
+## 4             8              9     bio12  565.254272     -3  0.9705882
+## 5            10             11      bio9    5.860100     -3  0.8536585
+## 6            12             13      bio9    8.265488     -3  0.2352941</code></pre>
 <pre class="r"><code># Now, we plot the response surface:
 xyz$z &lt;- predict(m_rf, xyz, type=&#39;response&#39;)
 wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
@@ -910,8 +918,8 @@ partial_response(m_rf, predictors = sp_train[,my_preds], main=&#39;Random Forest
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-15-3.png" width="672" /></p>
 <pre class="r"><code># Performance measures of RF
 (perf_rf &lt;- evalSDM(sp_test$Emberiza_citrinella, predict(m_rf, sp_test[,my_preds],  type=&#39;response&#39;) ))</code></pre>
-<pre><code>##         AUC       TSS     Kappa      Sens      Spec       PCC        D2 thresh
-## 1 0.8328373 0.6428571 0.6428571 0.8095238 0.8333333 0.8222222 0.1811933   0.63</code></pre>
+<pre><code>##         AUC       TSS     Kappa      Sens   Spec       PCC       D2 thresh
+## 1 0.8338294 0.6458333 0.6439169 0.8333333 0.8125 0.8222222 0.164385  0.615</code></pre>
 <pre class="r"><code># Map predictions:
 r_rf_bin &lt;- r_rf_pred &lt;- terra::rast(cbind(bio_curr_df[,1:2],
                                  predict(m_rf, bio_curr_df,type=&#39;response&#39;)),
@@ -991,16 +999,16 @@ m_brt &lt;- gbm.step(data = sp_train,
 <pre class="r"><code># Variable importance:
 m_brt$contributions</code></pre>
 <pre><code>##         var   rel.inf
-## bio12 bio12 93.208819
-## bio9   bio9  6.791181</code></pre>
+## bio12 bio12 92.863621
+## bio9   bio9  7.136379</code></pre>
 <pre class="r"><code># Interactions (not very meaningful here with only 2 predictors):
 gbm.interactions(m_brt)$interactions</code></pre>
 <pre><code>##       bio12  bio9
-## bio12     0 24.37
+## bio12     0 25.99
 ## bio9      0  0.00</code></pre>
 <pre class="r"><code>gbm.interactions(m_brt)$rank.list</code></pre>
 <pre><code>##   var1.index var1.names var2.index var2.names int.size
-## 1          2       bio9          1      bio12    24.37
+## 1          2       bio9          1      bio12    25.99
 ## 2          3       &lt;NA&gt;          0                0.00</code></pre>
 <pre class="r"><code># dismo provides some build-in functions for plotting response:
 gbm.plot(m_brt, n.plots=2, write.title = FALSE)</code></pre>
@@ -1021,7 +1029,7 @@ partial_response(m_brt, predictors = sp_train[,my_preds], main=&#39;BRT&#39;, yl
 <pre class="r"><code># Performance measures of BRT
 (perf_brt &lt;- evalSDM(sp_test$Emberiza_citrinella, predict.gbm(m_brt, sp_test[,my_preds], n.trees=m_brt$gbm.call$best.trees, type=&#39;response&#39;) ))</code></pre>
 <pre><code>##         AUC       TSS     Kappa      Sens   Spec       PCC        D2 thresh
-## 1 0.8836806 0.7172619 0.7119645 0.9047619 0.8125 0.8555556 0.3431624   0.58</code></pre>
+## 1 0.8831845 0.7172619 0.7119645 0.9047619 0.8125 0.8555556 0.3494962   0.58</code></pre>
 <pre class="r"><code># Map predictions:
 r_brt_bin &lt;- r_brt_pred &lt;- terra::rast(cbind(bio_curr_df[,1:2],
                                   predict.gbm(m_brt, bio_curr_df,
@@ -1145,8 +1153,8 @@ ensembles in the next tutorial.</p>
 ## glm    0.8903770 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.37029784
 ## gam    0.8859127 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.36548148
 ## cart   0.8196925 0.5922619 0.5958084 0.7380952 0.8541667 0.8000000  0.16934395
-## rf     0.8328373 0.6428571 0.6428571 0.8095238 0.8333333 0.8222222  0.18119327
-## brt    0.8836806 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.34316242
+## rf     0.8338294 0.6458333 0.6439169 0.8333333 0.8125000 0.8222222  0.16438501
+## brt    0.8831845 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.34949617
 ## maxent 0.8774802 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.25816707
 ##        thresh
 ## bc      0.175
@@ -1154,7 +1162,7 @@ ensembles in the next tutorial.</p>
 ## glm     0.525
 ## gam     0.530
 ## cart    0.800
-## rf      0.630
+## rf      0.615
 ## brt     0.580
 ## maxent  0.410</code></pre>
 <pre class="r"><code># We add a column containing the names of the algorithm

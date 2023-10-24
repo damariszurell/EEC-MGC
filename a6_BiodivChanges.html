@@ -13,7 +13,7 @@
 
 <title>Analysing biodiversity changes</title>
 
-<script src="site_libs/header-attrs-2.23/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -35,10 +35,14 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
 <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -435,6 +439,10 @@ div.tocify {
 </div>
 
 
+<script>
+  addClassKlippyTo("pre.r, pre.markdown");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
 <hr />
 <div class="alert alert-info">
 <p><strong>RStudio project</strong></p>
@@ -523,7 +531,7 @@ changes</h1>
 time periods. For this, we first need to compute species richness per
 time period.</p>
 <pre class="r"><code>library(terra)</code></pre>
-<pre><code>## terra 1.7.39</code></pre>
+<pre><code>## terra 1.7.46</code></pre>
 <pre class="r"><code># The coordinate reference system for the UK National Grid is:
 proj_UK &lt;- &#39;+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +datum=OSGB36 +units=m +no_defs&#39;
 
@@ -548,13 +556,18 @@ data for mapping.</p>
 # Calculate species richness
 bird_dist$richness &lt;- rowSums(bird_dist[,spp])
 
-# Map species richness for different time periods
+# Compile multilayer SpatRaster for different time periods
 richness_maps &lt;- c(
   terra::rast(subset(bird_dist,period==&#39;1968-72&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)], crs=proj_UK, type=&#39;xyz&#39;),
   terra::rast(subset(bird_dist,period==&#39;1988-91&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)], crs=proj_UK, type=&#39;xyz&#39;),
   terra::rast(subset(bird_dist,period==&#39;2008-11&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)], crs=proj_UK, type=&#39;xyz&#39;))
 names(richness_maps) &lt;- c(&quot;richness 1968-72&quot;, &quot;richness 1988-91&quot;, &quot;richness 2008-11&quot;)
 
+# Map species richness
+max_sr &lt;- max(values(richness_maps),na.rm=T)
+terra::plot (richness_maps, range=c(0,max_sr), type=&quot;continuous&quot;)</code></pre>
+<p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code># A slightly fancier graph:
 ggplot() +
   geom_spatraster(data = richness_maps) +
   facet_wrap(~lyr, ncol = 3) +
@@ -562,7 +575,7 @@ ggplot() +
     palette = &quot;muted&quot;
   ) +
   labs(fill = &quot;Richness&quot;)</code></pre>
-<p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
 </div>
 <div id="mapping-species-richness-changes" class="section level1"
 number="2">

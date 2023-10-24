@@ -13,7 +13,7 @@
 
 <title>Species threats</title>
 
-<script src="site_libs/header-attrs-2.23/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -35,8 +35,12 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -433,6 +437,10 @@ div.tocify {
 </div>
 
 
+<script>
+  addClassKlippyTo("pre.r, pre.markdown");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
 <hr />
 <div class="alert alert-info">
 <p><strong>RStudio project</strong></p>
@@ -730,28 +738,39 @@ Shearwater</a> example, and at the <a
 href="https://www.iucnredlist.org/resources/threat-classification-scheme">Threat
 Classification Scheme</a>.</p>
 <pre class="r"><code>redlist_threats[sample(nrow(redlist_threats),10),-c(1:2)]</code></pre>
-<pre><code>##                                          title                   timing
-## 387                    Work &amp; other activities                  Ongoing
-## 813     Hunting &amp; trapping terrestrial animals Past, Unlikely to Return
-## 727 Agro-industry grazing, ranching or farming                  Ongoing
-## 23                 Named species (Felis catus)                  Ongoing
-## 405                  Herbicides and pesticides                  Ongoing
-## 622     Hunting &amp; trapping terrestrial animals                  Ongoing
-## 226                                   Droughts                   Future
-## 372          Agricultural &amp; forestry effluents                  Ongoing
-## 702     Hunting &amp; trapping terrestrial animals                  Ongoing
-## 221                  Logging &amp; wood harvesting                  Ongoing
-##                 scope                   severity            score    invasive
-## 387   Minority (&lt;50%)        Negligible declines    Low Impact: 4        &lt;NA&gt;
-## 813   Minority (&lt;50%)        Negligible declines      Past Impact        &lt;NA&gt;
-## 727 Majority (50-90%) Slow, Significant Declines Medium Impact: 6        &lt;NA&gt;
-## 23    Minority (&lt;50%)        Negligible declines    Low Impact: 4 Felis catus
-## 405 Majority (50-90%) Slow, Significant Declines Medium Impact: 6        &lt;NA&gt;
-## 622   Minority (&lt;50%) Slow, Significant Declines    Low Impact: 5        &lt;NA&gt;
-## 226 Majority (50-90%)                    Unknown          Unknown        &lt;NA&gt;
-## 372   Minority (&lt;50%)        Negligible declines    Low Impact: 4        &lt;NA&gt;
-## 702      Whole (&gt;90%)             Rapid Declines   High Impact: 8        &lt;NA&gt;
-## 221 Majority (50-90%)                 No decline    Low Impact: 5        &lt;NA&gt;</code></pre>
+<pre><code>##                                                               title  timing
+## 576                         Intentional use (species is the target) Ongoing
+## 726                                    Livestock farming &amp; ranching Ongoing
+## 716               Unintentional effects (species is not the target) Ongoing
+## 571                      Agro-industry grazing, ranching or farming Ongoing
+## 544                                               Roads &amp; railroads Ongoing
+## 32  Invasive non-native/alien species/diseases (Unspecified Rattus) Ongoing
+## 240                      Abstraction of surface water (unknown use) Ongoing
+## 202  Invasive non-native/alien species/diseases (Perca fluviatilis) Ongoing
+## 436     Invasive non-native/alien species/diseases (Neovison vison) Ongoing
+## 62                                Agricultural &amp; forestry effluents Ongoing
+##                 scope                         severity            score
+## 576   Minority (&lt;50%)       Slow, Significant Declines    Low Impact: 5
+## 726 Majority (50-90%)       Slow, Significant Declines Medium Impact: 6
+## 716   Minority (&lt;50%)              Negligible declines    Low Impact: 4
+## 571 Majority (50-90%)       Slow, Significant Declines Medium Impact: 6
+## 544   Minority (&lt;50%) Causing/Could cause fluctuations    Low Impact: 5
+## 32    Minority (&lt;50%)              Negligible declines    Low Impact: 4
+## 240 Majority (50-90%)              Negligible declines    Low Impact: 5
+## 202   Minority (&lt;50%)              Negligible declines    Low Impact: 4
+## 436   Minority (&lt;50%)       Slow, Significant Declines    Low Impact: 5
+## 62    Minority (&lt;50%)       Slow, Significant Declines    Low Impact: 5
+##               invasive
+## 576               &lt;NA&gt;
+## 726               &lt;NA&gt;
+## 716               &lt;NA&gt;
+## 571               &lt;NA&gt;
+## 544               &lt;NA&gt;
+## 32  Unspecified Rattus
+## 240               &lt;NA&gt;
+## 202  Perca fluviatilis
+## 436     Neovison vison
+## 62                &lt;NA&gt;</code></pre>
 <p>We can extract many useful information from this table, for example,
 when specific threats occurred.</p>
 <pre class="r"><code>table(redlist_threats$timing)</code></pre>
