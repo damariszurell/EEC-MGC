@@ -682,6 +682,30 @@ points(terra::centroids(shrew), col=&#39;blue&#39;,cex=3,pch=&quot;+&quot;)</cod
 represent the centre of gravity, i.e. the mean coordinates of the
 distribution (weighted by cell size) but obviously, if we have several
 patches, the centroid might not even fall within an occupied patch.</p>
+<p>If you have a polygons object with multiple layers, you will receive
+a vector of areas and also multiple centroids. In such case, you first
+have to dissolve the multiple polygon layers. Let’s look at one example.
+In the <code>mammals</code> shapefile, the alpine shrew range maps are
+actually multiple layers.</p>
+<pre class="r"><code># Filter the mammals shapefiles for the shrew
+shrew2 &lt;- mammals[mammals$BINOMIAL==&#39;Sorex alpinus&#39;,]
+
+# Range area of alpine shrew in square kilometers:
+terra::expanse(shrew2, unit=&quot;km&quot;) # should produce multiple values</code></pre>
+<pre><code>## [1] 179581.6854 310495.2803    466.3444</code></pre>
+<pre class="r"><code># Use aggregate() to dissolve the polygon and recalculate area
+terra::expanse(aggregate(shrew), unit=&quot;km&quot;)</code></pre>
+<pre><code>## [1] 490543.3</code></pre>
+<pre class="r"><code># Map the species range and add the centroid to the map
+maps::map(&#39;world&#39;,xlim=c(5,30), ylim=c(40,55))
+plot(shrew, col=&#39;red&#39;, add=T)
+points(terra::centroids(shrew2), col=&#39;blue&#39;,cex=3,pch=&quot;+&quot;)</code></pre>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<pre class="r"><code># Map the species range and add the centroid to the map
+maps::map(&#39;world&#39;,xlim=c(5,30), ylim=c(40,55))
+plot(shrew, col=&#39;red&#39;, add=T)
+points(terra::centroids(aggregate(shrew2)), col=&#39;blue&#39;,cex=3,pch=&quot;+&quot;)</code></pre>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
 <p>In case of the Monkey Puzzle, we have suspected that the range maps
 also contain non-native areas. We can clip the range maps to a desired
 spatial extent and then only calculate the range centroid for this
@@ -693,7 +717,7 @@ monkey_puzzle_SAm &lt;- terra::intersect(monkey_puzzle_terra, ext(-85, -30, -55,
 maps::map(&#39;world&#39;,xlim = c(-100,-10),ylim = c(-60,15))
 plot(monkey_puzzle_SAm,col=&#39;red&#39;,add=T)
 points(terra::centroids(monkey_puzzle_SAm), col=&#39;blue&#39;,pch=&#39;+&#39;, cex=3)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <div class="alert alert-success" role="alert">
 <p><strong>Test it yourself</strong></p>
 <ul>
@@ -743,7 +767,7 @@ cells.</p>
 <pre class="r"><code>maps::map(&#39;world&#39;,xlim=c(5,30), ylim=c(40,55))
 plot(shrew, col=&#39;red&#39;, add=T)
 plot(shrew_1deg, add=T, alpha=0.6, legend=F)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p>Obviously, the margins of the range polgyon and the raster map differ
 at several places.</p>
 <div class="alert alert-success" role="alert">
@@ -770,7 +794,7 @@ lynx_lynx_2deg &lt;- terra::rasterize(lynx_lynx, r_2deg)
 # Map the occupied grid cells
 maps::map(&#39;world&#39;)
 plot(lynx_lynx_2deg, add = TRUE, legend = FALSE)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 </div>
 <div id="rasterising-range-maps-with-letsr" class="section level3"
 number="2.2.2">
@@ -822,7 +846,7 @@ r_monkey_puzzle</code></pre>
 maps::map(&#39;world&#39;,xlim = c(-100,-10),ylim = c(-60,15))
 plot(monkey_puzzle_SAm,col=&#39;blue&#39;,add=T)
 plot(r_monkey_puzzle, add=T, alpha=0.6, legend=F)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <div class="alert alert-success" role="alert">
 <p><strong>Test it yourself</strong></p>
 <ul>
@@ -897,7 +921,7 @@ r_pinus &lt;- lets.presab(pinus_raster, resol=1, xmn = -170, xmx = -10, ymn = -5
 
 # Plot species richness
 plot(r_pinus)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <p>In the <code>lets.presab()</code> function, we can also specify which
 PRESENCE, ORIGIN and SEASONAL information should be used and which not
 (see IUCN metadata on moodle). Let’s look at Neotropical fruit bats
@@ -935,12 +959,12 @@ r_artibeus &lt;- lets.presab(artibeus_ranges, resol=2,
 
 # Map the species richness
 plot(r_artibeus)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <pre class="r"><code># Map single species - here, just the first two
 par(mfrow=c(1,2))
 plot(r_artibeus, name = &quot;Artibeus amplus&quot;)
 plot(r_artibeus, name = &quot;Artibeus anderseni&quot;)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-17-2.png" width="672" /></p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-18-2.png" width="672" /></p>
 <pre class="r"><code># Look at structure of the object and at the presence-absence matrix
 str(r_artibeus, 1)</code></pre>
 <pre><code>## List of 3
@@ -1038,7 +1062,7 @@ r_pinus_richness &lt;- sum(r_pinus_terra,na.rm=T)
 # Plot species richness
 maps::map(&#39;world&#39;)
 plot(r_pinus_richness, add=T, alpha=0.8)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 <pre class="r"><code># We can collate a data.frame with all species occurrences similar to the lets.presab output
 r_pinus_df &lt;- as.data.frame(r_pinus_terra, xy=T)</code></pre>
 <p>Let’s also look at the mammal example. Remember that we wanted to
@@ -1085,7 +1109,7 @@ r_artibeus_richness &lt;- sum(r_artibeus_terra,na.rm=T)
 # Map the species richness
 maps::map(&#39;world&#39;)
 plot(r_artibeus_richness, add=T, alpha=0.8)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <ul>
