@@ -529,11 +529,10 @@ download the data <a href="data/Prac5_data.zip">here</a> or from the
 moodle page.</p>
 <p>Load and plot the data:</p>
 <pre class="r"><code>library(terra)
-library(dismo)
-library(raster)
 
-region &lt;- terra::rast(&#39;data/Prac5_Europe5min.grd&#39;)
-sp &lt;- read.table(&#39;data/Prac5_presences.txt&#39;, header=T)
+# Our study region and species data
+region &lt;- terra::rast(&#39;data/Prac5_Europe5min.grd&#39;) # mask of study region
+sp &lt;- read.table(&#39;data/Prac5_presences.txt&#39;, header=T) # species presences
 
 # Plot the map and data
 plot(region,col=&#39;grey&#39;,legend=F)
@@ -545,77 +544,71 @@ points(sp[sp$sp==&#39;Populus_spp&#39;,1:2],pch=&#39;+&#39;,cex=0.3,col=&#39;gre
 number="3">
 <h1><span class="header-section-number">3</span>
 Background/Pseudo-absence data selection</h1>
-<p>We use a lot of methods from the <code>dismo</code> tutorials, which
-are worth looking into (<a
-href="https://rspatial.org/raster/sdm/3_sdm_absence-background.html">see
-link here</a>) as well as from the <code>terra</code> tutorials (<a
-href="https://rspatial.org/terra/sdm/3_sdm_absence-background.html">link
+<p>We use a lot of methods from the <code>predicts</code> and
+<code>terra</code> tutorials, which are worth looking into (<a
+href="https://rspatial.org/sdm/3_sdm_absence-background.html">see link
 here</a>).</p>
 <div
 id="random-selection-of-points-within-study-area-but-excluding-the-presence-location"
 class="section level2" number="3.1">
 <h2><span class="header-section-number">3.1</span> Random selection of
 points within study area but excluding the presence location</h2>
-<p>The <code>dismo</code> package has a function to sample random points
-(background data).</p>
+<p>The <code>terra</code> package has a function
+<code>spatSample()</code> to sample random points (background data).</p>
 <pre class="r"><code># Randomly select background points from study region
-bg_rand &lt;- dismo::randomPoints(raster(region), 500)
+# The argument na.rm=T ensures that we only sample points within the masked regions (not in the ocean)
+# The argument as.points=T indicates that a SpatVector of coordinates should be returned
+bg_rand &lt;- terra::spatSample(region, 500, &quot;random&quot;, na.rm=T, as.points=TRUE)
 
 # Plot the map and data
 plot(region,col=&#39;grey&#39;,legend=F)
 points(sp[sp$sp==&#39;Populus_imagines&#39;,1:2],pch=&#39;+&#39;,col=&#39;red&#39;)
 points(bg_rand,pch=19,cex=0.3)</code></pre>
 <p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>The same could be achieved using the <code>spatSample()</code>
-function in <code>terra</code>.</p>
-<pre class="r"><code># Random points with terra package:
-bg_rand_t &lt;- terra::spatSample(region, 500, as.points=T, na.rm=T)
+<p>By default the function <code>spatSample()</code> will sample from
+the entire study area independent of the presence points - corresponding
+to the idea of background data. In order not to sample pseudo-absence at
+presence locations, we have to tweak our regional mask and assign
+<code>NA</code> to the presence location</p>
+<pre class="r"><code># Make a new regional mask that contains NAs in presence locations:
+sp_cells &lt;- terra::extract(region, sp[sp$sp==&#39;Populus_imagines&#39;,1:2], cells=T)$cell
+region_exclp &lt;- region
+values(region_exclp)[sp_cells] &lt;- NA
 
-# Plot the map and data
-plot(region,col=&#39;grey&#39;,legend=F)
-points(sp[sp$sp==&#39;Populus_imagines&#39;,1:2],pch=&#39;+&#39;,col=&#39;red&#39;)
-points(bg_rand_t,pch=19,cex=0.3)</code></pre>
-<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>Both functions will by default sample from the entire study area
-independent of the presence points. However, in the
-<code>randomPoints()</code> function of the <code>dismo</code> package,
-we can provide the presence points as additional argument, and by that
-make sure that random background data are not sampled from presence
-locations.</p>
-<pre class="r"><code># Randomly select background data but excluding presence locations
-bg_rand_exclp &lt;- dismo::randomPoints(raster(region), 500, p=sp[sp$sp==&#39;Populus_imagines&#39;,1:2])
+# Randomly select background data but excluding presence locations
+bg_rand_exclp &lt;- terra::spatSample(region_exclp, 500, &quot;random&quot;, na.rm=T, as.points=TRUE)
 
 # Plot the map and data
 plot(region,col=&#39;grey&#39;,legend=F)
 points(sp[sp$sp==&#39;Populus_imagines&#39;,1:2],pch=&#39;+&#39;,col=&#39;red&#39;)
 points(bg_rand_exclp,pch=19,cex=0.3)</code></pre>
-<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>Also, we can define an extent from where random points should be
-drawn. By default, this extent is increased by 5% at each side. To
-circumvent this, we set <code>extf=1.0</code>.</p>
+drawn.</p>
 <pre class="r"><code># Define extent object:
-e &lt;- extent(8,24,46,57)
+e &lt;- ext(8,24,46,57)
 
-# Randomly select background data within a restricted extent
-bg_rand_exclp_e &lt;- randomPoints(raster(region), 500, p=sp[sp$sp==&#39;Populus_imagines&#39;,1:2], ext=e, extf=1.0)
+# Randomly select background data within a restricted extent and excluding presence locations:
+bg_rand_exclp_e &lt;- terra::spatSample(region_exclp, 500, &quot;random&quot;, na.rm=T, as.points=TRUE, ext=e)
 
 # Plot the map and data
 plot(region,col=&#39;grey&#39;,legend=F)
 points(sp[sp$sp==&#39;Populus_imagines&#39;,1:2],pch=&#39;+&#39;,col=&#39;red&#39;)
 points(bg_rand_exclp_e,pch=19,cex=0.3)
-plot(e, add=TRUE, col=&#39;red&#39;)</code></pre>
-<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+lines(e, col=&#39;red&#39;)</code></pre>
+<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>Last, we could also restrict the random samples to within a certain
 buffer distance. For this, we first create a <code>SpatVector</code>,
 then place a buffer around these and sample from within the buffer. The
 buffer can be interpreted as the area that was accessible to the species
 in the long-term past. Thus, the buffer helps accounting for
-biogeographic history by constraining absence points to those geographic
-area that could have been reached by the species given the movement
-capacity but excludes other areas. Of course, restricting the absences
-to a certain geographic rectangle can achieve a similar tasks but might
-be less accurate for complex geographies and large areas. For example,
-is Iceland accessible to European species or not?</p>
+biogeographic history by constraining background/pseudo-absence points
+to those geographic area that could have been reached by the species
+given the movement capacity but excludes other areas. Of course,
+restricting the absences to a certain geographic rectangle can achieve a
+similar tasks but might be less accurate for complex geographies and
+large areas. For example, is Iceland accessible to European species or
+not?</p>
 <pre class="r"><code># Create SpatVector object of known occurrences:
 pop_imag &lt;- terra::vect( as.matrix( sp[sp$sp==&#39;Populus_imagines&#39;,1:2]) , crs=crs(region))
 
@@ -626,14 +619,14 @@ v_buf &lt;- terra::buffer(pop_imag, width=200000)
 region_buf &lt;- terra::mask(region, v_buf)
 
 # Randomly select background data within the buffer
-bg_rand_buf &lt;- dismo::randomPoints(raster(region_buf), 500)
+bg_rand_buf &lt;- terra::spatSample(region_buf, 500, &quot;random&quot;, na.rm=T, as.points=TRUE)
 
 # Plot the map and data
 plot(region,col=&#39;grey&#39;,legend=F)
 plot(region_buf, legend=F, add=T)
 points(sp[sp$sp==&#39;Populus_imagines&#39;,1:2],pch=&#39;+&#39;,col=&#39;red&#39;)
 points(bg_rand_buf,pch=19,cex=0.3)</code></pre>
-<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 <div id="random-selection-of-points-outside-of-study-area"
 class="section level2" number="3.2">
@@ -647,22 +640,19 @@ can also use the buffering approach from above to achieve this.</p>
 <pre class="r"><code># Place a buffer of 200 km radius around our presence points
 v_buf &lt;- terra::buffer(pop_imag, width=200000)
 
-# Set all raster cells outside the buffer to NA
-region_buf &lt;- terra::mask(region, v_buf)
-
-# Now, we set all the buffer cells in the mask to NA
-region_outbuf &lt;- region
-values(region_outbuf)[values(region_buf)==1 &amp; !is.na(values(region_buf))] &lt;- NA
+# Set all raster cells inside the buffer to NA using the argument inverse=T
+region_outbuf &lt;- terra::mask(region, v_buf, inverse=T)
+region_buf &lt;- terra::mask(region, v_buf)  # we use this only for illustrative purpose below
 
 # Randomly select background data outside the buffer
-bg_rand_outbuf &lt;- dismo::randomPoints(raster(region_outbuf), 500)
+bg_rand_outbuf &lt;- terra::spatSample(region_outbuf, 500, &quot;random&quot;, na.rm=T, as.points=TRUE)
 
 # Plot the map and data
 plot(region,col=&#39;grey&#39;,legend=F)
 plot(region_buf,legend=F, add=T)
 points(sp[sp$sp==&#39;Populus_imagines&#39;,1:2],pch=&#39;+&#39;,col=&#39;red&#39;)
 points(bg_rand_outbuf,pch=19,cex=0.3)</code></pre>
-<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <!-- ## Accounting for spatial sampling bias using target-group selection -->
 <!-- A critical assumption behind the above-mentioned background/pseudo-absence sampling is that the presence points were systematically or randomly sampled from the known distribution and are not spatially biased. In practice, this assumption is often violated, for example when observers go to more easily accessible areas. @Phillips2009 suggested a target-group sampling for this. The idea is that we use the presence points of other groups of species as potential pseudo-absence points to mimic survey effort. These target groups should be collected or observed using the same methods and equipments. So, this approach is kind of assuming that no complete inventories were made by the observers but that there is a chance that if the species had been there it would have been observed along with the others. -->
 <!-- Here, we use the sister populus species as target group. -->
@@ -709,7 +699,7 @@ predictors.</p>
 <pre class="r"><code># Load the species presence data (here, the data set from session 1):
 load(&#39;data/gbif_shrew_cleaned.RData&#39;)
 
-head(gbif_shrew2[,1:4])</code></pre>
+head(gbif_shrew_cleaned[,1:4])</code></pre>
 <pre><code>##          key             scientificName decimalLatitude decimalLongitude
 ## 1 4416901401 Sorex alpinus Schinz, 1837        47.03705         9.045486
 ## 2 4156615500 Sorex alpinus Schinz, 1837        48.02569         8.125231
@@ -718,14 +708,14 @@ head(gbif_shrew2[,1:4])</code></pre>
 ## 5 4129978783 Sorex alpinus Schinz, 1837        47.05048        11.417289
 ## 6 4133676752 Sorex alpinus Schinz, 1837        47.44182        13.660217</code></pre>
 <pre class="r"><code># Plot the species presences
-library(maptools)
-data(wrld_simpl)
+library(maps)
 
-plot(wrld_simpl,xlim=c(-12,45), ylim=c(35,73))
+maps::map(&#39;world&#39;,xlim=c(-12,45), ylim=c(35,73))
 points(gbif_shrew_cleaned$decimalLongitude, gbif_shrew_cleaned$decimalLatitude, col=&#39;red&#39;,  pch=19)</code></pre>
-<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<p>You have already downloaded the climate data in session 2 and can
-simply read it back in. We crop it to European extent.</p>
+<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>You have already downloaded the climate data at 10-min spatial
+resolution in session b2 and can simply read it back in. We crop it to
+European extent.</p>
 <pre class="r"><code>library(geodata)
 
 # Download global bioclimatic data from worldclim (you may have to set argument &#39;download=T&#39; for first download, if &#39;download=F&#39; it will attempt to read from file):
@@ -744,44 +734,10 @@ do this by joining the species data with the environmental data
 Then, we can remove the duplicate cells.</p>
 <pre class="r"><code># We have already extracted environmental data and raster cellnumbers for the species data
 # Remember to remove any rows with duplicate cellnumbers if necessary:
-duplicated(gbif_shrew2$cell)</code></pre>
-<pre><code>##   [1] FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-##  [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-##  [25] FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE
-##  [37] FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE
-##  [49] FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE
-##  [61] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE
-##  [73] FALSE FALSE  TRUE FALSE FALSE FALSE  TRUE  TRUE FALSE  TRUE FALSE  TRUE
-##  [85] FALSE FALSE FALSE  TRUE FALSE  TRUE  TRUE FALSE FALSE  TRUE FALSE FALSE
-##  [97] FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE
-## [109]  TRUE FALSE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE
-## [121]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE
-## [133] FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE
-## [145] FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE  TRUE
-## [157] FALSE  TRUE FALSE FALSE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE FALSE FALSE
-## [169]  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-## [181] FALSE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE FALSE FALSE
-## [193] FALSE FALSE  TRUE FALSE FALSE FALSE  TRUE FALSE FALSE  TRUE  TRUE FALSE
-## [205]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE FALSE  TRUE FALSE FALSE FALSE
-## [217] FALSE FALSE  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE FALSE  TRUE FALSE
-## [229] FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE
-## [241] FALSE  TRUE  TRUE  TRUE  TRUE FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE
-## [253] FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE FALSE FALSE
-## [265]  TRUE  TRUE FALSE  TRUE  TRUE  TRUE FALSE FALSE  TRUE FALSE FALSE  TRUE
-## [277]  TRUE FALSE FALSE  TRUE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE  TRUE
-## [289] FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
-## [301] FALSE  TRUE FALSE FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE  TRUE  TRUE
-## [313] FALSE  TRUE  TRUE FALSE FALSE FALSE  TRUE  TRUE  TRUE FALSE FALSE FALSE
-## [325]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
-## [337] FALSE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE
-## [349]  TRUE  TRUE FALSE  TRUE FALSE FALSE FALSE  TRUE FALSE FALSE  TRUE  TRUE
-## [361]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE FALSE  TRUE
-## [373]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE
-## [385]  TRUE  TRUE  TRUE  TRUE FALSE FALSE  TRUE  TRUE  TRUE FALSE  TRUE FALSE
-## [397] FALSE  TRUE FALSE  TRUE  TRUE FALSE  TRUE FALSE FALSE  TRUE  TRUE  TRUE
-## [409]  TRUE FALSE FALSE</code></pre>
+duplicated(gbif_shrew_cleaned$cell)</code></pre>
+<pre><code>## logical(0)</code></pre>
 <pre class="r"><code># From now on, we just need the coordinates:
-gbif_shrew_coords &lt;- gbif_shrew2[,c(&#39;decimalLongitude&#39;,&#39;decimalLatitude&#39;)]</code></pre>
+gbif_shrew_coords &lt;- gbif_shrew_cleaned[,c(&#39;decimalLongitude&#39;,&#39;decimalLatitude&#39;)]</code></pre>
 <p>We place a buffer of 200 km around the shrew records and sample
 background points randomly from within the buffer but excluding presence
 locations (remember that also other pseudo-absence/background data
@@ -800,21 +756,26 @@ region_buf &lt;- terra::mask(bg, v_buf)
 plot(bg, col=&#39;grey90&#39;, legend=F)
 plot(region_buf, add=T, col=&#39;grey60&#39;, legend=F)
 
-# Randomly select background data within the buffer, excluding presence locations. We sample 10 times as many background data as we have presences.
-bg_rand_buf &lt;- dismo::randomPoints(raster::raster(region_buf), length(presences)*10, p=gbif_shrew_coords)</code></pre>
-<pre><code>## Warning in dismo::randomPoints(raster::raster(region_buf), length(presences) *
-## : generated random points = 0.915815085158151 times requested number</code></pre>
+# Exclude presence locations:
+sp_cells &lt;- terra::extract(region_buf, presences, cells=T)$cell
+region_buf_exclp &lt;- region_buf
+values(region_buf_exclp)[sp_cells] &lt;- NA
+
+# Randomly select background data within the buffer, excluding presence locations. We sample 10 times as many background data as we have presences. To ensure that we find enough samples, we use the argument exhaustive=T
+bg_rand_buf &lt;- terra::spatSample(region_buf_exclp, length(presences)*10, &quot;random&quot;, na.rm=T, as.points=TRUE, exhaustive=T)</code></pre>
+<pre><code>## Warning: [spatSample] fewer samples than requested are available</code></pre>
+<pre><code>## Warning: [spatSample] fewer cells returned than requested</code></pre>
 <pre class="r"><code>points(bg_rand_buf, pch=19, cex=0.2)
 points(presences, pch=19, cex=0.5, col=&#39;red&#39;)</code></pre>
-<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<p>Last, we need to join the presences and background data, and extract
+<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>Next, we need to join the presences and background data, and extract
 the environmental data.</p>
 <pre class="r"><code># First, we prepare the presences data to contain a column indicating 1 for presence.
 sp_env &lt;- data.frame(gbif_shrew_coords, occ=1)
 
 # Second, we make sure the background data have the same columns, and indicate 0 for absence.
-bg_rand_buf &lt;- data.frame(bg_rand_buf)
-summary(bg_rand_buf)</code></pre>
+bg_rand_buf_df &lt;- data.frame(terra::geom(bg_rand_buf)[,c(&#39;x&#39;,&#39;y&#39;)])
+summary(bg_rand_buf_df)</code></pre>
 <pre><code>##        x               y        
 ##  Min.   : 2.75   Min.   :40.92  
 ##  1st Qu.: 7.75   1st Qu.:45.08  
@@ -822,9 +783,9 @@ summary(bg_rand_buf)</code></pre>
 ##  Mean   :10.92   Mean   :47.06  
 ##  3rd Qu.:14.08   3rd Qu.:49.08  
 ##  Max.   :18.58   Max.   :52.58</code></pre>
-<pre class="r"><code>names(bg_rand_buf) &lt;- c(&#39;decimalLongitude&#39;,&#39;decimalLatitude&#39;)
-bg_rand_buf$occ &lt;- 0
-summary(bg_rand_buf)</code></pre>
+<pre class="r"><code>names(bg_rand_buf_df) &lt;- c(&#39;decimalLongitude&#39;,&#39;decimalLatitude&#39;)
+bg_rand_buf_df$occ &lt;- 0
+summary(bg_rand_buf_df)</code></pre>
 <pre><code>##  decimalLongitude decimalLatitude      occ   
 ##  Min.   : 2.75    Min.   :40.92   Min.   :0  
 ##  1st Qu.: 7.75    1st Qu.:45.08   1st Qu.:0  
@@ -833,7 +794,7 @@ summary(bg_rand_buf)</code></pre>
 ##  3rd Qu.:14.08    3rd Qu.:49.08   3rd Qu.:0  
 ##  Max.   :18.58    Max.   :52.58   Max.   :0</code></pre>
 <pre class="r"><code># Third, we bind these two data sets
-sp_env &lt;- rbind(sp_env, bg_rand_buf)
+sp_env &lt;- rbind(sp_env, bg_rand_buf_df)
 summary(sp_env)</code></pre>
 <pre><code>##  decimalLongitude decimalLatitude      occ         
 ##  Min.   : 2.750   Min.   :40.92   Min.   :0.00000  
@@ -911,7 +872,7 @@ sp_env$sp &lt;- &#39;Sorex_alpinus&#39;
 xy &lt;- thin(sp_env, lat.col=&#39;decimalLatitude&#39;,long.col=&#39;decimalLongitude&#39;,spec.col=&#39;sp&#39;, thin.par=30,reps=1, write.files=F,locs.thinned.list.return=T)</code></pre>
 <pre><code>## ********************************************** 
 ##  Beginning Spatial Thinning.
-##  Script Started at: Tue Oct 24 15:46:39 2023
+##  Script Started at: Fri Nov  3 20:36:25 2023
 ## lat.long.thin.count
 ## 743 
 ##   1 
@@ -928,7 +889,7 @@ sp_thinned &lt;- sp_env[sp_env$cell %in% cells_thinned,]
 # Plot the map and data
 plot(bg, col=&#39;grey90&#39;, legend=F)
 points(sp_thinned[,1:2],pch=19,col=c(&#39;black&#39;,&#39;red&#39;)[as.factor(sp_thinned$occ)], cex=0.3)</code></pre>
-<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <!-- ```{r eval=F, echo=F} -->
 <!-- # Alternatively, remove adjacent cells separately in presence data and background data: -->
 <!-- xy_pres <- thin(sp_env[sp_env$occ==1,], lat.col='decimalLatitude',long.col='decimalLongitude',spec.col='sp', thin.par=20,reps=5, write.files=F,locs.thinned.list.return=T) -->
@@ -946,27 +907,57 @@ points(sp_thinned[,1:2],pch=19,col=c(&#39;black&#39;,&#39;red&#39;)[as.factor(sp
 final data frame to file or by saving the R object(s).</p>
 <pre class="r"><code>save(sp_thinned,file=&#39;data/gbif_shrew_PresAbs_thinned.RData&#39;)</code></pre>
 <p><strong>Alternative:</strong> The <code>thin()</code> function can
-take quite long and needs a lot of memory space. A useful alternative
-function for spatial thinning is <code>gridSample()</code> in the
-<code>dismo</code> package.</p>
-<pre class="r"><code># Thinning to a checkerboard pattern
-xy &lt;- dismo::gridSample(sp_env[,c(&quot;decimalLongitude&quot;,&quot;decimalLatitude&quot;)], bg,chess=&#39;white&#39;)
-sp_thinned2 &lt;- merge(xy,sp_env,by=c(&quot;decimalLongitude&quot;,&quot;decimalLatitude&quot;))
+take quite long and needs a lot of memory space. Alternatively, we can
+use the <code>terra</code> package to thin the data to a checkerboard
+pattern, i.e. remove every second cell.</p>
+<pre class="r"><code># Create checkerboard SpatRaster 
+r_chess &lt;- mask(init(region_buf,&#39;chess&#39;), region_buf)
+values(r_chess)[values(r_chess)&lt;1] &lt;- NA
+names(r_chess) &lt;- &#39;chess&#39;
+
+# Thinning to the checkerboard pattern
+sp_thinned2 &lt;- merge(as.data.frame(r_chess,cell=T),sp_env,by=&#39;cell&#39;)
 
 # Plot the map and data
 plot(region, col=&#39;grey90&#39;, legend=F)
-points(sp_thinned2[,1:2],pch=19,col=c(&#39;black&#39;,&#39;red&#39;)[as.factor(sp_thinned2$occ)], cex=0.3)</code></pre>
+points(sp_thinned2[,c(&#39;decimalLongitude&#39;,&#39;decimalLatitude&#39;)],pch=19,col=c(&#39;black&#39;,&#39;red&#39;)[as.factor(sp_thinned2$occ)], cex=0.3)</code></pre>
+<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>We can also thin the data to an even coarser grid.</p>
+<pre class="r"><code># Create checkerboard SpatRaster with 2-times coarser resolution
+region_buf_agg2 &lt;- aggregate(region_buf,2)
+r_chess_agg2 &lt;- mask(init(region_buf_agg2,&#39;chess&#39;), region_buf_agg2)
+values(r_chess_agg2)[values(r_chess_agg2)&lt;1] &lt;- NA
+
+# extract coordinates of the white fields of the checkerboard
+coords_chess_agg2 &lt;- as.data.frame(r_chess_agg2,xy=T)[,c(&#39;x&#39;,&#39;y&#39;)]
+
+# Get the corresponding coordinates/cells at the original resolution
+cells_chess &lt;- terra::extract(region_buf, coords_chess_agg2, cell=T)[,c(1,3)]
+
+# Thinning to coarse-scale checkerboard pattern
+sp_thinned_agg2 &lt;-merge(cells_chess, sp_env,by=&#39;cell&#39;)
+
+# Plot the map and data
+plot(region, col=&#39;grey90&#39;, legend=F)
+points(sp_thinned_agg2[,c(&#39;decimalLongitude&#39;,&#39;decimalLatitude&#39;)],pch=19,col=c(&#39;black&#39;,&#39;red&#39;)[as.factor(sp_thinned2$occ)], cex=0.3)</code></pre>
 <p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
-<pre class="r"><code>#-----
-
-# Thinning to larger grid
-xy &lt;- dismo::gridSample(sp_env[,c(&quot;decimalLongitude&quot;,&quot;decimalLatitude&quot;)], aggregate(bg,2), chess=&#39;white&#39;)
-sp_thinned3 &lt;- merge(xy,sp_env,by=c(&quot;decimalLongitude&quot;,&quot;decimalLatitude&quot;))
-
-# Plot the map and data
-plot(region, col=&#39;grey90&#39;, legend=F)
-points(sp_thinned3[,1:2],pch=19,col=c(&#39;black&#39;,&#39;red&#39;)[as.factor(sp_thinned2$occ)], cex=0.3)</code></pre>
-<p><img src="b5_pseudoabsence_files/figure-html/unnamed-chunk-16-2.png" width="672" /></p>
+<p>These different thinning methods of coarse result in very different
+number of presences and absences retained.</p>
+<pre class="r"><code># spThin function
+table(sp_thinned$occ)</code></pre>
+<pre><code>## 
+##   0   1 
+## 703 104</code></pre>
+<pre class="r"><code># checkerboard at original spatial resolution
+table(sp_thinned2$occ)</code></pre>
+<pre><code>## 
+##    0    1 
+## 1884  193</code></pre>
+<pre class="r"><code># checkerboard at coarse spatial resolution
+table(sp_thinned_agg2$occ)</code></pre>
+<pre><code>## 
+##   0   1 
+## 447  48</code></pre>
 <!-- <div class="alert alert-info"> -->
 <!-- _**Exercise:**_ -->
 <!-- We have now finished our first own dataset.  -->

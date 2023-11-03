@@ -485,13 +485,13 @@ href="http://rspatial.org" class="uri">http://rspatial.org</a>.</p>
 
 # Check out the number of occurrences found in GBIF:
 occ_count()</code></pre>
-<pre><code>## [1] 2582758272</code></pre>
+<pre><code>## [1] 2586627733</code></pre>
 <pre class="r"><code># number of observations:
 occ_count(basisOfRecord=&#39;OBSERVATION&#39;)</code></pre>
 <pre><code>## [1] 20774442</code></pre>
 <pre class="r"><code># number of occurrences reported for Germany:
 occ_count(country=isocodes[grep(&quot;Germany&quot;, isocodes$name), &quot;code&quot;])</code></pre>
-<pre><code>## [1] 55055608</code></pre>
+<pre><code>## [1] 55076352</code></pre>
 <pre class="r"><code># number of observations reported for Germany:
 occ_count(country=isocodes[grep(&quot;Germany&quot;, isocodes$name), &quot;code&quot;],basisOfRecord=&#39;OBSERVATION&#39;)</code></pre>
 <pre><code>## [1] 104514</code></pre>
@@ -605,9 +605,8 @@ the web first!</p>
 # We are just interested in the data frame containing the records
 gbif_shrew &lt;- gbif_shrew$data
 
-library(maptools)
-data(wrld_simpl)
-plot(wrld_simpl,xlim=c(5,50), ylim=c(40,55))
+library(maps)
+maps::map(&#39;world&#39;,xlim=c(5,30), ylim=c(40,55))
 points(gbif_shrew$decimalLongitude, gbif_shrew$decimalLatitude, col=&#39;red&#39;,  pch=19)</code></pre>
 <p><img src="b1_SpeciesData_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
@@ -652,7 +651,7 @@ gbif_shrew_cleaned_coord &lt;- clean_coordinates(gbif_shrew, lon=&quot;decimalLo
 <pre><code>## Flagged 174 records.</code></pre>
 <pre><code>## Flagged 189 of 600 records, EQ = 0.32.</code></pre>
 <pre class="r"><code># Plot world map
-plot(wrld_simpl,xlim=c(5,50), ylim=c(40,55))
+maps::map(&#39;world&#39;,xlim=c(5,30), ylim=c(40,55))
 # Plot all gbif points downloaded
 points(gbif_shrew$decimalLongitude, gbif_shrew$decimalLatitude, col=&#39;red&#39;,  pch=19)
 # Plot all remaining points after cleaning
@@ -713,14 +712,13 @@ be downloaded from the website or using the function
 otter &lt;- occurrence(&#39;Enhydra lutris&#39;)
 
 # Map data
-library(maps)
-map(&#39;world&#39;)
+maps::map(&#39;world&#39;)
 points(otter$decimalLongitude, otter$decimalLatitude, col=&#39;blue&#39;,  pch=18)</code></pre>
 <p><img src="b1_SpeciesData_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p>Showing the occurrence records in our typically Atlantic-centred
 world view is a little confusing. We can obtain a Pacific-centred view
 by simply wrapping the maps.</p>
-<pre class="r"><code>map(&quot;world&quot;, wrap=c(0,360))
+<pre class="r"><code>maps::map(&quot;world&quot;, wrap=c(0,360))
 points(ifelse(otter$decimalLongitude&lt;0,otter$decimalLongitude+360,otter$decimalLongitude), otter$decimalLatitude, col=&#39;blue&#39;,  pch=18)</code></pre>
 <p><img src="b1_SpeciesData_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p>Overall, the data look quite plausible. In general, however, we also

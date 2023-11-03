@@ -540,14 +540,14 @@ class="citation">Guisan, Thuiller, and Zimmermann (2017)</span></a>. The
 list of models we treat here is not exhaustive but should give you a
 rough overview of what concepts and methods are out there. Most of the
 methods used here are available in the package <code>dismo</code>.</p>
-<div id="profile-envelope-and-distance-based-methods"
-class="section level2" number="2.1">
-<h2><span class="header-section-number">2.1</span> Profile (envelope and
-distance-based) methods</h2>
+<div id="profile-envelope-methods" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Profile (envelope)
+methods</h2>
 <p>Profile methods constitute the oldest family of SDM algorithms and
 are the only “true” presence-only methods that do not need any absence
 or background data. We can distinguish the classical envelope approach
-and distance-based methods.</p>
+and distance-based methods. Here, we only look at the envelope method
+BIOCLIM.</p>
 <div id="bioclim" class="section level3" number="2.1.1">
 <h3><span class="header-section-number">2.1.1</span> BIOCLIM</h3>
 <p>BIOCLIM is a pioneering envelope approach <span
@@ -555,17 +555,23 @@ class="citation">(Booth et al. 2014)</span>. It defines the niche as an
 <em>n</em>-dimensional, rectangular bounding box, which is similar to
 Hutchinson’s view of the <em>n</em>-dimensional hyperspace <span
 class="citation">(Hutchinson 1957)</span>. To reduce sensitivity to
-outliers, the bounding box can be limited by only considering a certain
-percentile range (e.g. 5-95%) of the species records along each
-environmental gradient. In <code>dismo</code>, the BIOCLIM algorithm is
-implemented such that it will produce continuous probabilities between 0
-and 1, indicating how similar/close the environmental conditions are to
-the median conditions.</p>
-<pre class="r"><code>library(dismo)
+outliers, the bounding box is limited by only considering a certain
+percentile range (here, 5-95%) of the species records along each
+environmental gradient. In <code>predicts</code>, the BIOCLIM algorithm
+is implemented in the function <code>envelope()</code> and will produce
+continuous probabilities between 0 and 1, indicating how similar/close
+the environmental conditions are to the median conditions.</p>
+<p>Previous studies have shown that the BIOCLIM algorithm performs
+poorly compared to other methods <span class="citation">(Elith et al.
+2006)</span> and should not be used for predicting species distribution
+under climate change <span class="citation">(Elith and Graham
+2009)</span>. It is still useful in some situations, for example
+envelope methods are more prominent in paleoecological studies where
+fossil data are sparse.</p>
+<pre class="r"><code>library(predicts)
 
-# Fit BIOCLIM model - please note that bioclim() expects a Raster* rather than SpatRaster object
-m_bc &lt;- dismo::bioclim(stack(bio_curr[[my_preds]]), 
-                sp_train[sp_train$Emberiza_citrinella==1,c(&#39;EASTING&#39;,&#39;NORTHING&#39;)])
+# Fit BIOCLIM model - the algorithm expects a data.frame with environmental variables, but only at the presence locations
+m_bc &lt;- predicts::envelope(sp_train[sp_train$Emberiza_citrinella==1,my_preds])
 plot(m_bc)</code></pre>
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>The resulting plot shows the bounding box (5-95% percentile range).
@@ -595,12 +601,13 @@ wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>We nicely see the median as the peak of the surface, representing the
 median environmental conditions in presence locations. Let’s look at the
-corresponding partial response plots.</p>
-<pre class="r"><code>library(mecofun)
-
-# Plot partial response curves:
+corresponding partial response plots. The <code>predicts</code> package
+offers a function <code>partialResponse()</code> to calculate the
+partial response.</p>
+<pre class="r"><code># Plot partial response curves:
 par(mfrow=c(1,2)) 
-partial_response(m_bc, predictors = sp_train[,my_preds], main=&#39;BIOCLIM&#39;, ylab=&#39;Occurrence probability&#39;)</code></pre>
+plot(partialResponse(m_bc, var=1,nsteps=50),type=&#39;l&#39;, main=&#39;BIOCLIM&#39;, ylab=&#39;Occurrence probability&#39;, xlab=my_preds[1], ylim=c(0,1))
+plot(partialResponse(m_bc, var=2,nsteps=50),type=&#39;l&#39;, main=&#39;BIOCLIM&#39;, ylab=&#39;Occurrence probability&#39;, xlab=my_preds[2], ylim=c(0,1))</code></pre>
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>Last, we validate model performance on the hold-out test data.</p>
 <pre class="r"><code># We use the default MaxSens+Spec threshold:
@@ -609,56 +616,17 @@ partial_response(m_bc, predictors = sp_train[,my_preds], main=&#39;BIOCLIM&#39;,
 ## 1 0.7579365 0.4017857 0.4090909 0.547619 0.8541667 0.7111111 -0.3738568  0.175</code></pre>
 <p>Finally, let’s map the predicted occurrence probabilities across
 Britain and the predicted presence/absence.</p>
-<pre class="r"><code># Map predictions (again, the BIOCLIM predict function expects a Raster* object):
-r_bc_pred &lt;- r_bc_bin &lt;- predict(m_bc,stack(bio_curr))
+<pre class="r"><code># Map predictions
+bio_curr_df &lt;- as.data.frame(bio_curr,cell=T,xy=T)
+pred_bc_curr &lt;- predict(m_bc, bio_curr_df[,my_preds])
+r_bc_pred &lt;- r_bc_bin &lt;- terra::rast(data.frame(bio_curr_df[,c(&#39;x&#39;,&#39;y&#39;)], pred_bc_curr), type=&#39;xyz&#39;)
 
 # Threshold predictions using the maxTSS threshold (max sens+spec)
 values(r_bc_bin) &lt;- ifelse(values(r_bc_pred)&gt;=perf_bc$thresh, 1, 0)
 
-# Convert to SpatRaster objects:
-r_bc_pred &lt;- terra::rast(r_bc_pred)
-r_bc_bin &lt;- terra::rast(r_bc_bin)
-
 # plot the maps
 plot(c(r_bc_pred, r_bc_bin),main=c(&#39;BIOCLIM prob.&#39;,&#39;BIOCLIM bin.&#39;), axes=F) </code></pre>
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-</div>
-<div id="domain" class="section level3" number="2.1.2">
-<h3><span class="header-section-number">2.1.2</span> Domain</h3>
-<p>Instead of drawing rectangular envelopes, distance-based methods such
-as the <em>Domain</em> evaluate the environmental similarity between a
-“new” site and sites with known presences. <em>Domain</em> uses the
-Gower distance for assessing similarity.</p>
-<pre class="r"><code># Fit Domain model (also expects Raster* object)
-m_dom &lt;- domain(stack(bio_curr[[my_preds]]), 
-                sp_train[sp_train$Emberiza_citrinella==1,c(&#39;EASTING&#39;,&#39;NORTHING&#39;)])
-
-# Now, we plot the response surface (the grid xyz was defined earlier):
-xyz$z &lt;- predict(m_dom, xyz)
-
-wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
-          drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
-          zlim = c(0, 1), main=&#39;Domain&#39;, xlab=&#39;bio12&#39;, ylab=&#39;bio9&#39;, 
-          screen=list(z = -120, x = -70, y = 3))</code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-<pre class="r"><code># Plot partial response curves:
-par(mfrow=c(1,2)) 
-partial_response(m_dom, predictors = sp_train[,my_preds], main=&#39;DOMAIN&#39;, ylab=&#39;Occurrence probability&#39;)</code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
-<pre class="r"><code># Performance measures
-(perf_dom &lt;- evalSDM(sp_test$Emberiza_citrinella, predict(m_dom, sp_test[,my_preds])))</code></pre>
-<pre><code>##         AUC      TSS     Kappa     Sens   Spec       PCC         D2 thresh
-## 1 0.7098214 0.360119 0.3655589 0.547619 0.8125 0.6888889 0.09900221   0.68</code></pre>
-<pre class="r"><code># Map predictions (again, DOMAIN expects Raster* object):
-r_dom_pred &lt;- r_dom_bin &lt;- predict(m_dom, stack(bio_curr[[my_preds]]))
-values(r_dom_bin) &lt;- ifelse(values(r_dom_pred)&gt;=perf_dom$thresh, 1, 0)
-
-# Convert to SpatRaster objects
-r_dom_pred &lt;- terra::rast(r_dom_pred)
-r_dom_bin &lt;- terra:: rast(r_dom_bin)
-
-plot(c(r_dom_pred, r_dom_bin),main=c(&#39;Domain prob.&#39;,&#39;Domain bin.&#39;), axes=F) </code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-11-3.png" width="672" /></p>
 </div>
 </div>
 <div id="regression-based-methods" class="section level2" number="2.2">
@@ -714,11 +682,12 @@ wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;
           drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
           zlim = c(0, 1), main=&#39;GLM&#39;, xlab=&#39;bio12&#39;, ylab=&#39;bio9&#39;, 
           screen=list(z = -120, x = -70, y = 3))</code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<pre class="r"><code># Plot partial response curves:
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<pre class="r"><code># Plot partial response curves using the mecofun package:
+library(mecofun)
 par(mfrow=c(1,2)) 
 partial_response(m_glm, predictors = sp_train[,my_preds], main=&#39;GLM&#39;, ylab=&#39;Occurrence probability&#39;)</code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
 <pre class="r"><code># Performance measures
 (perf_glm &lt;- evalSDM(sp_test$Emberiza_citrinella, predict(m_glm, sp_test[,my_preds], type=&#39;response&#39;) ))</code></pre>
 <pre><code>##        AUC       TSS     Kappa      Sens   Spec       PCC        D2 thresh
@@ -730,7 +699,7 @@ r_glm_bin &lt;- r_glm_pred &lt;- terra::rast(cbind(bio_curr_df[,1:2],
                                   type=&#39;xyz&#39;, crs=crs(bio_curr))
 values(r_glm_bin) &lt;- ifelse(values(r_glm_pred)&gt;=perf_glm$thresh, 1, 0)
 plot(c(r_glm_pred, r_glm_bin),main=c(&#39;GLM prob.&#39;,&#39;GLM bin.&#39;), axes=F)   </code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-12-3.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-11-3.png" width="672" /></p>
 </div>
 <div id="generalised-additive-models-gams" class="section level3"
 number="2.2.2">
@@ -757,11 +726,11 @@ wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;
           drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
           zlim = c(0, 1), main=&#39;GAM&#39;, xlab=&#39;bio12&#39;, ylab=&#39;bio9&#39;, 
           screen=list(z = -120, x = -70, y = 3))</code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <pre class="r"><code># Plot partial response curves:
 par(mfrow=c(1,2)) 
 partial_response(m_gam, predictors = sp_train[,my_preds], main=&#39;GAM&#39;, ylab=&#39;Occurrence probability&#39;)</code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-13-2.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
 <pre class="r"><code># Performance measures
 (perf_gam &lt;- evalSDM(sp_test$Emberiza_citrinella, predict(m_gam, sp_test[,my_preds], type=&#39;response&#39;) ))</code></pre>
 <pre><code>##         AUC       TSS     Kappa      Sens   Spec       PCC        D2 thresh
@@ -773,7 +742,7 @@ r_gam_bin &lt;- r_gam_pred &lt;- terra::rast(cbind(bio_curr_df[,1:2],
 values(r_gam_bin) &lt;- ifelse(values(r_gam_pred)&gt;=perf_gam$thresh, 1, 0)
 plot(c(r_gam_pred, r_gam_bin),
      main=c(&#39;GAM prob.&#39;,&#39;GAM bin.&#39;), axes=F)    </code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-13-3.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-12-3.png" width="672" /></p>
 </div>
 </div>
 <div id="machine-learning-methods" class="section level2" number="2.3">
@@ -835,18 +804,18 @@ print(m_cart)</code></pre>
 ##      7) bio12&lt; 875.9535 107 13.6074800 0.85046730 *</code></pre>
 <pre class="r"><code>plot(m_cart, margin=0.1)
 text(m_cart, cex = 0.8)</code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <pre class="r"><code># Now, we plot the response surface:
 xyz$z &lt;- predict(m_cart, xyz)
 wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
           drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
           zlim = c(0, 1), main=&#39;CART&#39;, xlab=&#39;bio12&#39;, ylab=&#39;bio9&#39;, 
           screen=list(z = -120, x = -70, y = 3))</code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-14-2.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-13-2.png" width="672" /></p>
 <pre class="r"><code># Plot partial response curves:
 par(mfrow=c(1,2)) 
 partial_response(m_cart, predictors = sp_train[,my_preds], main=&#39;CART&#39;, ylab=&#39;Occurrence probability&#39;)</code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-14-3.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-13-3.png" width="672" /></p>
 <pre class="r"><code># Performance measures of GAM with spline-smoother 
 (perf_cart &lt;- evalSDM(sp_test$Emberiza_citrinella, predict(m_cart, sp_test[,my_preds]) ))</code></pre>
 <pre><code>##         AUC       TSS     Kappa      Sens      Spec PCC       D2 thresh
@@ -857,7 +826,7 @@ r_cart_bin &lt;- r_cart_pred &lt;- terra::rast(cbind(bio_curr_df[,1:2],
                                    type=&#39;xyz&#39;, crs=crs(bio_curr))
 values(r_cart_bin) &lt;- ifelse(values(r_cart_pred)&gt;=perf_cart$thresh, 1, 0)
 plot(c(r_cart_pred, r_cart_bin),main=c(&#39;CART prob.&#39;,&#39;CART bin.&#39;), axes=F)   </code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-14-4.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-13-4.png" width="672" /></p>
 </div>
 <div id="random-forests-rfs" class="section level3" number="2.3.2">
 <h3><span class="header-section-number">2.3.2</span> Random Forests
@@ -892,41 +861,41 @@ m_rf &lt;- randomForest( x=sp_train[,my_preds], y=sp_train$Emberiza_citrinella,
 # Variable importance:
 importance(m_rf,type=1)</code></pre>
 <pre><code>##        %IncMSE
-## bio12 68.67813
-## bio9  15.37542</code></pre>
+## bio12 66.49427
+## bio9  16.88315</code></pre>
 <pre class="r"><code>varImpPlot(m_rf)</code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <pre class="r"><code># Look at single trees:
 head(getTree(m_rf,1,T))</code></pre>
-<pre><code>##   left daughter right daughter split var split point status prediction
-## 1             2              3      bio9    7.903094     -3  0.6445498
-## 2             4              5     bio12  660.075134     -3  0.9066667
-## 3             6              7      bio9   10.675570     -3  0.5000000
-## 4             8              9     bio12  565.254272     -3  0.9705882
-## 5            10             11      bio9    5.860100     -3  0.8536585
-## 6            12             13      bio9    8.265488     -3  0.2352941</code></pre>
+<pre><code>##   left daughter right daughter split var split point status   prediction
+## 1             2              3     bio12  875.805450     -3 5.308057e-01
+## 2             4              5     bio12  694.954102     -3 8.514851e-01
+## 3             6              7      bio9    8.596580     -3 2.363636e-01
+## 4             8              9      bio9    6.057023     -3 9.545455e-01
+## 5            10             11      bio9    6.004709     -3 7.719298e-01
+## 6            12             13      bio9    8.157126     -3 1.110223e-16</code></pre>
 <pre class="r"><code># Now, we plot the response surface:
 xyz$z &lt;- predict(m_rf, xyz, type=&#39;response&#39;)
 wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
           drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
           zlim = c(0, 1), main=&#39;Random Forest&#39;, xlab=&#39;bio12&#39;, ylab=&#39;bio9&#39;, 
           screen=list(z = -120, x = -70, y = 3))</code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-15-2.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-14-2.png" width="672" /></p>
 <pre class="r"><code># Plot partial response curves:
 par(mfrow=c(1,2)) 
 partial_response(m_rf, predictors = sp_train[,my_preds], main=&#39;Random Forest&#39;, ylab=&#39;Occurrence probability&#39;)</code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-15-3.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-14-3.png" width="672" /></p>
 <pre class="r"><code># Performance measures of RF
 (perf_rf &lt;- evalSDM(sp_test$Emberiza_citrinella, predict(m_rf, sp_test[,my_preds],  type=&#39;response&#39;) ))</code></pre>
-<pre><code>##         AUC       TSS     Kappa      Sens   Spec       PCC       D2 thresh
-## 1 0.8338294 0.6458333 0.6439169 0.8333333 0.8125 0.8222222 0.164385  0.615</code></pre>
+<pre><code>##         AUC       TSS     Kappa      Sens      Spec       PCC        D2 thresh
+## 1 0.8298611 0.6160714 0.6188341 0.7619048 0.8541667 0.8111111 0.1730568   0.68</code></pre>
 <pre class="r"><code># Map predictions:
 r_rf_bin &lt;- r_rf_pred &lt;- terra::rast(cbind(bio_curr_df[,1:2],
                                  predict(m_rf, bio_curr_df,type=&#39;response&#39;)),
                                  type=&#39;xyz&#39;, crs=crs(bio_curr))
 values(r_rf_bin) &lt;- ifelse(values(r_rf_pred)&gt;=perf_rf$thresh, 1, 0)
 plot(c(r_rf_pred, r_rf_bin),main=c(&#39;RF prob.&#39;,&#39;RF bin.&#39;), axes=F)   </code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-15-4.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-14-4.png" width="672" /></p>
 </div>
 <div id="boosted-regression-trees-brts" class="section level3"
 number="2.3.3">
@@ -971,7 +940,8 @@ achieved by adding a tree while predicting to the hold-out data
 by the model is below 1000, you should decrease your learning rate; if
 it is above 10000, you should increase your learning rate. A tutorial on
 BRTs is contained in the dismo package: <code>vignette('brt')</code></p>
-<pre class="r"><code>library(gbm)
+<pre class="r"><code>library(dismo)
+library(gbm)
 
 # Fit BRT
 m_brt &lt;- gbm.step(data = sp_train, 
@@ -995,41 +965,41 @@ m_brt &lt;- gbm.step(data = sp_train,
 ## total mean deviance =  1.3699 
 ## tolerance is fixed at  0.0014 
 ## now adding trees...</code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <pre class="r"><code># Variable importance:
 m_brt$contributions</code></pre>
 <pre><code>##         var   rel.inf
-## bio12 bio12 92.863621
-## bio9   bio9  7.136379</code></pre>
+## bio12 bio12 93.366333
+## bio9   bio9  6.633667</code></pre>
 <pre class="r"><code># Interactions (not very meaningful here with only 2 predictors):
 gbm.interactions(m_brt)$interactions</code></pre>
 <pre><code>##       bio12  bio9
-## bio12     0 25.99
+## bio12     0 22.29
 ## bio9      0  0.00</code></pre>
 <pre class="r"><code>gbm.interactions(m_brt)$rank.list</code></pre>
 <pre><code>##   var1.index var1.names var2.index var2.names int.size
-## 1          2       bio9          1      bio12    25.99
+## 1          2       bio9          1      bio12    22.29
 ## 2          3       &lt;NA&gt;          0                0.00</code></pre>
 <pre class="r"><code># dismo provides some build-in functions for plotting response:
 gbm.plot(m_brt, n.plots=2, write.title = FALSE)</code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-16-2.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-15-2.png" width="672" /></p>
 <pre class="r"><code>gbm.plot.fits(m_brt)</code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-16-3.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-15-3.png" width="672" /></p>
 <pre class="r"><code># Now, we plot the response surface:
 xyz$z &lt;- predict.gbm(m_brt, xyz, n.trees=m_brt$gbm.call$best.trees, type=&quot;response&quot;)
 wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
           drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
           zlim = c(0, 1), main=&#39;Boosted regression trees&#39;, xlab=&#39;bio12&#39;, 
           ylab=&#39;bio9&#39;, screen=list(z = -120, x = -70, y = 3))</code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-16-4.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-15-4.png" width="672" /></p>
 <pre class="r"><code># Plot partial response curves:
 par(mfrow=c(1,2)) 
 partial_response(m_brt, predictors = sp_train[,my_preds], main=&#39;BRT&#39;, ylab=&#39;Occurrence probability&#39;)</code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-16-5.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-15-5.png" width="672" /></p>
 <pre class="r"><code># Performance measures of BRT
 (perf_brt &lt;- evalSDM(sp_test$Emberiza_citrinella, predict.gbm(m_brt, sp_test[,my_preds], n.trees=m_brt$gbm.call$best.trees, type=&#39;response&#39;) ))</code></pre>
-<pre><code>##         AUC       TSS     Kappa      Sens   Spec       PCC        D2 thresh
-## 1 0.8831845 0.7172619 0.7119645 0.9047619 0.8125 0.8555556 0.3494962   0.58</code></pre>
+<pre><code>##         AUC       TSS     Kappa      Sens   Spec       PCC      D2 thresh
+## 1 0.8831845 0.7172619 0.7119645 0.9047619 0.8125 0.8555556 0.34326  0.585</code></pre>
 <pre class="r"><code># Map predictions:
 r_brt_bin &lt;- r_brt_pred &lt;- terra::rast(cbind(bio_curr_df[,1:2],
                                   predict.gbm(m_brt, bio_curr_df,
@@ -1038,7 +1008,7 @@ r_brt_bin &lt;- r_brt_pred &lt;- terra::rast(cbind(bio_curr_df[,1:2],
                                   type=&#39;xyz&#39;, crs=crs(bio_curr))
 values(r_brt_bin) &lt;- ifelse(values(r_brt_pred)&gt;=perf_brt$thresh, 1, 0)
 plot(c(r_brt_pred, r_brt_bin),main=c(&#39;BRT prob.&#39;,&#39;BRT bin.&#39;), axes=F)   </code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-16-6.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-15-6.png" width="672" /></p>
 </div>
 <div id="maxent" class="section level3" number="2.3.4">
 <h3><span class="header-section-number">2.3.4</span> Maxent</h3>
@@ -1121,11 +1091,11 @@ wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;
           drape = TRUE, col.regions = cls, scales = list(arrows = FALSE), 
           zlim = c(0, 1), main=&#39;Maxent&#39;, xlab=&#39;bio12&#39;, ylab=&#39;bio9&#39;, 
           screen=list(z = -120, x = -70, y = 3))</code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <pre class="r"><code># Plot partial response curves:
 par(mfrow=c(1,2)) 
 partial_response(m_maxent, predictors = sp_train[,my_preds], main=&#39;Maxent&#39;, ylab=&#39;Occurrence probability&#39;)</code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-17-2.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-16-2.png" width="672" /></p>
 <pre class="r"><code># Performance measures of Maxent
 (perf_maxent &lt;- evalSDM(sp_test$Emberiza_citrinella, predict(m_maxent, sp_test[,my_preds],  type=&#39;logistic&#39;) ))</code></pre>
 <pre><code>##         AUC       TSS     Kappa      Sens   Spec       PCC        D2 thresh
@@ -1136,7 +1106,7 @@ r_maxent_bin &lt;- r_maxent_pred &lt;- terra::rast(cbind(bio_curr_df[,1:2],
                                      type=&#39;xyz&#39;, crs=crs(bio_curr))
 values(r_maxent_bin) &lt;- ifelse(values(r_maxent_pred)&gt;=perf_maxent$thresh, 1, 0)
 plot(c(r_maxent_pred, r_maxent_bin),main=c(&#39;Maxent prob.&#39;,&#39;Maxent bin.&#39;), axes=F)   </code></pre>
-<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-17-3.png" width="672" /></p>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-16-3.png" width="672" /></p>
 </div>
 </div>
 <div id="comparing-all-algorithms" class="section level2" number="2.4">
@@ -1145,25 +1115,23 @@ algorithms</h2>
 <p>We can now compare the performance of all algorithms on our
 independent data. Also, we store this information for running the
 ensembles in the next tutorial.</p>
-<pre class="r"><code>(comp_perf &lt;- rbind(bc = perf_bc, dom = perf_dom, glm = perf_glm, gam = perf_gam,
+<pre class="r"><code>(comp_perf &lt;- rbind(bc = perf_bc, glm = perf_glm, gam = perf_gam,
       cart = perf_cart, rf = perf_rf, brt = perf_brt, maxent = perf_maxent))</code></pre>
-<pre><code>##              AUC       TSS     Kappa      Sens      Spec       PCC          D2
-## bc     0.7579365 0.4017857 0.4090909 0.5476190 0.8541667 0.7111111 -0.37385682
-## dom    0.7098214 0.3601190 0.3655589 0.5476190 0.8125000 0.6888889  0.09900221
-## glm    0.8903770 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.37029784
-## gam    0.8859127 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.36548148
-## cart   0.8196925 0.5922619 0.5958084 0.7380952 0.8541667 0.8000000  0.16934395
-## rf     0.8338294 0.6458333 0.6439169 0.8333333 0.8125000 0.8222222  0.16438501
-## brt    0.8831845 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.34949617
-## maxent 0.8774802 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.25816707
+<pre><code>##              AUC       TSS     Kappa      Sens      Spec       PCC         D2
+## bc     0.7579365 0.4017857 0.4090909 0.5476190 0.8541667 0.7111111 -0.3738568
+## glm    0.8903770 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.3702978
+## gam    0.8859127 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.3654815
+## cart   0.8196925 0.5922619 0.5958084 0.7380952 0.8541667 0.8000000  0.1693440
+## rf     0.8298611 0.6160714 0.6188341 0.7619048 0.8541667 0.8111111  0.1730568
+## brt    0.8831845 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.3432600
+## maxent 0.8774802 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.2581671
 ##        thresh
 ## bc      0.175
-## dom     0.680
 ## glm     0.525
 ## gam     0.530
 ## cart    0.800
-## rf      0.615
-## brt     0.580
+## rf      0.680
+## brt     0.585
 ## maxent  0.410</code></pre>
 <pre class="r"><code># We add a column containing the names of the algorithm
 comp_perf &lt;- data.frame(alg=row.names(comp_perf),comp_perf)
@@ -1196,6 +1164,12 @@ Early Applications and Relevance to Most Current MaxEnt Studies.”</span>
 Buisson, L., W. Thuiller, N. Casajus, S. Lek, and G. Grenouillet. 2010.
 <span>“Uncertainty in Ensemble Forecasting of Species
 Distribution.”</span> <em>Global Change Biology</em> 16: 1145–57.
+</div>
+<div id="ref-Elith2009" class="csl-entry">
+Elith, J., and C. H. Graham. 2009. <span>“Do They? How Do They? WHY Do
+They Differ? On Finding Reasons for Differing Performances of Species
+Distribution Models.”</span> <em>Ecography</em> 32 (1): 66–77. <a
+href="https://doi.org/10.1111/j.1600-0587.2008.05505.x">https://doi.org/10.1111/j.1600-0587.2008.05505.x</a>.
 </div>
 <div id="ref-elith2006" class="csl-entry">
 Elith, J., C. H. Graham, R. P. Anderson, M. Dudik, S. Ferrier, A.

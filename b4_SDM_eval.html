@@ -702,17 +702,17 @@ thresh_dat &lt;- data.frame(
 (thresh_cv &lt;- PresenceAbsence::optimal.thresholds(DATA= thresh_dat))</code></pre>
 <pre><code>##          Method      pred
 ## 1       Default 0.5000000
-## 2     Sens=Spec 0.1400000
-## 3  MaxSens+Spec 0.1200000
-## 4      MaxKappa 0.2300000
-## 5        MaxPCC 0.5500000
-## 6  PredPrev=Obs 0.3800000
+## 2     Sens=Spec 0.1550000
+## 3  MaxSens+Spec 0.1550000
+## 4      MaxKappa 0.2200000
+## 5        MaxPCC 0.5300000
+## 6  PredPrev=Obs 0.3700000
 ## 7       ObsPrev 0.0990099
-## 8      MeanProb 0.1003547
-## 9    MinROCdist 0.1400000
-## 10      ReqSens 0.1400000
-## 11      ReqSpec 0.1600000
-## 12         Cost 0.5500000</code></pre>
+## 8      MeanProb 0.1001586
+## 9    MinROCdist 0.1550000
+## 10      ReqSens 0.1600000
+## 11      ReqSpec 0.1500000
+## 12         Cost 0.5300000</code></pre>
 <p>We can compare observed vs. predicted presences and absences based on
 these tresholds. For this, we take our predictions from the
 cross-validation. The comparison is easiest illustrated in a confusion
@@ -725,8 +725,8 @@ thresholds data frame):</p>
 <pre class="r"><code>(cmx_maxSSS &lt;- PresenceAbsence::cmx(DATA= thresh_dat, threshold=thresh_cv[3,2]))</code></pre>
 <pre><code>##          observed
 ## predicted   1   0
-##         1  27  50
-##         0   3 223</code></pre>
+##         1  26  40
+##         0   4 233</code></pre>
 <p>From such a confusion matrix, we can calculate different evaluation
 criteria. For example,<br />
 - the proportion of correctly classified test observations
@@ -737,22 +737,22 @@ sensitivity or true positive rate<br />
 specificity or true negative rate</p>
 <pre class="r"><code># Proportion of correctly classified observations
 PresenceAbsence::pcc(cmx_maxSSS, st.dev=F)</code></pre>
-<pre><code>## [1] 0.8250825</code></pre>
+<pre><code>## [1] 0.8547855</code></pre>
 <pre class="r"><code># Sensitivity = true positive rate
 PresenceAbsence::sensitivity(cmx_maxSSS, st.dev=F)</code></pre>
-<pre><code>## [1] 0.9</code></pre>
+<pre><code>## [1] 0.8666667</code></pre>
 <pre class="r"><code># Specificity = true negative rate
 PresenceAbsence::specificity(cmx_maxSSS, st.dev=F)</code></pre>
-<pre><code>## [1] 0.8168498</code></pre>
+<pre><code>## [1] 0.8534799</code></pre>
 <p>Other measures are <em>Kappa</em> and <em>TSS</em> (the true skill
 statistic). <span class="citation">Allouche, Tsoar, and Kadmon
 (2006)</span> explain how to calculate these.</p>
 <pre class="r"><code># Kappa
 PresenceAbsence::Kappa(cmx_maxSSS, st.dev=F)</code></pre>
-<pre><code>## [1] 0.4223589</code></pre>
+<pre><code>## [1] 0.4694365</code></pre>
 <pre class="r"><code># True skill statistic
 TSS(cmx_maxSSS) </code></pre>
-<pre><code>## [1] 0.7168498</code></pre>
+<pre><code>## [1] 0.7201465</code></pre>
 <p>According to <span class="citation">Araujo et al. (2005)</span>,
 <em>Kappa</em>&gt;0.4 indicate good predictions. For TSS, we often
 assume TSS&gt;0.5 to indicate good predictions.</p>
@@ -783,7 +783,7 @@ plot(roc_cv, col = &quot;grey70&quot;, lwd = 2)</code></pre>
 <p><img src="b4_SDM_eval_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <pre class="r"><code># Compute the AUC:
 AUC::auc(roc_cv)</code></pre>
-<pre><code>## [1] 0.8992674</code></pre>
+<pre><code>## [1] 0.9042735</code></pre>
 <p>It seems our model is performing pretty well on hold-out data. We can
 thus attempt making predictions in space and time.</p>
 <p>Please be aware that many packages contain functions for evaluating
@@ -794,8 +794,8 @@ the <code>mecofun</code> package contains a function
 measures. By default, this function uses the <em>MaxSens+Spec</em>
 threshold.</p>
 <pre class="r"><code>evalSDM(sp_dat$Turdus_torquatus, preds_cv)</code></pre>
-<pre><code>##         AUC       TSS     Kappa Sens      Spec       PCC        D2 thresh
-## 1 0.8992674 0.7168498 0.4223589  0.9 0.8168498 0.8250825 0.3395273   0.12</code></pre>
+<pre><code>##         AUC       TSS     Kappa      Sens      Spec       PCC        D2 thresh
+## 1 0.9042735 0.7201465 0.4694365 0.8666667 0.8534799 0.8547855 0.3507918  0.155</code></pre>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <p>Use the <code>m_yellowhammer</code> model from the previous exercise
@@ -941,26 +941,19 @@ Mostly, novel environments only prove problematic if the niche is
 truncated in the sampled data <span class="citation">(Zurell, Elith, and
 Schroeder 2012)</span>. Novel environments can be assessed in different
 ways. MESS (Multivariate environmental similarity surface) maps are
-contained in the <code>dismo</code> package and described in <span
+contained in the <code>predicts</code> package and described in <span
 class="citation">Elith, Kearney, and Phillips (2010)</span>. They assess
 for each environmental variables separately whether the projection data
-contain novel conditions beyond the sampled range. At the moment, the
-<code>dismo</code> package still relies on old <code>raster</code>
-standard and we thus need to convert our <code>SpatRaster</code> objects
-to <code>RasterStack</code> objects of the <code>raster</code>
-package.</p>
-<pre class="r"><code>library(dismo)
-library(raster)
+contain novel conditions beyond the sampled range.</p>
+<pre class="r"><code>library(predicts)
 
-# MESS maps from the dismo package:
-r.mess &lt;- mess(stack(bio_fut[[my_preds]]), sp_dat[,my_preds])
-r.mess &lt;-  terra::rast(r.mess, crs=crs(bg))
-r.mess &lt;- terra::mask(r.mess,bg)
-plot(r.mess, axes=F)</code></pre>
+# MESS maps from the predicts package:
+r_mess &lt;- mess(bio_fut[[my_preds]], sp_dat[,my_preds])
+plot(r_mess, axes=F)</code></pre>
 <p><img src="b4_SDM_eval_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
 <pre class="r"><code># Negative values indicate dissimilar=novel environments:
-r.mess.mask &lt;- r.mess&lt;0
-plot(r.mess.mask, axes=F)</code></pre>
+r_mess_mask &lt;- r_mess &lt; 0
+plot(r_mess_mask, axes=F)</code></pre>
 <p><img src="b4_SDM_eval_files/figure-html/unnamed-chunk-23-2.png" width="672" /></p>
 <p>From these maps, we can already see that novel environments should
 not be any issue for the ring ouzel as novel environments could mainly
@@ -969,12 +962,12 @@ species. Nevertheless, we can further explore model projections for
 analogous climates versus novel climates:</p>
 <pre class="r"><code># Predictions to analogous climates:
 r_analog_fut &lt;- terra::extend(r_pred_fut, bg)
-values(r_analog_fut)[values(r.mess)&lt;0] &lt;- NA
+values(r_analog_fut)[values(r_mess)&lt;0] &lt;- NA
 plot(r_analog_fut, axes=F)</code></pre>
 <p><img src="b4_SDM_eval_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 <pre class="r"><code># Predictions to novel climates:
 r_novel_fut &lt;- terra::extend(r_pred_fut, bg)
-values(r_novel_fut)[values(r.mess)&gt;=0] &lt;- NA
+values(r_novel_fut)[values(r_mess)&gt;=0] &lt;- NA
 plot(r_novel_fut, axes=F)</code></pre>
 <p><img src="b4_SDM_eval_files/figure-html/unnamed-chunk-24-2.png" width="672" /></p>
 </div>
