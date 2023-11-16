@@ -866,7 +866,8 @@ diff &lt;- sedge_68+dummy
 
 ggplot() +
   geom_spatraster(data = diff) +
- scale_fill_whitebox_c(
+ scale_fill_hypso_c(
+   palette = &#39;dem_poster&#39;,
    direction = -1,
    guide = guide_legend(reverse = TRUE),
    n.breaks=4,
@@ -874,6 +875,10 @@ ggplot() +
   ) +
   labs(fill = &quot;&quot;)</code></pre>
 <p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>If you want to play around with the gradient palettes in
+<code>tidyterra</code>, here is a good summary of them: <a
+href="https://dieghernan.github.io/tidyterra/articles/palettes.html"
+class="uri">https://dieghernan.github.io/tidyterra/articles/palettes.html</a>.</p>
 <div class="alert alert-success" role="alert">
 <p><strong>Test it yourself</strong></p>
 <ul>
