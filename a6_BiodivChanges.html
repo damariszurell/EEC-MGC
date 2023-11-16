@@ -584,14 +584,9 @@ richness changes</h1>
 <p>Next, we plot the species richness differences. For this, we define
 an own colour palette.</p>
 <pre class="r"><code># Let&#39;s first check what is the magnitude of richness changes that we are expecting:
-summary(subset(bird_dist,period==&#39;2008-11&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)] - subset(bird_dist,period==&#39;1968-72&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)])</code></pre>
-<pre><code>##     EASTING     NORTHING    richness      
-##  Min.   :0   Min.   :0   Min.   :-52.000  
-##  1st Qu.:0   1st Qu.:0   1st Qu.:-13.000  
-##  Median :0   Median :0   Median : -4.000  
-##  Mean   :0   Mean   :0   Mean   : -3.957  
-##  3rd Qu.:0   3rd Qu.:0   3rd Qu.:  5.000  
-##  Max.   :0   Max.   :0   Max.   : 44.000</code></pre>
+summary(subset(bird_dist,period==&#39;2008-11&#39;)[,&#39;richness&#39;] - subset(bird_dist,period==&#39;1968-72&#39;)[,&#39;richness&#39;])</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+## -52.000 -13.000  -4.000  -3.957   5.000  44.000</code></pre>
 <pre class="r"><code># Define axis for colour breaks - this should be symmetric around zero and encompass the magnitude of species richness changes
 brks.diff &lt;- seq(-55,55,by=5)
 
