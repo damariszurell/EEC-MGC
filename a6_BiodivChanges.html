@@ -583,12 +583,24 @@ number="2">
 richness changes</h1>
 <p>Next, we plot the species richness differences. For this, we define
 an own colour palette.</p>
-<pre class="r"><code># Define axis for colour breaks
-brks.diff &lt;- seq(-50,50,by=5)
+<pre class="r"><code># Let&#39;s first check what is the magnitude of richness changes that we are expecting:
+summary(subset(bird_dist,period==&#39;2008-11&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)] - subset(bird_dist,period==&#39;1968-72&#39;)[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness&#39;)])</code></pre>
+<pre><code>##     EASTING     NORTHING    richness      
+##  Min.   :0   Min.   :0   Min.   :-52.000  
+##  1st Qu.:0   1st Qu.:0   1st Qu.:-13.000  
+##  Median :0   Median :0   Median : -4.000  
+##  Mean   :0   Mean   :0   Mean   : -3.957  
+##  3rd Qu.:0   3rd Qu.:0   3rd Qu.:  5.000  
+##  Max.   :0   Max.   :0   Max.   : 44.000</code></pre>
+<pre class="r"><code># Define axis for colour breaks - this should be symmetric around zero and encompass the magnitude of species richness changes
+brks.diff &lt;- seq(-55,55,by=5)
 
-# Define colour palette
-cols.diff = colorRampPalette(
-  rev(c(&#39;#650A13&#39;,&#39;#b2182b&#39;,&#39;#d6604d&#39;,&#39;#f4a582&#39;,&#39;grey90&#39;,&#39;#92c5de&#39;,&#39;#4393c3&#39;,&#39;#2166ac&#39;,&#39;#0B2F52&#39;)))(21) # red-blue diverging</code></pre>
+# Define red-blue diverging colour palette
+cols_diff_palette &lt;- colorRampPalette(
+  rev(c(&#39;#650A13&#39;,&#39;#b2182b&#39;,&#39;#d6604d&#39;,&#39;#f4a582&#39;,&#39;grey90&#39;,&#39;#92c5de&#39;,&#39;#4393c3&#39;,&#39;#2166ac&#39;,&#39;#0B2F52&#39;)))
+
+# Now we define a vector of colours from our new palette that holds as many colours as we have break points above
+cols.diff = cols_diff_palette(length(brks.diff)) </code></pre>
 <p>Now, we produce a raster that shows the difference in species
 richness between two periods and call this <code>change_richness</code>.
 Then we use our new colour palette for mapping the differences:</p>
