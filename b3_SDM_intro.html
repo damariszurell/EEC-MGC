@@ -504,7 +504,7 @@ explanation, (b) mapping and interpolation, and (c) forecast and
 transfer. I recommend getting more familiar with critical assumptions
 and modelling decisions by studying the many excellent review articles
 <span class="citation">(Guisan and Zimmermann 2000; Guisan and Thuiller
-2005; Elith and Leathwick 2009)</span> and textbooks on SDMs <span
+2005; Elith and Graham 2009)</span> and textbooks on SDMs <span
 class="citation">(Peterson et al. 2011; Franklin 2010; Guisan, Thuiller,
 and Zimmermann 2017)</span>.</p>
 <p>I would also like to emphasise that model building is an iterative
@@ -1036,9 +1036,8 @@ summary(m_step)</code></pre>
 expl_deviance(obs = sp_dat$Turdus_torquatus,
               pred = m_step$fitted)</code></pre>
 <pre><code>## [1] 0.3752566</code></pre>
-<p>The final model only selected the linear terms for bio1 and bio8. The
-explained deviance is a tiny bit lower than for the quadratic model, but
-the linear model is more parsimonious.</p>
+<p>The explained deviance of the final model is a tiny bit lower than
+for the full model, but the final model is more parsimonious.</p>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <ul>
@@ -1071,10 +1070,10 @@ to Deal with It and a Simulation Study Evaluating Their
 Performance.”</span> <em>Ecography</em> 36: 27–46.
 </div>
 <div id="ref-Elith2009" class="csl-entry">
-Elith, J., and J. R. Leathwick. 2009. <span>“Species Distribution
-Models: Ecological Explanation and Prediction Across Space and
-Time.”</span> <em>Annual Review of Ecology, Evolution, and
-Systematics</em> 40: 677–97.
+Elith, J., and C. H. Graham. 2009. <span>“Do They? How Do They? WHY Do
+They Differ? On Finding Reasons for Differing Performances of Species
+Distribution Models.”</span> <em>Ecography</em> 32 (1): 66–77. <a
+href="https://doi.org/10.1111/j.1600-0587.2008.05505.x">https://doi.org/10.1111/j.1600-0587.2008.05505.x</a>.
 </div>
 <div id="ref-elith2008" class="csl-entry">
 Elith, J., J. R. Leathwick, and T. Hastie. 2008. <span>“A Working Guide
