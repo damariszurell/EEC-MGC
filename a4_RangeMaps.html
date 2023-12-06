@@ -803,50 +803,23 @@ maps with <code>letsR</code></h3>
 <p>There are also specific macroecological packages in R that facilitate
 working with range maps and rasterising them, for example the function
 <code>lets.presab()</code> in the <code>letsR</code> package.</p>
-<p>At the moment, this package still relies on the older spatial R
-package <code>raster</code> and is not available for the newest R
-version. We thus have to install an older version and need some
-workarounds for the older <code>raster</code> standards.</p>
-<pre class="r"><code>install_version(&quot;letsR&quot;, version = &quot;4.0&quot;, repos = &quot;http://cran.us.r-project.org&quot;)</code></pre>
 <pre class="r"><code>library(letsR)
-library(raster)
-
-# The lets.presab() function expects &quot;binomial&quot; as one specific column name in the Polygons data frame
-values(shrew)</code></pre>
-<pre><code>##   id_no      binomial presence origin seasonal compiler yrcompiled
-## 1 29660 Sorex alpinus        1      1        1     IUCN       2008
-##                                                citation source dist_comm island
-## 1 IUCN (International Union for Conservation of Nature)   &lt;NA&gt;      &lt;NA&gt;   &lt;NA&gt;
-##   subspecies subpop            legend tax_comm  kingdom   phylum    class
-## 1       &lt;NA&gt;   &lt;NA&gt; Extant (resident)     &lt;NA&gt; ANIMALIA CHORDATA MAMMALIA
-##         order_    family genus category marine terrestial freshwater SHAPE_Leng
-## 1 EULIPOTYPHLA SORICIDAE Sorex       NT  False       True      False   88.67521
-##   SHAPE_Area
-## 1   57.94637</code></pre>
-<pre class="r"><code>values(monkey_puzzle_terra)</code></pre>
-<pre><code>##              species  gid
-## 1 Araucaria_araucana 6382</code></pre>
-<pre class="r"><code># For data obtained from the &quot;BIEN&quot; package, we need to convert the sf object into a SpatialPolygonsDataFrame as lets.presab requires this type of object
-monkey_puzzle_raster &lt;- as(monkey_puzzle_sf, &quot;Spatial&quot;)
-
-# As the BIEN data do not contain &quot;binomial&quot; as column name, we have to add it:
-colnames(monkey_puzzle_raster@data) &lt;- &quot;binomial&quot;
 
 # We set the resolution to 1 degree (the default) and restrict the spatial extent to South America
-r_monkey_puzzle &lt;- lets.presab(monkey_puzzle_raster, resol=1, xmn = -100, xmx = -10, ymn = -57, ymx = 15)
+r_monkey_puzzle &lt;- lets.presab(monkey_puzzle_SAm, resol=1, xmn = -100, xmx = -10, ymn = -57, ymx = 15)
 
-# This time, we receive a raster object (instead of SpatRaster)
+# Inspect the SpatRaster object
 r_monkey_puzzle</code></pre>
 <pre><code>## 
 ## Class: PresenceAbsence 
 ## Number of species: 1 
-## Number of cells: 243
+## Number of cells: 283
 ## Resolution: 1, 1 (x, y)</code></pre>
 <pre class="r"><code># Map the range and range centroid
 maps::map(&#39;world&#39;,xlim = c(-100,-10),ylim = c(-60,15))
 plot(monkey_puzzle_SAm,col=&#39;blue&#39;,add=T)
 plot(r_monkey_puzzle, add=T, alpha=0.6, legend=F)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <div class="alert alert-success" role="alert">
 <p><strong>Test it yourself</strong></p>
 <ul>
@@ -912,16 +885,12 @@ look at the <em>Pinus</em> genus in the Americas</p>
 ## 8    Pinus_banksiana 69312 MULTIPOLYGON (((-66.87649 -...
 ## 9       Pinus_brutia 69313 MULTIPOLYGON (((-117.0827 3...
 ## 10    Pinus_bungeana 69319 MULTIPOLYGON (((-123.3073 4...</code></pre>
-<pre class="r"><code># Convert the sf object into a SpatialPolygonsDataFrame to be able to use the lets.presab function
-pinus_raster &lt;- as(pinus, &quot;Spatial&quot;)
-
-# As the BIEN data do not contain &quot;binomial&quot; as column name, we have to re-format the column names again before rasterising
-colnames(pinus_raster@data) &lt;- &quot;binomial&quot;
-r_pinus &lt;- lets.presab(pinus_raster, resol=1, xmn = -170, xmx = -10, ymn = -57, ymx = 60)
+<pre class="r"><code># Rasterize using letsR package
+r_pinus &lt;- lets.presab(pinus, resol=1, xmn = -170, xmx = -10, ymn = -57, ymx = 80)
 
 # Plot species richness
 plot(r_pinus)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <p>In the <code>lets.presab()</code> function, we can also specify which
 PRESENCE, ORIGIN and SEASONAL information should be used and which not
 (see IUCN metadata on moodle). Let’s look at Neotropical fruit bats
@@ -929,9 +898,6 @@ PRESENCE, ORIGIN and SEASONAL information should be used and which not
 <code>presence=1</code> meaning that we only consider extant species,
 <code>origin=1</code> meaning only native species, and
 <code>seasonal=1</code> meaning only resident species.</p>
-<p>As the <code>letsR</code> package does not work with
-<code>SpatRaster</code> objects yet, we have to use the older
-<code>raster</code> package to prepare the range map data.</p>
 <!-- ```{r echo=F} -->
 <!-- (mammals_raster <- raster::shapefile(paste0(path,'MAMMTERR.shp'))) -->
 <!-- ``` -->
@@ -945,13 +911,8 @@ PRESENCE, ORIGIN and SEASONAL information should be used and which not
 <!-- # prepare raster version of the mammals shapefile -->
 <!-- (mammals_raster <- raster::shapefile('data/MAMMTERR.shp')) -->
 <!-- ``` -->
-<pre class="r"><code>library(raster)
-
-# Subset the SpatVector
+<pre class="r"><code># Subset the SpatVector
 artibeus_ranges &lt;- mammals[grep(&#39;Artibeus&#39;,mammals$BINOMIAL),]
-
-# Convert to SpatialPolygonsDataFrame from raster package
-artibeus_ranges &lt;- as(artibeus_ranges, &quot;Spatial&quot;)
 
 # Rasterize the ranges using the letsR package
 r_artibeus &lt;- lets.presab(artibeus_ranges, resol=2, 
@@ -959,41 +920,41 @@ r_artibeus &lt;- lets.presab(artibeus_ranges, resol=2,
 
 # Map the species richness
 plot(r_artibeus)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <pre class="r"><code># Map single species - here, just the first two
 par(mfrow=c(1,2))
 plot(r_artibeus, name = &quot;Artibeus amplus&quot;)
 plot(r_artibeus, name = &quot;Artibeus anderseni&quot;)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-18-2.png" width="672" /></p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-17-2.png" width="672" /></p>
 <pre class="r"><code># Look at structure of the object and at the presence-absence matrix
 str(r_artibeus, 1)</code></pre>
 <pre><code>## List of 3
-##  $ Presence_and_Absence_Matrix: num [1:339, 1:22] -109 -109 -107 -105 -99 -83 -81 -105 -103 -99 ...
+##  $ Presence_and_Absence_Matrix: num [1:417, 1:22] -109 -107 -109 -107 -105 ...
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
-##  $ Richness_Raster            :Formal class &#39;RasterLayer&#39; [package &quot;raster&quot;] with 13 slots
+##  $ Richness_Raster            :S4 class &#39;SpatRaster&#39; [package &quot;terra&quot;]
 ##  $ Species_name               : chr [1:20] &quot;Artibeus amplus&quot; &quot;Artibeus anderseni&quot; &quot;Artibeus aztecus&quot; &quot;Artibeus cinereus&quot; ...
 ##  - attr(*, &quot;class&quot;)= chr &quot;PresenceAbsence&quot;</code></pre>
 <pre class="r"><code>head(r_artibeus$Presence_and_Absence_Matrix)</code></pre>
 <pre><code>##      Longitude(x) Latitude(y) Artibeus amplus Artibeus anderseni
-## [1,]         -109          27               0                  0
-## [2,]         -109          25               0                  0
-## [3,]         -107          25               0                  0
-## [4,]         -105          23               0                  0
-## [5,]          -99          23               0                  0
-## [6,]          -83          23               0                  0
+## [1,]    -109.1139    26.69894               0                  0
+## [2,]    -107.1139    26.69894               0                  0
+## [3,]    -109.1139    24.69894               0                  0
+## [4,]    -107.1139    24.69894               0                  0
+## [5,]    -105.1139    24.69894               0                  0
+## [6,]    -101.1139    24.69894               0                  0
 ##      Artibeus aztecus Artibeus cinereus Artibeus concolor Artibeus fimbriatus
 ## [1,]                0                 0                 0                   0
 ## [2,]                0                 0                 0                   0
 ## [3,]                0                 0                 0                   0
 ## [4,]                1                 0                 0                   0
 ## [5,]                1                 0                 0                   0
-## [6,]                0                 0                 0                   0
+## [6,]                1                 0                 0                   0
 ##      Artibeus fraterculus Artibeus glaucus Artibeus gnomus Artibeus hirsutus
 ## [1,]                    0                0               0                 1
 ## [2,]                    0                0               0                 1
 ## [3,]                    0                0               0                 1
-## [4,]                    0                0               0                 0
-## [5,]                    0                0               0                 0
+## [4,]                    0                0               0                 1
+## [5,]                    0                0               0                 1
 ## [6,]                    0                0               0                 0
 ##      Artibeus incomitatus Artibeus inopinatus Artibeus jamaicensis
 ## [1,]                    0                   0                    0
@@ -1001,21 +962,21 @@ str(r_artibeus, 1)</code></pre>
 ## [3,]                    0                   0                    0
 ## [4,]                    0                   0                    1
 ## [5,]                    0                   0                    1
-## [6,]                    0                   0                    1
+## [6,]                    0                   0                    0
 ##      Artibeus lituratus Artibeus obscurus Artibeus phaeotis
-## [1,]                  0                 0                 0
-## [2,]                  0                 0                 0
+## [1,]                  1                 0                 0
+## [2,]                  1                 0                 0
 ## [3,]                  1                 0                 0
 ## [4,]                  1                 0                 1
-## [5,]                  0                 0                 0
+## [5,]                  1                 0                 1
 ## [6,]                  0                 0                 0
 ##      Artibeus planirostris Artibeus rosenbergii Artibeus toltecus
-## [1,]                     0                    0                 0
-## [2,]                     0                    0                 0
+## [1,]                     0                    0                 1
+## [2,]                     0                    0                 1
 ## [3,]                     0                    0                 1
 ## [4,]                     0                    0                 1
 ## [5,]                     0                    0                 1
-## [6,]                     0                    0                 0
+## [6,]                     0                    0                 1
 ##      Artibeus watsoni
 ## [1,]                0
 ## [2,]                0
@@ -1049,7 +1010,7 @@ filter(pinus, species==&quot;Pinus_albicaulis&quot;)</code></pre>
 ## 1 Pinus_albicaulis 69305 MULTIPOLYGON (((-115.5687 3...</code></pre>
 <pre class="r"><code># Use &quot;sapply&quot; function to circle through all species and rasterise to 1 degree spatial resolution:
 r_1deg &lt;- terra::rast(res=1)
-r_pinus_terra &lt;- sapply(unique(pinus$species),FUN=function(sp) {
+r_pinus_terra &lt;- sapply(pinus_names,FUN=function(sp) {
   terra::rasterize(filter(pinus, species==sp), r_1deg, touches=T) 
   })
 
@@ -1062,7 +1023,7 @@ r_pinus_richness &lt;- sum(r_pinus_terra,na.rm=T)
 # Plot species richness
 maps::map(&#39;world&#39;)
 plot(r_pinus_richness, add=T, alpha=0.8)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <pre class="r"><code># We can collate a data.frame with all species occurrences similar to the lets.presab output
 r_pinus_df &lt;- as.data.frame(r_pinus_terra, xy=T)</code></pre>
 <p>Let’s also look at the mammal example. Remember that we wanted to
@@ -1109,7 +1070,7 @@ r_artibeus_richness &lt;- sum(r_artibeus_terra,na.rm=T)
 # Map the species richness
 maps::map(&#39;world&#39;)
 plot(r_artibeus_richness, add=T, alpha=0.8)</code></pre>
-<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <ul>
