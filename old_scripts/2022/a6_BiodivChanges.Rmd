@@ -1,0 +1,305 @@
+---
+title: "Analysing biodiversity changes"
+output: 
+  html_document:
+    toc: yes
+    toc_float: true
+    number_sections: true
+bibliography: mgc.bib     
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+***
+
+<div class="alert alert-info">
+**RStudio project**
+
+Open the RStudio project that we created in the first session. I recommend to use this RStudio project for the entire course and within the RStudio project create separate R scripts for each session. 
+
+- Create a new empty R script by going to the tab "File", select "New File"  and then "R script"
+- In the new R script, type `# Session a6: Analysing biodiversity changes` and save the file in your folder "scripts" within your project folder, e.g. as "a6_BiodivChanges.R"
+</div>
+
+In this session, we aim to analyse species range shifts and species richness changes in UK breeding birds over 40 years. As in previous sessions, analyses will be based on a dataset of British breeding and wintering birds recently made available by @Gillings2019. Here, we will concentrate on bird records from Britain at 10 km resolution and during the breeding season. Records are available from three different time periods in 20-year cycles (1968-1972, 1988-1991, 2008-2011). The original data are available through the British Trust of Ornithology (www.bto.org; direct download [here](https://www.bto.org/sites/default/files/atlas_open_data_files.zip)). To simplify matters, I have already filtered the data to contain only the relevant breeding records. These cleaned data are available [here](https://damariszurell.github.io/EEC-Macro/data/UK_BBatlas_1968_2008.csv). Please download the data and save them in an appropriate folder (e.g. in *data* folder).
+
+```{r}
+# Read in the distribution dataset:
+bird_dist <- read.table('data/UK_BBatlas_1968_2008.csv',header=T, sep=',', stringsAsFactors = F)
+
+# Look at data, the first three columns contain coordinate information, the 4th column contains the time periods:
+head(bird_dist[,1:20])
+
+# Species names are contained in the remaining columns:
+spp <- names(bird_dist)[-c(1:4)]
+spp_names <- sub('_',' ',spp)
+```
+
+# Species richness changes
+
+First, we analyse how species richness has changed between different time periods. For this, we first need to compute species richness per time period.  
+
+```{r}
+library(raster)
+
+# Extract species occurrences per time period and compute species richness:
+birds_68 <- subset(bird_dist,period=='1968-72')
+birds_68$richness68 <- rowSums(birds_68[,spp])
+
+plot(rasterFromXYZ(birds_68[,c('EASTING','NORTHING','richness68')]))
+```
+
+We can make seperate species richness data frames as above, or continue working with the original data frame and simply add a column for species richness. In the latter case, we will have to subset the data for mapping.
+
+```{r echo=T}
+# Calculate species richness
+bird_dist$richness <- rowSums(bird_dist[,spp])
+
+# Map species richness for different time periods
+spplot(stack(
+  rasterFromXYZ(subset(bird_dist,period=='1968-72')[,c('EASTING','NORTHING','richness')]),
+  rasterFromXYZ(subset(bird_dist,period=='1988-91')[,c('EASTING','NORTHING','richness')]),
+  rasterFromXYZ(subset(bird_dist,period=='2008-11')[,c('EASTING','NORTHING','richness')])),
+  names.attr = c('1968-72','1988-91','2008-11'), main='Species richness'
+  )
+```
+
+# Mapping species richness changes
+Next, we plot the species richness differences. For this, we define an own colour palette. 
+
+```{r eval=T}
+# Define axis for colour breaks
+brks_diff <- seq(-50,50,by=5)
+
+# Define colour palette
+cols.diff = colorRampPalette(
+  rev(c('#650A13','#b2182b','#d6604d','#f4a582','grey90','#92c5de','#4393c3','#2166ac','#0B2F52')))(21) # red-blue diverging
+```
+
+
+Now, we produce a raster that shows the difference in species richness between two periods and call this `change_richness`. Then we use our new colour palette for mapping the differences:
+```{r eval=T}
+# Calculate the difference in species richness between 1968 and 2011
+change_richness <- rasterFromXYZ(subset(bird_dist,period=='2008-11')[,c('EASTING','NORTHING','richness')]) -
+  rasterFromXYZ(subset(bird_dist,period=='1968-72')[,c('EASTING','NORTHING','richness')])
+
+# Plot the species richness change between 1968 and 2011
+plot(change_richness, axes=F,  col=cols.diff, lab.breaks=brks.diff, zlim=c(-50,50), 
+     main='Species richness change \n1968 - 2011')
+```
+
+<div class="alert alert-info">
+**Exercise: **
+
+- Map the changes in species richness between the different time periods. Interpret.
+</div>
+
+
+```{r echo=F, eval=F}
+#------
+# Map species richness differences
+par(mfrow=c(1,3))
+brks_diff <- seq(-50,50,by=5)
+cols.diff = colorRampPalette(rev(c('#650A13','#b2182b','#d6604d','#f4a582','grey90','#92c5de','#4393c3','#2166ac','#0B2F52')))(21) # red-blue diverging
+
+plot(rasterFromXYZ(subset(bird_dist,period=='2008-11')[,c('EASTING','NORTHING','richness')]) - rasterFromXYZ(subset(bird_dist,period=='1968-72')[,c('EASTING','NORTHING','richness')]), axes=F,  col=cols.diff, lab.breaks=brks.diff, zlim=c(-50,50), main='Species richness change \n1968 - 2011')
+plot(rasterFromXYZ(subset(bird_dist,period=='1988-91')[,c('EASTING','NORTHING','richness')]) - rasterFromXYZ(subset(bird_dist,period=='1968-72')[,c('EASTING','NORTHING','richness')]), axes=F,  col=cols.diff, lab.breaks=brks.diff, zlim=c(-50,50), main='Species richness change \n1968 - 1991')
+plot(rasterFromXYZ(subset(bird_dist,period=='2008-11')[,c('EASTING','NORTHING','richness')]) - rasterFromXYZ(subset(bird_dist,period=='1988-91')[,c('EASTING','NORTHING','richness')]), axes=F,  col=cols.diff, lab.breaks=brks.diff, zlim=c(-50,50), main='Species richness change \n1988 - 2011')
+par(mfrow=c(1,1))
+```
+
+
+## Mapping taxon-specific species richness changes
+
+Sometimes, we are interested how specific species groups, for example families or orders, are responding to global change. The classification into family and order was provided in the red list status table from the previous session:
+
+```{r}
+redlist_status <- read.table('/Users/zurell/data/Lehre/UP_Lehre/EEC/Macroecology/Pracs_Macro/05_IUCN_data/UK_birds_redlist_status.csv', header=T, sep=',')
+```
+
+```{r eval=F}
+redlist_status <- read.table('data/UK_birds_redlist_status.csv', header=T, sep=',')
+```
+```{r}
+# Restrict red list table to those species that are found in UK:
+redlist_status <- subset(redlist_status, scientific_name %in% spp_names)
+
+# List number of bird species in different orders:
+table(redlist_status$order)
+
+# List number of bird species in different families:
+table(redlist_status$family)
+
+# List bird species in order ACCIPITRIFORMES:
+subset(redlist_status,order=='ACCIPITRIFORMES')$scientific_name
+```
+
+We can use the table to query the species belonging to a specific order or family, then extract these species from the distribution data, and compute and map species richness.
+
+```{r}
+# Extract species belonging to the order ACCIPITRIFORMES:
+accipiter_spp <- subset(redlist_status,order=='ACCIPITRIFORMES')$scientific_name
+accipiter_spp <- sub(' ','_', accipiter_spp)
+
+# Compute ACCIPITRIFORMES species richness
+birds_68$sr_accipiter <- rowSums(birds_68[,accipiter_spp])
+
+# Map ACCIPITRIFORMES species richness
+plot(rasterFromXYZ(birds_68[,c('EASTING','NORTHING','sr_accipiter')]), main="Richness ACCIPITRIFORMES")
+```
+
+
+<div class="alert alert-info">
+**Exercise: **
+
+- Pick a family or order (e.g. ACCIPITRIFORMES), map species richness in different time periods as well as the changes in species richness between these time periods. Interpret.
+</div>
+
+# Change in species ranges
+
+For many questions, it is also interesting to analyse global change impacts at the species level, to answer for example how many species are shifting northwards, or how many species have contracting or expanding ranges.
+
+## Quantifying species range changes
+
+In the case of the gridded distribution data with equal-area grid cells, we can simply calculate range size difference by summing the number of cells. As example, we look at the sedge warbler (*Acrocephalus schoenobaenus*):
+
+```{r}
+# range size in different time periods in km°2
+(sedge_area68 <- sum(subset(bird_dist,period=='1968-72')[,'Acrocephalus_schoenobaenus'])*100)  # each grid cell in 10*10 km of size
+(sedge_area88 <- sum(subset(bird_dist,period=='1988-91')[,'Acrocephalus_schoenobaenus'])*100)
+(sedge_area08 <- sum(subset(bird_dist,period=='2008-11')[,'Acrocephalus_schoenobaenus'])*100)
+```
+
+We can also compare the range size changes for all ACROCEPHALIDAE:
+
+```{r}
+acrocepha_spp <- subset(redlist_status,family=='ACROCEPHALIDAE')$scientific_name
+acrocepha_spp <- sub(' ','_', acrocepha_spp)
+
+# Make data frame for storing the range sizes
+acrocepha_rangesize <- data.frame(expand.grid(period=c('1968-72', '1988-91', '2008-11'), species=acrocepha_spp), rangesize=NA)
+
+# Loop through all time periods and species to compute range size
+for (t in c('1968-72', '1988-91', '2008-11')) {
+  for (sp in acrocepha_spp) {
+    rangesize <- sum(subset(bird_dist,period==t)[,sp])*100
+    acrocepha_rangesize[acrocepha_rangesize$period==t & acrocepha_rangesize$species==sp, 'rangesize'] <- rangesize
+  }
+}
+
+# plot changes in range size
+library(ggplot2)
+ggplot(data = acrocepha_rangesize, mapping = aes(x = rep(c(1968,1988,2008),4), y = log(rangesize), color=species)) + geom_line() + geom_point() + xlab('Year') + ylab('log(Range size [km^2])')
+```
+
+
+We can also look at positions of range centres or boundaries. For simplicity, let's analyses only the latitudinal (south-north) shifts.
+
+```{r message=F, warning=F}
+# Make data frame for storing the range positions
+acrocepha_rangelimits <- data.frame(expand.grid(period=c('1968-72', '1988-91', '2008-11'), species=acrocepha_spp), rangecentre=NA, leading_edge=NA)
+
+# Loop through all time periods and species to compute range size
+for (t in c('1968-72', '1988-91', '2008-11')) {
+  for (sp in acrocepha_spp) {
+    # range centre
+    rangecentre <- mean(subset(bird_dist[bird_dist[,sp]==1,], period==t)[,'NORTHING'], na.rm=T)
+    acrocepha_rangelimits[acrocepha_rangelimits$period==t & acrocepha_rangelimits$species==sp, 'rangecentre'] <- rangecentre
+    
+    # leading edge
+    edge <- quantile(subset(bird_dist[bird_dist[,sp]==1,], period==t)[,'NORTHING'], 0.95)
+    acrocepha_rangelimits[acrocepha_rangelimits$period==t & acrocepha_rangelimits$species==sp, 'leading_edge'] <- edge
+  }
+}
+
+# plot changes in range positions
+ggplot(data = acrocepha_rangelimits, mapping = aes(x = rep(c(1968,1988,2008),4), y = rangecentre, color=species)) + geom_line() + geom_point() + xlab('Year') + ylab('Range centre (Northing)') + ggtitle('Range centre')
+ggplot(data = acrocepha_rangelimits, mapping = aes(x = rep(c(1968,1988,2008),4), y = leading_edge, color=species)) + geom_line() + geom_point() + xlab('Year') + ylab('Leading range edge (Northing)') + ggtitle('Leading range edge')
+
+```
+
+<div class="alert alert-info">
+**Exercise: **
+
+- Pick a bird family or order of your choice and quantify and plot the change in range sizes and range positions over time. Interpret.
+</div>
+
+
+## Mapping species range changes
+At the species level, we can analyse how species ranges shift over time and whether ranges are contracting or expanding. As an example, let's continue analysing range changes in the sedge warbler (*Acrocephalus schoenobaenus*):
+
+```{r message=F}
+# ranges sedge warbler
+sedge_68 <- rasterFromXYZ(subset(bird_dist,period=='1968-72')[,c('EASTING','NORTHING','Acrocephalus_schoenobaenus')])
+sedge_88 <- rasterFromXYZ(subset(bird_dist,period=='1988-91')[,c('EASTING','NORTHING','Acrocephalus_schoenobaenus')])
+sedge_08 <- rasterFromXYZ(subset(bird_dist,period=='2008-11')[,c('EASTING','NORTHING','Acrocephalus_schoenobaenus')])
+
+# Plot the range in different time periods
+spplot(stack(sedge_68, sedge_88, sedge_08))
+```
+
+Now, we want to visualise where the range remained stable, and where cells were colonised or decolonised. The distribution data are binary containing `0` and `1`. For easy mapping, we apply a little trick and recode all `1` in the more recent data set as `2`. That way, we can sum up the maps and get distinct codes for absence, extinction, colonisation, and stable occurrences:
+```{r echo=F,include=FALSE}
+library(kableExtra)
+df <- data.frame(
+  rowname = c(
+    '',
+    '',
+    'Time period 1',
+    ''),
+  Time1=c(
+    '',
+    '',
+    '0',
+    '1'), 
+  Time2a=c(
+    'Time period 2',
+    '0',
+    '0 = absent',
+    '1 = extinction'),
+  Time2b=c(
+    '',
+    '2',
+    '2 = colonisation',
+    '3 = stable'))
+names(df) <- c("","", "", "")
+```
+
+```{r results='asis', echo=FALSE}
+df[,1:4] %>%
+knitr::kable(col.names = NULL) %>%
+  kable_styling() %>%
+  column_spec(3, background = spec_color(c(NA,NA,1,2), end = 0.3, alpha=0.2, option='magma', na_color="#FFFFFF")) %>%
+  column_spec(4, background = spec_color(c(NA,NA,1,2), begin = 0.7, alpha=0.2, option='magma', na_color="#FFFFFF")) 
+```
+
+
+```{r message=F, warning=F}
+# Compute differences. To distinguish clearly where cells are colonised or decolonised, we assign occurrences in 1968 a value=1 and occurrence in 2008 a value=2:
+dummy <- sedge_08
+values(dummy)[values(dummy)>0 & !is.na(values(dummy))] <- 2
+
+# Sum up the layers. Values=1 indicate presence in 1968, values=2 presence in 2008, values=3 presence in both periods
+diff <- sedge_68+dummy
+diff_f <- as.factor(diff)
+rat <- levels(diff_f)[[1]]
+rat[["diff"]] <- c("Absent", "Extinction", "Colonisation", "Stable")
+levels(diff_f) <- rat
+
+library(rasterVis)
+custom.pal <- c("grey75", "coral", "cyan3","grey25")
+levelplot(diff_f, margin=F, scales=list(draw=FALSE),col.regions=custom.pal,main='Sedge warbler range change (1968-2011)')
+
+```
+
+<div class="alert alert-info">
+**Exercise: **
+
+- Map the range changes across all time periods. Interpret.
+- Pick another species and map range changes. Interpret.
+</div>
+
+
+# References

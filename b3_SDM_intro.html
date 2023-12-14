@@ -643,7 +643,7 @@ from the worldclim data base (see detail on the variables <a
 href="https://www.worldclim.org/data/bioclim.html">here</a>).</p>
 <p>Read in the data table:</p>
 <pre class="r"><code>library(terra)
-bg &lt;- terra::rast(&#39;data/Prac3_UK_mask.grd&#39;)
+bg &lt;- terra::rast(&#39;data/Prac3_UK_mask.tif&#39;)
 sp_dat &lt;- read.table(&#39;data/Prac3_RingOuzel.txt&#39;,header=T)</code></pre>
 <p>Inspect the data, and plot the presence and absence locations:</p>
 <pre class="r"><code>summary(sp_dat)</code></pre>

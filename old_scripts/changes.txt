@@ -1,0 +1,10 @@
+Major changes:
+
+folder 2022: major switch from raster to terra
+- scripts before changing to terra for most practicals
+- more elaborate pseudo-absence practical, with IDW, largely building on disco
+- bulk rasterizing range maps still largely based on letsR
+
+folder 2023: switch from dismo to predicts
+- remove DOMAIN
+- dismo is now only used for gbm.step 

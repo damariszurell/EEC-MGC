@@ -1,0 +1,207 @@
+---
+title: "Species data"
+output: 
+  html_document:
+    toc: yes
+    toc_float: true
+    number_sections: true
+bibliography: mgc.bib    
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+***
+
+<div class="alert alert-info">
+**RStudio project**
+
+Open the RStudio project that we created in the first session. I recommend to use this RStudio project for the entire module and within the RStudio project create separate R scripts for each session. 
+
+- Create a new empty R script by going to the tab "File", select "New File"  and then "R script"
+- In the new R script, type `# Session b1: Species data` and save the file in your folder "scripts" within your project folder, e.g. as "b1_SpeciesData.R"
+</div>
+
+
+Many different types of biodiversity data exist, e.g. from standardised monitoring schemes, citizen science platforms, or expert knowledge. Each comes with own challenges. Here, we will concentrate on GBIF as publicly available  source for terrestrial species occurrence data.
+
+GBIF stands for *Global Biodiversity Information Facility*. GBIF defines itself as "an international network and research infrastructure funded by the world’s governments and aimed at providing anyone, anywhere, open access to data about all types of life on Earth". GBIF contains worldwide point records from observations as well as museum records or other contributions. The data are thus not standardised and often it is unclear which spatial resolution the data represent. To understand this, let's look at some example under https://www.gbif.org/.
+
+# Occurrence data from GBIF
+We will use the package `rgbif` to search and retrieve data from GBIF. A good tutorial to this package is offered [here](https://ropensci.org/tutorials/rgbif_tutorial/). Remember that we can install new packages with the function `install.packages()`. Alternatively, the `dismo` package offers the function `gbif()`  to download gbif records. Robert Hijmans, who wrote the raster and the dismo package, also offers great tutorials on his website: http://rspatial.org.
+
+
+```{r eval=T, message=F}
+library(rgbif)
+
+# Check out the number of occurrences found in GBIF:
+occ_count()
+
+# number of observations:
+occ_count(basisOfRecord='OBSERVATION')
+
+# number of occurrences reported for Germany:
+occ_count(country=isocodes[grep("Germany", isocodes$name), "code"])
+
+# number of observations reported for Germany:
+occ_count(country=isocodes[grep("Germany", isocodes$name), "code"],basisOfRecord='OBSERVATION')
+```
+
+As example, I picked the Alpine shrew (*Sorex alpinus*) for today, a small mammal species occurring in Central and Suuth-Eastern European mountain ranges. Its conservation status is near threatened ([Link to IUCN redlist](https://www.iucnredlist.org/species/29660/9514588)). 
+
+```{r , fig.cap='**Figure 1. The Alpine shrew (*Sorex alpinus*). Picture by Dr. Richard Kraft, downloaded from https://kleinsaeuger.at/sorex-alpinus.html.**', echo=F, out.width="50%"}
+knitr::include_graphics("figures/shrew.png")
+```
+
+We first check whether any synonyms exist and how many records exist for the species. Download will be slow for high numbers of records.
+```{r}
+# Check for synonyms
+name_suggest(q='Sorex alpinus', rank='species')
+
+# Check number of records - here filtered to those with coordinate information
+occ_search(scientificName = "Sorex alpinus", hasCoordinate=T, limit = 10)
+```
+
+<div class="alert alert-info">
+***Exercise:***
+
+What does the argument `hasCoordinate=T` do? Look up the help page and explain.
+</div>
+
+
+One of the most interesting items from the outputs is the "Records found" at the very top of the output. Please be aware that `occ_search()` will not allow to download more than 100'000 records. If the GBIF data contain more, then you can set additional filters (e.g. set time period with argument `year` or geographic extent with arguments `decimalLatitude` and `decimalLongitude`) or split the area into spatial tiles (by setting geographic extent) and download the tiles separately.
+
+GBIF data also contain a lot of extra information about observer, basis of record etc. Take a look at the arguments you can set in `?occ_search` to get an overview. For example, we can limit the data to those observations that were done by humans:
+
+```{r}
+occ_search(scientificName = "Sorex alpinus", hasCoordinate=T, basisOfRecord='HUMAN_OBSERVATION', limit = 10)
+```
+
+Now, let's download the records and plot them. We had a bit less than 600 records for the shrew, and use this as `limit`. Of course, the map will only help us judging the data quality if we have a rough idea where the species should occur. So, look up the species on the web first!
+```{r , message=F}
+gbif_shrew <- occ_search(scientificName = "Sorex alpinus", hasCoordinate=T, basisOfRecord='HUMAN_OBSERVATION', limit = 600) 
+
+# We are just interested in the data frame containing the records
+gbif_shrew <- gbif_shrew$data
+
+library(maptools)
+data(wrld_simpl)
+plot(wrld_simpl,xlim=c(5,50), ylim=c(40,55))
+points(gbif_shrew$decimalLongitude, gbif_shrew$decimalLatitude, col='red',  pch=19)
+```
+
+# Cleaning and cross-checking occurrence data
+You should always critically assess the quality of your data. This also holds true for GBIF data. Look at the map again, do all records look plausible? 
+
+Not all coordinates seem to be correct, and we thus need to cross-check these. Robert Hijmans provides some code in his `dismo` [tutorials](http://rspatial.org). We will here use the new package `CoordinateCleaner` (@Zizka2019; see tutorials [here](https://ropensci.github.io/CoordinateCleaner/)). The function `clean_coordinates()` allows cleaning geographic coordinates using different cross-checks. Here, we first compare whether the coordinates for each entry match the country code provided (test `centroids`) for each entry and are no outliers (test `outliers`). Also, we test for vicinity to a biodiversity institution like botanical or zoological gardens (test `ìnstitutions` and radius `inst_rad`), and for duplicates (test `duplicates`). There are many more tests that you can check in the help pages `?clean_coordinates`.
+
+```{r echo=F, eval=F}
+library(devtools)
+install_github("ropensci/CoordinateCleaner")
+```
+
+```{r }
+library(CoordinateCleaner)
+
+# We use only those data entries with coordinate information - Note that you don't need this if you have used the hasCoordinate=T in the occ_search() function:
+gbif_shrew <- subset(gbif_shrew, !is.na(decimalLatitude))
+
+# We now clean the coordinates and check for outliers - see ?clean_coordinates for more options
+cl_gbif_shrew <- clean_coordinates(gbif_shrew, lon="decimalLongitude", lat="decimalLatitude", countries="countryCode", tests=c("centroids", "outliers", "duplicates", "institutions"), inst_rad = 1000)
+
+plot(wrld_simpl,xlim=c(5,50), ylim=c(40,55))
+points(gbif_shrew$decimalLongitude, gbif_shrew$decimalLatitude, col='red',  pch=19)
+points(gbif_shrew$decimalLongitude[cl_gbif_shrew$.summary], gbif_shrew$decimalLatitude[cl_gbif_shrew$.summary], col='blue',  pch=18)
+
+gbif_shrew <- gbif_shrew[cl_gbif_shrew$.summary,]
+```
+
+
+```{r echo=F, message=F, eval=F}
+library(CoordinateCleaner)
+
+# We use only those data entries with coordinate information
+gbif_shrew <- subset(gbif_shrew, !is.na(decimalLatitude))
+
+plot(wrld_simpl,xlim=c(5,130), ylim=c(40,55))
+points(gbif_shrew$decimalLongitude, gbif_shrew$decimalLatitude, col='red',  pch=19)
+
+# We now clean the coordinates and check for outliers - see ?clean_coordinates for more options
+cl_gbif_shrew <- clean_coordinates(gbif_shrew, lon="decimalLongitude", lat="decimalLatitude", countries="countryCode", tests=c("centroids", "duplicates", "institutions"), inst_rad = 10000)
+gbif_shrew <- gbif_shrew[cl_gbif_shrew$.summary,]
+outl <- cc_outl(gbif_shrew, lon="decimalLongitude", lat="decimalLatitude")
+gbif_shrew <- outl
+
+points(gbif_shrew$decimalLongitude, gbif_shrew$decimalLatitude, col='blue',  pch=18)
+```
+
+
+<div class="alert alert-info">
+_**Exercise:**_
+
+Look up the options in `clean_coordinates()` and think about why I chose the specific tests and options.
+</div>
+
+
+Have a look at @Zizka2019 and the examples by Robert Hijmans ([http://rspatial.org](https://rspatial.org/raster/sdm/2_sdm_occdata.html)) for finding out about other typical problems with GBIF and how to deal with these.
+
+Finally, save your data, for example by writing the final data frame to file or by saving the R object(s). 
+
+```{r}
+save(gbif_shrew,file='data/gbif_shrew.RData')
+```
+
+
+<div class="alert alert-info">
+_**Exercise:**_
+
+Pick a species of your choice, look it up on the web (www.gbif.org), and then download and clean the GBIF data using `occ_search()` and `clean_coordinates()`. 
+
+- Be careful with very large data sets as download will take long. Try, for example, the Iberian lynx, the Gorilla, the Caucasian Salamander, or any other species with max. 500-1000 records.
+- Summarise the data: how many occurrence records are there in total, how many with coordinates, how many human observations,  which time span do the records cover>?
+- Map the data
+- Clean the data: how many geographic outliers did you find, how many duplicates?
+</div>
+
+# Occurrence data for marine species: OBIS
+
+Although we will concentrate on terrestrial species in the practicals, I would at least like to mention that marine data are available from OBIS, the the Ocean Biodiversity Information System. Currently, the OBIS database holds more than 135 000 marine species. We can access the database using the package `robis`. This can be installed from github.
+
+```{r eval=F}
+library(devtools)
+install_github("iobis/robis")
+```
+
+You can visually check out the data on the [OBIS Mapper webpage](https://mapper.obis.org/). Occurrence can be downloaded from the website or using the function `occurrence()` from `robis` package.
+```{r message=F}
+library(robis)
+
+# Download OBIS data for the sea otter
+otter <- occurrence('Enhydra lutris')
+
+# Map data
+library(maps)
+map('world')
+points(otter$decimalLongitude, otter$decimalLatitude, col='blue',  pch=18)
+```
+
+Showing the occurrence records in our typically Atlantic-centred world view is a little confusing. We can obtain a Pacific-centred view by simply wrapping the maps.
+
+```{r}
+map("world", wrap=c(0,360))
+points(ifelse(otter$decimalLongitude<0,otter$decimalLongitude+360,otter$decimalLongitude), otter$decimalLatitude, col='blue',  pch=18)
+```
+
+Overall, the data look quite plausible. In general, however, we also need to pay attention to data cleaning in OBIS data. As the OBIS data follow the same data standards as GBIF data, we can also use the package `CoordinateCleaner` for data cleaning.
+
+```{r}
+# We test for spatial outliers and remove duplicates
+cl_otter <- clean_coordinates(otter, lon="decimalLongitude", lat="decimalLatitude", tests=c("duplicates","outliers"))
+
+# remove the flagged records
+otter2 <- otter[cl_otter$.summary,]
+```
+
+
+# References

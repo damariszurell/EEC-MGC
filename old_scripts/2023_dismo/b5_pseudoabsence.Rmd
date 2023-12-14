@@ -1,0 +1,427 @@
+---
+title: "Pseudo-absence and background data"
+output: 
+  html_document:
+    toc: yes
+    toc_float: true
+    number_sections: true
+bibliography: mgc.bib   
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r klippy, echo = FALSE, include = TRUE}
+klippy::klippy(position = c('top','right'))
+```
+
+```{r echo=F}
+# Sys.setlocale("LC_MESSAGES", "en_GB.UTF-8")
+Sys.setenv(LANG="en_GB.UTF-8")
+```
+
+<div class="alert alert-info">
+**RStudio project**
+
+Open the RStudio project that we created in the first session. I recommend to use this RStudio project for the entire course and within the RStudio project create separate R scripts for each session. 
+
+- Create a new empty R script by going to the tab "File", select "New File"  and then "R script"
+- In the new R script, type `# Session b5: Pseudo-absence and background data` and save the file in your folder "scripts" within your project folder, e.g. as "b5_PseudoAbsences.R"
+</div>
+
+
+# Introduction
+In the previous sessions, we have worked with very convenient presence/absence data to train our species distribution models (SDMs). However, as you have seen when downloading your own GBIF data, we often have only presence records available. Absence data are also inherently difficult to get because it requires a very high sampling effort to classify a species as absent from a location. For plants, we would need complete inventories of a larger region, e.g. several 100 m plots placed within larger 1 km sample squares. For birds, we would need several visits to a specific region within the breeding season. In both cases, we could still miss some species, meaning that we do not record the species although present (resulting in a false negative). 
+
+But what should we do if absence data are not available? Most SDM algorithms (except the profile methods, see session 6) need some kind of absence or background data to contrast the presence data to. There are different approaches for creating background data or pseudo-absence data [@BarbetMassin2012a; @Kramer-Schadt2013; @Phillips2009], although there is still room for further developments in this field and more clear-cut recommendations for users would be certainly useful. Nevertheless, I hope this tutorial will provide some examples of how to deal with presence-only data. For advice on how many background/pseudo-absence points you need, please read [@BarbetMassin2012a].
+
+In this session, we look at two major ways of creating background/pseudo-absence data:
+
+- random selection of points within study area (including or excluding the presence locations) [@BarbetMassin2012a]
+- random selection of points outside of study area [@BarbetMassin2012a]
+
+We will not cover approaches for dealing with sampling bias:
+
+- accounting for spatial sampling bias using target-group selection [@Phillips2009]
+- accounting for spatial sampling bias using inverse distance weighting [@Kramer-Schadt2013]
+
+# Species presence data
+
+<!-- ```{r, eval=F, echo=F, message=F, warning=F} -->
+<!-- library(raster) -->
+<!-- library(dismo) -->
+
+<!-- ac <- data.frame(x=c(10,20),y=c(51,51),occ=1) -->
+<!-- coordinates(ac) <- ~x+y -->
+<!-- projection(ac) <- CRS('+proj=longlat +datum=WGS84') -->
+<!-- acx <- circles(ac, d=500000, lonlat=TRUE) -->
+<!-- pol <- polygons(acx) -->
+
+<!-- samp1 <- spsample(pol, 1000, type='random', iter=25) -->
+<!-- cells <- cellFromXY(bg, samp1) -->
+<!-- cells <- unique(cells) -->
+<!-- cells <- cells[!is.na(extract(bg,cells))] -->
+<!-- xy <- data.frame(xyFromCell(bg, cells)) -->
+<!-- xy$sp <- NA -->
+
+<!-- ac2 <- data.frame(x=c(10,12,13,15,18,20),y=c(51,50,53,52,53,51),occ=1) -->
+<!-- coordinates(ac2) <- ~x+y -->
+<!-- projection(ac2) <- CRS('+proj=longlat +datum=WGS84') -->
+<!-- ac2x <- circles(ac2, d=120000, lonlat=TRUE) -->
+<!-- pol2 <- polygons(ac2x) -->
+
+<!-- xy[which(cells %in%  cellFromPolygon(bg,pol2)[[1]]),'sp'] <- 'Populus_imagines' -->
+<!-- xy[-which(cells %in%  cellFromPolygon(bg,pol2)[[1]]),'sp'] <- 'Populus_spp' -->
+
+<!-- write.table(xy,file='../data/D4_02_presences.txt',row.names=F) -->
+<!-- ``` -->
+
+I created a virtual species data set with presence points for a dummy species called *Populus imagines* and sister species *Populus spp*. The spatial resolution of the data is 5 minutes. You can download the data [here](data/Prac5_data.zip) or from the moodle page.
+
+Load and plot the data:
+```{r message=F, warning=F}
+library(terra)
+library(dismo)
+library(raster)
+
+region <- terra::rast('data/Prac5_Europe5min.grd')
+sp <- read.table('data/Prac5_presences.txt', header=T)
+
+# Plot the map and data
+plot(region,col='grey',legend=F)
+points(sp[sp$sp=='Populus_imagines',1:2],pch='+',col='red')
+points(sp[sp$sp=='Populus_spp',1:2],pch='+',cex=0.3,col='grey20')
+```
+
+# Background/Pseudo-absence data selection
+
+We use a lot of methods from the `dismo` tutorials, which are worth looking into ([see link here](https://rspatial.org/raster/sdm/3_sdm_absence-background.html)) as well as from the `terra` tutorials ([link here](https://rspatial.org/terra/sdm/3_sdm_absence-background.html)). 
+
+## Random selection of points within study area but excluding the presence location
+The `dismo` package has a function to sample random points (background data).
+
+```{r message=F, warning=F}
+# Randomly select background points from study region
+bg_rand <- dismo::randomPoints(raster(region), 500)
+
+# Plot the map and data
+plot(region,col='grey',legend=F)
+points(sp[sp$sp=='Populus_imagines',1:2],pch='+',col='red')
+points(bg_rand,pch=19,cex=0.3)
+```
+
+The same could be achieved using the `spatSample()` function in `terra`.
+
+```{r}
+# Random points with terra package:
+bg_rand_t <- terra::spatSample(region, 500, as.points=T, na.rm=T)
+
+# Plot the map and data
+plot(region,col='grey',legend=F)
+points(sp[sp$sp=='Populus_imagines',1:2],pch='+',col='red')
+points(bg_rand_t,pch=19,cex=0.3)
+```
+
+Both functions will by default sample from the entire study area independent of the presence points. However, in the `randomPoints()` function of the `dismo` package, we can provide the presence points as additional argument, and by that make sure that random background data are not sampled from presence locations.
+
+```{r message=F, warning=F}
+# Randomly select background data but excluding presence locations
+bg_rand_exclp <- dismo::randomPoints(raster(region), 500, p=sp[sp$sp=='Populus_imagines',1:2])
+
+# Plot the map and data
+plot(region,col='grey',legend=F)
+points(sp[sp$sp=='Populus_imagines',1:2],pch='+',col='red')
+points(bg_rand_exclp,pch=19,cex=0.3)
+```
+
+Also, we can define an extent from where random points should be drawn. By default, this extent is increased by 5% at each side. To circumvent this, we set `extf=1.0`.
+
+```{r message=F, warning=F}
+# Define extent object:
+e <- extent(8,24,46,57)
+
+# Randomly select background data within a restricted extent
+bg_rand_exclp_e <- randomPoints(raster(region), 500, p=sp[sp$sp=='Populus_imagines',1:2], ext=e, extf=1.0)
+
+# Plot the map and data
+plot(region,col='grey',legend=F)
+points(sp[sp$sp=='Populus_imagines',1:2],pch='+',col='red')
+points(bg_rand_exclp_e,pch=19,cex=0.3)
+plot(e, add=TRUE, col='red')
+```
+
+Last, we could also restrict the random samples to within a certain buffer distance. For this, we first create a `SpatVector`, then place a buffer around these and sample from within the buffer. The buffer can be interpreted as the area that was accessible to the species in the long-term past. Thus, the buffer helps accounting for biogeographic history by constraining absence points to those geographic area that could have been reached by the species given the movement capacity but excludes other areas. Of course, restricting the absences to a certain geographic rectangle can achieve a similar tasks but might be less accurate for complex geographies and large areas. For example, is Iceland accessible to European species or not?
+
+```{r message=F, warning=F}
+
+# Create SpatVector object of known occurrences:
+pop_imag <- terra::vect( as.matrix( sp[sp$sp=='Populus_imagines',1:2]) , crs=crs(region))
+
+# Then, place a buffer of 200 km radius around our presence points
+v_buf <- terra::buffer(pop_imag, width=200000)
+
+# Set all raster cells outside the buffer to NA
+region_buf <- terra::mask(region, v_buf)
+
+# Randomly select background data within the buffer
+bg_rand_buf <- dismo::randomPoints(raster(region_buf), 500)
+
+# Plot the map and data
+plot(region,col='grey',legend=F)
+plot(region_buf, legend=F, add=T)
+points(sp[sp$sp=='Populus_imagines',1:2],pch='+',col='red')
+points(bg_rand_buf,pch=19,cex=0.3)
+```
+
+
+## Random selection of points outside of study area
+@BarbetMassin2012a also suggested a method to sample pseudo-absences only beyond a minimum distance from the presence points. This is more of a macroecological approach, suitable for characterising the climatic limits of species. We can also use the buffering approach from above to achieve this.
+
+```{r message=F, warning=F}
+
+# Place a buffer of 200 km radius around our presence points
+v_buf <- terra::buffer(pop_imag, width=200000)
+
+# Set all raster cells outside the buffer to NA
+region_buf <- terra::mask(region, v_buf)
+
+# Now, we set all the buffer cells in the mask to NA
+region_outbuf <- region
+values(region_outbuf)[values(region_buf)==1 & !is.na(values(region_buf))] <- NA
+
+# Randomly select background data outside the buffer
+bg_rand_outbuf <- dismo::randomPoints(raster(region_outbuf), 500)
+
+# Plot the map and data
+plot(region,col='grey',legend=F)
+plot(region_buf,legend=F, add=T)
+points(sp[sp$sp=='Populus_imagines',1:2],pch='+',col='red')
+points(bg_rand_outbuf,pch=19,cex=0.3)
+```
+
+<!-- ## Accounting for spatial sampling bias using target-group selection -->
+<!-- A critical assumption behind the above-mentioned background/pseudo-absence sampling is that the presence points were systematically or randomly sampled from the known distribution and are not spatially biased. In practice, this assumption is often violated, for example when observers go to more easily accessible areas. @Phillips2009 suggested a target-group sampling for this. The idea is that we use the presence points of other groups of species as potential pseudo-absence points to mimic survey effort. These target groups should be collected or observed using the same methods and equipments. So, this approach is kind of assuming that no complete inventories were made by the observers but that there is a chance that if the species had been there it would have been observed along with the others. -->
+
+<!-- Here, we use the sister populus species as target group. -->
+
+<!-- ```{r message=F, warning=F} -->
+<!-- # Randomly select background points from the target group -->
+<!-- p <- sample(seq_len(nrow(sp[sp$sp=='Populus_spp',])), 500) -->
+<!-- bg_target <- sp[sp$sp=='Populus_spp',1:2][p,] -->
+
+<!-- # Plot the map and data -->
+<!-- plot(mask,col='grey',legend=F) -->
+<!-- points(sp[sp$sp=='Populus_imagines',1:2],pch='+',col='red') -->
+<!-- points(bg_target,pch=19,cex=0.3) -->
+<!-- ``` -->
+
+<!-- ## Accounting for spatial sampling bias using inverse distance weighting -->
+
+<!-- In the last example, we manipulate the background to have the same sampling bias as the presence data [@Kramer-Schadt2013]. For example, this is particularly useful if presence records are restricted to easily accessible areas like roads. We use inverse distance weighting to define the sampling density of the presence points and then sample background proportional to that density. Following @Kramer-Schadt2013, we assume a low sampling effort outside the sampling range of the presence data - here a 5% sampling effort. -->
+
+<!-- ```{r message=F, warning=F} -->
+<!-- # Compute inverse distance weighted interpolation and create raster with density layer -->
+<!-- idw <- geoIDW(as.matrix(sp[sp$sp=='Populus_imagines',1:2]),  -->
+<!--               randomPoints(mask, sum(sp$sp=='Populus_imagines'))) -->
+<!-- idw_r <- predict(mask, idw) -->
+
+<!-- # Re-classify density values below 0.05 indicating a 1/20 of the sampling effort -->
+<!-- values(idw_r)[values(idw_r) < 0.05] <- 0.05 -->
+
+<!-- # Clip to land mass -->
+<!-- idw_r <- mask(idw_r,mask) -->
+
+<!-- # Randomly select background data proportional to sampling density in presence data -->
+<!-- bg_idw <- randomPoints(idw_r, 500, prob=T) -->
+
+<!-- # Plot the map and data -->
+<!-- plot(idw_r) -->
+<!-- points(sp[sp$sp=='Populus_imagines',1:2],pch='+',col='red') -->
+<!-- points(bg_idw,pch=19,cex=0.3) -->
+<!-- ``` -->
+
+# Workflow for joining presence and background/pseudo-absence data
+
+In session b2, we have already learned how to join species data and environmental data (at 10 min resolution) using the Alpine Shrew as example species. Here, we will revisit this example, sample random background data and join these with environmental data to come up with a dataset containing presences and background data as well as the climatic predictors. 
+
+```{r message=F}
+# Load the species presence data (here, the data set from session 1):
+load('data/gbif_shrew_cleaned.RData')
+
+head(gbif_shrew2[,1:4])
+
+# Plot the species presences
+library(maptools)
+data(wrld_simpl)
+
+plot(wrld_simpl,xlim=c(-12,45), ylim=c(35,73))
+points(gbif_shrew_cleaned$decimalLongitude, gbif_shrew_cleaned$decimalLatitude, col='red',  pch=19)
+```
+
+You have already downloaded the climate data in session 2 and can simply read it back in. We crop it to European extent.
+```{r}
+library(geodata)
+
+# Download global bioclimatic data from worldclim (you may have to set argument 'download=T' for first download, if 'download=F' it will attempt to read from file):
+clim <- geodata::worldclim_global(var = 'bio', res = 10, download = F, path = 'data')
+
+# Crop to Europe
+clim <- terra::crop(clim, c(-12,45,35,73))
+```
+
+What is important to consider is that you kind of arbitrarily chose a scale of analysis by chosing climate data (or other environmental data) at a certain spatial resolution. Here, we chose a spatial resolution of 10 minutes while the species data may actually be at a finer resolution. So, we first make sure that our species data are fit to the spatial resolution, meaning we remove any duplicates within 10 minute cells. We do this by joining the species data with the environmental data (basically, repeating what we had already done at the end of session 2). Then, we can remove the duplicate cells.
+
+```{r}
+# We have already extracted environmental data and raster cellnumbers for the species data
+# Remember to remove any rows with duplicate cellnumbers if necessary:
+duplicated(gbif_shrew2$cell)
+
+# From now on, we just need the coordinates:
+gbif_shrew_coords <- gbif_shrew2[,c('decimalLongitude','decimalLatitude')]
+```
+
+We place a buffer of 200 km around the shrew records and sample background points randomly from within the buffer but excluding presence locations (remember that also other pseudo-absence/background data strategies are possible).
+
+```{r message=F}
+# Make SpatVector:
+presences <- terra::vect( as.matrix(gbif_shrew_coords), crs=crs(clim))
+
+# Then, place a buffer of 200 km radius around our presence points
+v_buf <- terra::buffer(presences, width=200000)
+
+# Create a background mask with target resolution and extent from climate layers
+# Set all raster cells outside the buffer to NA.
+bg <- clim[[1]]
+values(bg)[!is.na(values(bg))] <- 1
+region_buf <- terra::mask(bg, v_buf)
+plot(bg, col='grey90', legend=F)
+plot(region_buf, add=T, col='grey60', legend=F)
+
+# Randomly select background data within the buffer, excluding presence locations. We sample 10 times as many background data as we have presences.
+bg_rand_buf <- dismo::randomPoints(raster::raster(region_buf), length(presences)*10, p=gbif_shrew_coords)
+
+points(bg_rand_buf, pch=19, cex=0.2)
+points(presences, pch=19, cex=0.5, col='red')
+```
+
+Last, we need to join the presences and background data, and extract the environmental data.
+
+```{r message=F}
+# First, we prepare the presences data to contain a column indicating 1 for presence.
+sp_env <- data.frame(gbif_shrew_coords, occ=1)
+
+# Second, we make sure the background data have the same columns, and indicate 0 for absence.
+bg_rand_buf <- data.frame(bg_rand_buf)
+summary(bg_rand_buf)
+names(bg_rand_buf) <- c('decimalLongitude','decimalLatitude')
+bg_rand_buf$occ <- 0
+summary(bg_rand_buf)
+
+# Third, we bind these two data sets
+sp_env <- rbind(sp_env, bg_rand_buf)
+summary(sp_env)
+
+# Last, we join this combined data set with the climate data.
+sp_env <- cbind(sp_env, terra::extract(x = clim, y = sp_env[,c('decimalLongitude','decimalLatitude')], cells=T) )
+summary(sp_env)
+```
+
+## Spatial thinning
+When we prepare our distribution data for species distribution modelling, we also need to think about spatial autocorrelation. Using adjacent cells in model building can lead to problems with spatial autocorrelation. As a rule of thumb, data points should be at least 2-3 cells apart.
+
+One way to avoid this is spatially thinning the records, for example using the package `spThin` [@Aiello-Lammens2015]. Load the package and look up the help page `?thin`.
+
+```{r message=F}
+library(spThin)
+
+# The spThin package requires longitude/latitude coordinates, which we already have.
+# Look up the help page and try to understand the function:
+?thin
+
+# thin() expects that the data.frame contains a column with the species name
+sp_env$sp <- 'Sorex_alpinus'
+  
+# Remove adjacent cells of presence/background data:
+xy <- thin(sp_env, lat.col='decimalLatitude',long.col='decimalLongitude',spec.col='sp', thin.par=30,reps=1, write.files=F,locs.thinned.list.return=T)
+
+# Keep the coordinates with the most presence records
+xy_keep <- xy[[1]]
+
+# Thin the dataset - here, we first extract the cell numbers for the thinned coordinates and then use these to subset our data frame.
+cells_thinned <- terra::cellFromXY(clim, xy_keep)
+sp_thinned <- sp_env[sp_env$cell %in% cells_thinned,]
+
+# Plot the map and data
+plot(bg, col='grey90', legend=F)
+points(sp_thinned[,1:2],pch=19,col=c('black','red')[as.factor(sp_thinned$occ)], cex=0.3)
+```
+
+<!-- ```{r eval=F, echo=F} -->
+<!-- # Alternatively, remove adjacent cells separately in presence data and background data: -->
+<!-- xy_pres <- thin(sp_env[sp_env$occ==1,], lat.col='decimalLatitude',long.col='decimalLongitude',spec.col='sp', thin.par=20,reps=5, write.files=F,locs.thinned.list.return=T) -->
+<!-- xy_pres_keep <- xy_pres[[which.max(sapply(xy_pres,nrow))]] -->
+
+<!-- xy_abs <- thin(sp_env[sp_env$occ==0,], lat.col='decimalLatitude',long.col='decimalLongitude',spec.col='sp', thin.par=20,reps=5, write.files=F,locs.thinned.list.return=T) -->
+<!-- xy_abs_keep <- xy_abs[[which.max(sapply(xy_abs,nrow))]] -->
+
+<!-- # Thin the dataset - here, we first extract the cell numbers for the thinned coordinates and then use these to subset our data frame. -->
+<!-- cells_thinned2 <- cellFromXY(clim, rbind(xy_pres_keep, xy_abs_keep)) -->
+<!-- sp_thinned2 <- sp_env[sp_env$cells %in% cells_thinned2,] -->
+
+<!-- # Plot the map and data -->
+<!-- plot(mask, col='grey90', legend=F) -->
+<!-- points(sp_thinned2[,1:2],pch=19,col=c('black','red')[as.factor(sp_thinned2$occ)], cex=0.3) -->
+<!-- ``` -->
+
+Finally, don't forget to save your data, for example by writing the final data frame to file or by saving the R object(s).
+
+```{r}
+save(sp_thinned,file='data/gbif_shrew_PresAbs_thinned.RData')
+```
+
+**Alternative:** The `thin()` function can take quite long and needs a lot of memory space. A useful alternative function for spatial thinning is `gridSample()` in the `dismo` package.
+
+```{r}
+# Thinning to a checkerboard pattern
+xy <- dismo::gridSample(sp_env[,c("decimalLongitude","decimalLatitude")], bg,chess='white')
+sp_thinned2 <- merge(xy,sp_env,by=c("decimalLongitude","decimalLatitude"))
+
+# Plot the map and data
+plot(region, col='grey90', legend=F)
+points(sp_thinned2[,1:2],pch=19,col=c('black','red')[as.factor(sp_thinned2$occ)], cex=0.3)
+
+#-----
+
+# Thinning to larger grid
+xy <- dismo::gridSample(sp_env[,c("decimalLongitude","decimalLatitude")], aggregate(bg,2), chess='white')
+sp_thinned3 <- merge(xy,sp_env,by=c("decimalLongitude","decimalLatitude"))
+
+# Plot the map and data
+plot(region, col='grey90', legend=F)
+points(sp_thinned3[,1:2],pch=19,col=c('black','red')[as.factor(sp_thinned2$occ)], cex=0.3)
+```
+
+<!-- <div class="alert alert-info"> -->
+<!-- _**Exercise:**_ -->
+
+<!-- We have now finished our first own dataset.  -->
+
+<!-- - Use the data and build a GLM for the alpine shrew. Remember the different steps of checking for multicollinearity, building the full model and simplifying it.  -->
+<!-- - Assess the predictive performance of that model. -->
+<!-- - Make predictions to current climate. Where is the species predicted to occur in Europe? -->
+<!-- </div> -->
+
+<div class="alert alert-info">
+_**Exercise:**_
+
+In practical b1, you have downloaded your own GBIF data. Carry out the pseudo-absence data selection for this species, and run a GLM analysis.
+
+- Decide on a pseudo-absence/background data strategy for your species (in the simplest case, just follow the strategy used in the example workflow in section 4). Prepare your dataset with presences, pseudo-absences and the corresponding climate data at those locations (following the workflow in section 4) 
+- Use the data and build a GLM. Remember the different steps of checking for multicollinearity, building the full model and simplifying it. 
+- Assess the predictive performance of that model.
+- Make predictions to current climate. Decide whether you want to make predictions to the entire globe or to a more restricted geographic area (e.g. the continent where your species occurs)?
+</div>
+
+
+# References

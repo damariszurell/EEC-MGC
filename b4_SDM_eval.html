@@ -466,7 +466,7 @@ al. 2020)</span>. In this practical, we will concentrate on steps
 species-environment relationships, and make predictions. For getting a
 deeper understanding of these single steps, I highly recommend studying
 more advanced reviews <span class="citation">(Guisan and Zimmermann
-2000; Guisan and Thuiller 2005; Elith and Leathwick 2009)</span> and
+2000; Guisan and Thuiller 2005; Elith and Graham 2009)</span> and
 textbooks on SDMs <span class="citation">(Franklin 2010; Guisan,
 Thuiller, and Zimmermann 2017)</span>.</p>
 <div id="recap-of-last-session-data-and-models" class="section level2"
@@ -662,6 +662,7 @@ class="citation">(Roberts et al. 2017)</span>.</p>
 re-calibrate the model using only 4/5 of the original data and predict
 the model to the hold-out 1/5 of the data.</p>
 <pre class="r"><code>preds_cv &lt;- crossvalSDM(m1, traindat = sp_dat, colname_species = &#39;Turdus_torquatus&#39;, colname_pred = my_preds)</code></pre>
+<pre><code>## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
 <p>We receive a numeric vector of cross-validated prediction. Out of
 curiosity, let us compare the fitted values on the training data and the
 predictions on the cross-validation data. You should see that the
@@ -700,19 +701,19 @@ thresh_dat &lt;- data.frame(
         
 # Then, we find the optimal thresholds:     
 (thresh_cv &lt;- PresenceAbsence::optimal.thresholds(DATA= thresh_dat))</code></pre>
-<pre><code>##          Method      pred
-## 1       Default 0.5000000
-## 2     Sens=Spec 0.1550000
-## 3  MaxSens+Spec 0.1550000
-## 4      MaxKappa 0.2200000
-## 5        MaxPCC 0.5300000
-## 6  PredPrev=Obs 0.3700000
-## 7       ObsPrev 0.0990099
-## 8      MeanProb 0.1001586
-## 9    MinROCdist 0.1550000
-## 10      ReqSens 0.1600000
-## 11      ReqSpec 0.1500000
-## 12         Cost 0.5300000</code></pre>
+<pre><code>##          Method       pred
+## 1       Default 0.50000000
+## 2     Sens=Spec 0.14500000
+## 3  MaxSens+Spec 0.14500000
+## 4      MaxKappa 0.21000000
+## 5        MaxPCC 0.58000000
+## 6  PredPrev=Obs 0.37000000
+## 7       ObsPrev 0.09900990
+## 8      MeanProb 0.09997904
+## 9    MinROCdist 0.14500000
+## 10      ReqSens 0.15000000
+## 11      ReqSpec 0.17000000
+## 12         Cost 0.58000000</code></pre>
 <p>We can compare observed vs. predicted presences and absences based on
 these tresholds. For this, we take our predictions from the
 cross-validation. The comparison is easiest illustrated in a confusion
@@ -725,8 +726,8 @@ thresholds data frame):</p>
 <pre class="r"><code>(cmx_maxSSS &lt;- PresenceAbsence::cmx(DATA= thresh_dat, threshold=thresh_cv[3,2]))</code></pre>
 <pre><code>##          observed
 ## predicted   1   0
-##         1  26  40
-##         0   4 233</code></pre>
+##         1  26  44
+##         0   4 229</code></pre>
 <p>From such a confusion matrix, we can calculate different evaluation
 criteria. For example,<br />
 - the proportion of correctly classified test observations
@@ -737,22 +738,22 @@ sensitivity or true positive rate<br />
 specificity or true negative rate</p>
 <pre class="r"><code># Proportion of correctly classified observations
 PresenceAbsence::pcc(cmx_maxSSS, st.dev=F)</code></pre>
-<pre><code>## [1] 0.8547855</code></pre>
+<pre><code>## [1] 0.8415842</code></pre>
 <pre class="r"><code># Sensitivity = true positive rate
 PresenceAbsence::sensitivity(cmx_maxSSS, st.dev=F)</code></pre>
 <pre><code>## [1] 0.8666667</code></pre>
 <pre class="r"><code># Specificity = true negative rate
 PresenceAbsence::specificity(cmx_maxSSS, st.dev=F)</code></pre>
-<pre><code>## [1] 0.8534799</code></pre>
+<pre><code>## [1] 0.8388278</code></pre>
 <p>Other measures are <em>Kappa</em> and <em>TSS</em> (the true skill
 statistic). <span class="citation">Allouche, Tsoar, and Kadmon
 (2006)</span> explain how to calculate these.</p>
 <pre class="r"><code># Kappa
 PresenceAbsence::Kappa(cmx_maxSSS, st.dev=F)</code></pre>
-<pre><code>## [1] 0.4694365</code></pre>
+<pre><code>## [1] 0.4427586</code></pre>
 <pre class="r"><code># True skill statistic
 TSS(cmx_maxSSS) </code></pre>
-<pre><code>## [1] 0.7201465</code></pre>
+<pre><code>## [1] 0.7054945</code></pre>
 <p>According to <span class="citation">Araujo et al. (2005)</span>,
 <em>Kappa</em>&gt;0.4 indicate good predictions. For TSS, we often
 assume TSS&gt;0.5 to indicate good predictions.</p>
@@ -783,7 +784,7 @@ plot(roc_cv, col = &quot;grey70&quot;, lwd = 2)</code></pre>
 <p><img src="b4_SDM_eval_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <pre class="r"><code># Compute the AUC:
 AUC::auc(roc_cv)</code></pre>
-<pre><code>## [1] 0.9042735</code></pre>
+<pre><code>## [1] 0.8997558</code></pre>
 <p>It seems our model is performing pretty well on hold-out data. We can
 thus attempt making predictions in space and time.</p>
 <p>Please be aware that many packages contain functions for evaluating
@@ -795,7 +796,7 @@ measures. By default, this function uses the <em>MaxSens+Spec</em>
 threshold.</p>
 <pre class="r"><code>evalSDM(sp_dat$Turdus_torquatus, preds_cv)</code></pre>
 <pre><code>##         AUC       TSS     Kappa      Sens      Spec       PCC        D2 thresh
-## 1 0.9042735 0.7201465 0.4694365 0.8666667 0.8534799 0.8547855 0.3507918  0.155</code></pre>
+## 1 0.8997558 0.7054945 0.4427586 0.8666667 0.8388278 0.8415842 0.3424178  0.145</code></pre>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <p>Use the <code>m_yellowhammer</code> model from the previous exercise
@@ -873,8 +874,8 @@ layer names.</p>
 <pre class="r"><code># Change names of climate layers
 names(bio_curr) &lt;- names(bio_fut) &lt;- names(sp_dat)[-c(1:3)]</code></pre>
 <p>Store the layers for later use:</p>
-<pre class="r"><code>writeRaster(bio_curr, &#39;data/Prac4_UK_bio_curr.grd&#39;)
-writeRaster(bio_fut, &#39;data/Prac4_UK_bio_fut.grd&#39;)</code></pre>
+<pre class="r"><code>writeRaster(bio_curr, &#39;data/Prac4_UK_bio_curr.tif&#39;)
+writeRaster(bio_fut, &#39;data/Prac4_UK_bio_fut.tif&#39;)</code></pre>
 </div>
 <div id="make-predictions-to-the-environmental-layers"
 class="section level2" number="3.2">
@@ -986,16 +987,16 @@ Araujo, M. B., R. G. Pearson, W. Thuiller, and M. Erhard. 2005.
 <span>“Validation of Species-Climate Impact Models Under Climate
 Change.”</span> <em>Global Change Biology</em> 11: 1504–13.
 </div>
+<div id="ref-Elith2009" class="csl-entry">
+Elith, J., and C. H. Graham. 2009. <span>“Do They? How Do They? WHY Do
+They Differ? On Finding Reasons for Differing Performances of Species
+Distribution Models.”</span> <em>Ecography</em> 32 (1): 66–77. <a
+href="https://doi.org/10.1111/j.1600-0587.2008.05505.x">https://doi.org/10.1111/j.1600-0587.2008.05505.x</a>.
+</div>
 <div id="ref-Elith2010" class="csl-entry">
 Elith, J., M. Kearney, and S. Phillips. 2010. <span>“The Art of
 Modelling Range-Shifting Species.”</span> <em>Methods in Ecology and
 Evolution</em> 1: 330–42.
-</div>
-<div id="ref-Elith2009" class="csl-entry">
-Elith, J., and J. R. Leathwick. 2009. <span>“Species Distribution
-Models: Ecological Explanation and Prediction Across Space and
-Time.”</span> <em>Annual Review of Ecology, Evolution, and
-Systematics</em> 40: 677–97.
 </div>
 <div id="ref-Franklin2010" class="csl-entry">
 Franklin, J. 2010. <em>Mapping Species Distributions: Spatial Inference

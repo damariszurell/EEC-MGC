@@ -521,7 +521,7 @@ different algorithms.</p>
 <h2><span class="header-section-number">2.1</span> Data</h2>
 <pre class="r"><code>library(terra)
 
-bg &lt;- terra::rast(&#39;data/Prac3_UK_mask.grd&#39;)
+bg &lt;- terra::rast(&#39;data/Prac3_UK_mask.tif&#39;)
 sp_dat &lt;- read.table(&#39;data/Prac3_YellowHammer.txt&#39;,header=T)</code></pre>
 <p>Previously, we have used a simple split-sample to validate model
 performance:</p>
@@ -533,7 +533,7 @@ sp_train &lt;- sp_dat[train_i,]
 sp_test &lt;- sp_dat[-train_i,]</code></pre>
 <p>For making predictions in space, we also load the previously
 processed raster layers of current climate (see session 4).</p>
-<pre class="r"><code>bio_curr &lt;- terra::rast(&#39;data/Prac4_UK_bio_curr.grd&#39;)</code></pre>
+<pre class="r"><code>bio_curr &lt;- terra::rast(&#39;data/Prac4_UK_bio_curr.tif&#39;)</code></pre>
 </div>
 <div id="model-fitting" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> Model fitting</h2>
@@ -594,15 +594,15 @@ in last session, and stored the results of the model validation:</p>
 ## 2    glm 0.8903770 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.3702978
 ## 3    gam 0.8859127 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.3654815
 ## 4   cart 0.8196925 0.5922619 0.5958084 0.7380952 0.8541667 0.8000000  0.1693440
-## 5     rf 0.8343254 0.6220238 0.6210996 0.8095238 0.8125000 0.8111111  0.1867318
-## 6    brt 0.8831845 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.3419328
+## 5     rf 0.8308532 0.6428571 0.6428571 0.8095238 0.8333333 0.8222222  0.1841478
+## 6    brt 0.8816964 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.3439601
 ## 7 maxent 0.8774802 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.2581671
 ##   thresh
 ## 1  0.175
 ## 2  0.525
 ## 3  0.530
 ## 4  0.800
-## 5  0.620
+## 5  0.630
 ## 6  0.585
 ## 7  0.410</code></pre>
 <pre class="r"><code># we explicitly assign the algorithm names to the rows. This makes it easier to query the data frame later.
@@ -623,19 +623,19 @@ row.names(comp_perf) &lt;- comp_perf$alg</code></pre>
 
 summary(pred_testdata)</code></pre>
 <pre><code>##       glm                 gam                 cart               rf        
-##  Min.   :0.0009634   Min.   :0.0007748   Min.   :0.02273   Min.   :0.0000  
-##  1st Qu.:0.1988715   1st Qu.:0.1921130   1st Qu.:0.20000   1st Qu.:0.1240  
-##  Median :0.5515085   Median :0.5796006   Median :0.75000   Median :0.5982  
-##  Mean   :0.4999623   Mean   :0.5007960   Mean   :0.52357   Mean   :0.5112  
-##  3rd Qu.:0.8040124   3rd Qu.:0.8025983   3rd Qu.:0.85047   3rd Qu.:0.8364  
-##  Max.   :0.9070566   Max.   :0.9005589   Max.   :0.85047   Max.   :0.9798  
+##  Min.   :0.0009634   Min.   :0.0007748   Min.   :0.02273   Min.   :0.0002  
+##  1st Qu.:0.1988715   1st Qu.:0.1921130   1st Qu.:0.20000   1st Qu.:0.1335  
+##  Median :0.5515085   Median :0.5796006   Median :0.75000   Median :0.6159  
+##  Mean   :0.4999623   Mean   :0.5007960   Mean   :0.52357   Mean   :0.5126  
+##  3rd Qu.:0.8040124   3rd Qu.:0.8025983   3rd Qu.:0.85047   3rd Qu.:0.8247  
+##  Max.   :0.9070566   Max.   :0.9005589   Max.   :0.85047   Max.   :0.9778  
 ##       brt             maxent       
-##  Min.   :0.1237   Min.   :0.01877  
-##  1st Qu.:0.1893   1st Qu.:0.22899  
-##  Median :0.5987   Median :0.43513  
-##  Mean   :0.5123   Mean   :0.37117  
-##  3rd Qu.:0.8053   3rd Qu.:0.54487  
-##  Max.   :0.8176   Max.   :0.58623</code></pre>
+##  Min.   :0.1241   Min.   :0.01877  
+##  1st Qu.:0.1825   1st Qu.:0.22899  
+##  Median :0.5996   Median :0.43513  
+##  Mean   :0.5121   Mean   :0.37117  
+##  3rd Qu.:0.8045   3rd Qu.:0.54487  
+##  Max.   :0.8182   Max.   :0.58623</code></pre>
 <p>As we have stored the maxSens+Spec threshold for each model, we can
 also threshold the predictions to obtain predicted presences and
 absences.</p>
@@ -653,7 +653,7 @@ summary(binpred_testdata)</code></pre>
 ##  Min.   :0.0000   Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
 ##  1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000  
 ##  Median :1.0000   Median :1.0000   Median :0.0000   Median :0.0000  
-##  Mean   :0.5222   Mean   :0.5222   Mean   :0.4222   Mean   :0.4667  
+##  Mean   :0.5222   Mean   :0.5222   Mean   :0.4222   Mean   :0.4556  
 ##  3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000  
 ##  Max.   :1.0000   Max.   :1.0000   Max.   :1.0000   Max.   :1.0000  
 ##       brt             maxent      
@@ -710,32 +710,32 @@ al. 2009)</span>.</p>
 # performance measures for &quot;mean of probabilities&quot;
 (perf_mean_prob &lt;- evalSDM(sp_test$Emberiza_citrinella, mean_prob))</code></pre>
 <pre><code>##         AUC       TSS     Kappa      Sens   Spec       PCC        D2 thresh
-## 1 0.8784722 0.7172619 0.7119645 0.9047619 0.8125 0.8555556 0.3348808   0.53</code></pre>
+## 1 0.8794643 0.7172619 0.7119645 0.9047619 0.8125 0.8555556 0.3362392   0.53</code></pre>
 <pre class="r"><code># performance measures for &quot;median of probabilities&quot;:
 (perf_median_prob &lt;- evalSDM(sp_test$Emberiza_citrinella, median_prob))</code></pre>
 <pre><code>##         AUC       TSS     Kappa      Sens      Spec       PCC        D2 thresh
-## 1 0.8834325 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667 0.3539695   0.55</code></pre>
+## 1 0.8839286 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667 0.3543227   0.55</code></pre>
 <pre class="r"><code># performance measures for &quot;weighted mean of probabilities&quot;:
 (perf_wmean_prob &lt;- evalSDM(sp_test$Emberiza_citrinella, wmean_prob))</code></pre>
 <pre><code>##         AUC       TSS     Kappa      Sens      Spec       PCC        D2 thresh
-## 1 0.8789683 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667 0.3380592   0.53</code></pre>
+## 1 0.8794643 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667 0.3391115   0.54</code></pre>
 <pre class="r"><code># performance measures for &quot;committee average&quot;:
 (perf_committee_prob &lt;- evalSDM(sp_test$Emberiza_citrinella, committee_av))</code></pre>
-<pre><code>##         AUC       TSS     Kappa      Sens      Spec       PCC         D2 thresh
-## 1 0.8618552 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667 -0.8470082   0.58</code></pre>
+<pre><code>##        AUC       TSS     Kappa      Sens      Spec       PCC         D2 thresh
+## 1 0.860119 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667 -0.8499386   0.58</code></pre>
 <pre class="r"><code># Compare:
 (ens_perf &lt;- rbind(mean_prob = perf_mean_prob, median_prob = perf_median_prob, 
                     wmean_prob = perf_mean_prob, committee_av = perf_committee_prob))</code></pre>
 <pre><code>##                    AUC       TSS     Kappa      Sens      Spec       PCC
-## mean_prob    0.8784722 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
-## median_prob  0.8834325 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667
-## wmean_prob   0.8784722 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
-## committee_av 0.8618552 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667
+## mean_prob    0.8794643 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
+## median_prob  0.8839286 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667
+## wmean_prob   0.8794643 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556
+## committee_av 0.8601190 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667
 ##                      D2 thresh
-## mean_prob     0.3348808   0.53
-## median_prob   0.3539695   0.55
-## wmean_prob    0.3348808   0.53
-## committee_av -0.8470082   0.58</code></pre>
+## mean_prob     0.3362392   0.53
+## median_prob   0.3543227   0.55
+## wmean_prob    0.3362392   0.53
+## committee_av -0.8499386   0.58</code></pre>
 <div id="visualising-response-surfaces" class="section level2"
 number="3.1">
 <h2><span class="header-section-number">3.1</span> Visualising response

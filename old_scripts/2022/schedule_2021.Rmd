@@ -1,0 +1,96 @@
+---
+title: "Course schedules"
+output: 
+  html_document:
+    toc: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The module Macroecology and global change offers one lecture on *Macroecology* and two practical courses on *Macroecological analyses* and on *Species distribution modelling*, which are run in sequence.
+
+#### Schedule for the winter term 2021/2022
+
+```{r echo=F,include=FALSE}
+library(kableExtra)
+df <- data.frame(
+  Week=c(
+    '1 (Oct 25th - Oct 29th)',
+    '2',
+    '3',
+    '4', 
+    '5',
+    '6', 
+    '7', 
+    '8 (Dec 13th - Dec 17th)',
+    '9 (Jan 3rd - Jan 7th)',
+    '10',
+    '11',
+    '12',
+    '13',
+    '14',
+    '15 (Feb 14th - Feb 18th)'), 
+  Lecture=c(
+    'What is macroecology ?',
+    'Global biodiversity patterns I',
+    'Global biodiversity patterns II',
+    'Limits to species distributions I',
+    'Limits to species distributions II',
+    'Drivers of biodiversity change',
+    'Observed biodiversity change - terrerstrial',
+    'Observed biodiversity change - marine & freshwater',
+    'Modelling biodiversity dynamics I',
+    'Modelling biodiversity dynamics II',
+    'Scientific writing',
+    'Components of diversity',
+    'Functional traits',
+    'tbd',
+    'Q&A'),
+  ColPractical=c(
+    '(a) Macroecological analyses',
+    '',
+    '',
+    '',
+    '',
+    '(b) Species distribution modelling',
+    '',
+    '', 
+    '',
+    '',
+    'Group work',
+    '',
+    '',
+    '',
+    'Presentations'),
+  Practical=c(
+    '1. Spatial data in R',
+    '2. Species richness gradients',
+    '3. Species richness regression',
+    '4. Species range maps',
+    '5. Species threats + 6. Biodiversity changes',
+    '1. Species data + 2. Environmental data',
+    '3. SDM I: simple model fitting + 4. SDM II: model assessment and prediction',
+    '5. Pseudo-absence and background data', 
+    '6. SDM III: algorithms',
+    '7. SDM IV: ensembles',
+    '',
+    '',
+    '',
+    '',
+    ''),
+  Col=c(2,2,2,2,2,3,3,3,3,3,NA,NA,NA,NA,NA))
+names(df)[2:4] <- c("Lecture (Tuesdays, 90 min)","", "Practicals (Thursdays, 180 min)")
+```
+
+```{r results='asis', echo=FALSE}
+df[,1:4] %>%
+knitr::kable(escape=F) %>%
+  # kable_styling()
+  kable_paper("hover", full_width = F) %>%
+  column_spec(1, background = spec_color(1, end = 0.1, alpha=0.2, option='magma')) %>%
+  column_spec(2, background = spec_color(1, begin=0.9, alpha=0.3), bold=T) %>%
+  column_spec(3, background = spec_color(df$Col, begin = 0.4, end=0.8, alpha=0.3, na_color="#E1E1E1"), bold=T) %>%
+  column_spec(4, background = spec_color(df$Col, begin = 0.4, end=0.8, alpha=0.3, na_color="#E1E1E1"))
+```
