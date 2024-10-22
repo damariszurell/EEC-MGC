@@ -13,7 +13,7 @@
 
 <title>SDM assessment and prediction</title>
 
-<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -481,7 +481,7 @@ and model fitting:</p>
 <pre class="r"><code>library(terra)
 bg &lt;- terra::rast(&#39;data/Prac3_UK_mask.tif&#39;)
 sp_dat &lt;- read.table(&#39;data/Prac3_RingOuzel.txt&#39;,header=T)</code></pre>
-<pre class="r"><code>m1 &lt;- step(glm( Turdus_torquatus ~ bio1 + I(bio1^2) + bio8 + I(bio8^2), family=&#39;binomial&#39;, data=sp_dat))</code></pre>
+<pre class="r"><code>m_ringouzel &lt;- step(glm( Turdus_torquatus ~ bio1 + I(bio1^2) + bio8 + I(bio8^2), family=&#39;binomial&#39;, data=sp_dat))</code></pre>
 <pre><code>## Start:  AIC=132.24
 ## Turdus_torquatus ~ bio1 + I(bio1^2) + bio8 + I(bio8^2)
 ## 
@@ -500,7 +500,7 @@ sp_dat &lt;- read.table(&#39;data/Prac3_RingOuzel.txt&#39;,header=T)</code></pre
 ## - bio8       1   124.86 130.86
 ## - I(bio8^2)  1   126.00 132.00
 ## - I(bio1^2)  1   140.38 146.38</code></pre>
-<pre class="r"><code>summary(m1)</code></pre>
+<pre class="r"><code>summary(m_ringouzel)</code></pre>
 <pre><code>## 
 ## Call:
 ## glm(formula = Turdus_torquatus ~ I(bio1^2) + bio8 + I(bio8^2), 
@@ -551,10 +551,10 @@ gradients.</p>
 <p>We can get the predicted values using the <code>predict()</code>
 function.</p>
 <pre class="r"><code># If we do not provide &quot;newdata&quot;, then predict() should simply return the fitted values: 
-head(predict(m1, type=&#39;response&#39;))</code></pre>
+head(predict(m_ringouzel, type=&#39;response&#39;))</code></pre>
 <pre><code>##            1            2            3            4            5            6 
 ## 8.631855e-02 5.658431e-03 2.207752e-02 2.036298e-02 2.878656e-05 4.897743e-02</code></pre>
-<pre class="r"><code>head(m1$fitted)</code></pre>
+<pre class="r"><code>head(m_ringouzel$fitted)</code></pre>
 <pre><code>##            1            2            3            4            5            6 
 ## 8.631855e-02 5.658431e-03 2.207752e-02 2.036298e-02 2.878656e-05 4.897743e-02</code></pre>
 <p>If we want to predict model response along the two environmental
@@ -570,7 +570,7 @@ xyz &lt;- expand.grid(
     )
 
 # Now we can make predictions to this new data frame
-xyz$z &lt;- predict(m1, newdata=xyz, type=&#39;response&#39;)
+xyz$z &lt;- predict(m_ringouzel, newdata=xyz, type=&#39;response&#39;)
 summary(xyz)</code></pre>
 <pre><code>##       bio1             bio8              z            
 ##  Min.   : 5.274   Min.   : 1.090   Min.   :0.0000000  
@@ -611,7 +611,7 @@ my_preds &lt;- c(&#39;bio1&#39;, &#39;bio8&#39;)
 par(mfrow=c(1,2))
 
 # Plot the partial responses
-partial_response(m1, predictors = sp_dat[,my_preds], ylab=&#39;Occurrence probability&#39;)</code></pre>
+partial_response(m_ringouzel, predictors = sp_dat[,my_preds], ylab=&#39;Occurrence probability&#39;)</code></pre>
 <p><img src="b4_SDM_eval_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>When you compare the response surface and the partial response
 curves, you see that the latter only give us an incomplete picture of
@@ -635,7 +635,7 @@ performance</h2>
 “explained deviance” that tells us something about the goodness-of-fit,
 meaning how well the model fits the data.</p>
 <pre class="r"><code>expl_deviance(obs = sp_dat$Turdus_torquatus,
-              pred = m1$fitted)</code></pre>
+              pred = m_ringouzel$fitted)</code></pre>
 <pre><code>## [1] 0.3752566</code></pre>
 <p>Here, our two-predictor model explains roughly 40% of the variance in
 the data. However, often we are not only interested in how well our
@@ -661,15 +661,16 @@ class="citation">(Roberts et al. 2017)</span>.</p>
 <code>mecofun</code> package to split our data into 5 folds,
 re-calibrate the model using only 4/5 of the original data and predict
 the model to the hold-out 1/5 of the data.</p>
-<pre class="r"><code>preds_cv &lt;- crossvalSDM(m1, traindat = sp_dat, colname_species = &#39;Turdus_torquatus&#39;, colname_pred = my_preds)</code></pre>
-<pre><code>## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+<pre class="r"><code>preds_cv &lt;- crossvalSDM(m_ringouzel, traindat = sp_dat, colname_species = &#39;Turdus_torquatus&#39;, colname_pred = my_preds)</code></pre>
+<pre><code>## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
 <p>We receive a numeric vector of cross-validated prediction. Out of
 curiosity, let us compare the fitted values on the training data and the
 predictions on the cross-validation data. You should see that the
 predictions are similar (this is good, otherwise our model would be very
 sensitive to changes in input data) but not identical - thus, we have
 basically added some noise.</p>
-<pre class="r"><code>plot(m1$fitted.values, preds_cv, xlab=&#39;Fitted values&#39;, ylab=&#39;Predicted values from CV&#39;)
+<pre class="r"><code>plot(m_ringouzel$fitted.values, preds_cv, xlab=&#39;Fitted values&#39;, ylab=&#39;Predicted values from CV&#39;)
 abline(0,1,col=&#39;red&#39;,lwd=2)</code></pre>
 <p><img src="b4_SDM_eval_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <p>We will use these cross-validated predictions to assess model
@@ -701,19 +702,19 @@ thresh_dat &lt;- data.frame(
         
 # Then, we find the optimal thresholds:     
 (thresh_cv &lt;- PresenceAbsence::optimal.thresholds(DATA= thresh_dat))</code></pre>
-<pre><code>##          Method       pred
-## 1       Default 0.50000000
-## 2     Sens=Spec 0.14000000
-## 3  MaxSens+Spec 0.09000000
-## 4      MaxKappa 0.18000000
-## 5        MaxPCC 0.73000000
-## 6  PredPrev=Obs 0.37000000
-## 7       ObsPrev 0.09900990
-## 8      MeanProb 0.09962455
-## 9    MinROCdist 0.16000000
-## 10      ReqSens 0.13000000
-## 11      ReqSpec 0.15000000
-## 12         Cost 0.73000000</code></pre>
+<pre><code>##          Method      pred
+## 1       Default 0.5000000
+## 2     Sens=Spec 0.1300000
+## 3  MaxSens+Spec 0.1000000
+## 4      MaxKappa 0.2000000
+## 5        MaxPCC 0.5000000
+## 6  PredPrev=Obs 0.3800000
+## 7       ObsPrev 0.0990099
+## 8      MeanProb 0.1007655
+## 9    MinROCdist 0.1200000
+## 10      ReqSens 0.1200000
+## 11      ReqSpec 0.1600000
+## 12         Cost 0.5100000</code></pre>
 <p>We can compare observed vs. predicted presences and absences based on
 these tresholds. For this, we take our predictions from the
 cross-validation. The comparison is easiest illustrated in a confusion
@@ -726,8 +727,8 @@ thresholds data frame):</p>
 <pre class="r"><code>(cmx_maxSSS &lt;- PresenceAbsence::cmx(DATA= thresh_dat, threshold=thresh_cv[3,2]))</code></pre>
 <pre><code>##          observed
 ## predicted   1   0
-##         1  28  60
-##         0   2 213</code></pre>
+##         1  27  57
+##         0   3 216</code></pre>
 <p>From such a confusion matrix, we can calculate different evaluation
 criteria. For example,<br />
 - the proportion of correctly classified test observations
@@ -738,22 +739,22 @@ sensitivity or true positive rate<br />
 specificity or true negative rate</p>
 <pre class="r"><code># Proportion of correctly classified observations
 PresenceAbsence::pcc(cmx_maxSSS, st.dev=F)</code></pre>
-<pre><code>## [1] 0.7953795</code></pre>
+<pre><code>## [1] 0.8019802</code></pre>
 <pre class="r"><code># Sensitivity = true positive rate
 PresenceAbsence::sensitivity(cmx_maxSSS, st.dev=F)</code></pre>
-<pre><code>## [1] 0.9333333</code></pre>
+<pre><code>## [1] 0.9</code></pre>
 <pre class="r"><code># Specificity = true negative rate
 PresenceAbsence::specificity(cmx_maxSSS, st.dev=F)</code></pre>
-<pre><code>## [1] 0.7802198</code></pre>
+<pre><code>## [1] 0.7912088</code></pre>
 <p>Other measures are <em>Kappa</em> and <em>TSS</em> (the true skill
 statistic). <span class="citation">Allouche, Tsoar, and Kadmon
 (2006)</span> explain how to calculate these.</p>
 <pre class="r"><code># Kappa
 PresenceAbsence::Kappa(cmx_maxSSS, st.dev=F)</code></pre>
-<pre><code>## [1] 0.3835401</code></pre>
+<pre><code>## [1] 0.3837706</code></pre>
 <pre class="r"><code># True skill statistic
 TSS(cmx_maxSSS) </code></pre>
-<pre><code>## [1] 0.7135531</code></pre>
+<pre><code>## [1] 0.6912088</code></pre>
 <p>According to <span class="citation">Araujo et al. (2005)</span>,
 <em>Kappa</em>&gt;0.4 indicate good predictions. For TSS, we often
 assume TSS&gt;0.5 to indicate good predictions.</p>
@@ -784,7 +785,7 @@ plot(roc_cv, col = &quot;grey70&quot;, lwd = 2)</code></pre>
 <p><img src="b4_SDM_eval_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <pre class="r"><code># Compute the AUC:
 AUC::auc(roc_cv)</code></pre>
-<pre><code>## [1] 0.8982906</code></pre>
+<pre><code>## [1] 0.8941392</code></pre>
 <p>It seems our model is performing pretty well on hold-out data. We can
 thus attempt making predictions in space and time.</p>
 <p>Please be aware that many packages contain functions for evaluating
@@ -795,14 +796,14 @@ the <code>mecofun</code> package contains a function
 measures. By default, this function uses the <em>MaxSens+Spec</em>
 threshold.</p>
 <pre class="r"><code>evalSDM(sp_dat$Turdus_torquatus, preds_cv)</code></pre>
-<pre><code>##         AUC       TSS     Kappa      Sens      Spec       PCC        D2 thresh
-## 1 0.8982906 0.7135531 0.3835401 0.9333333 0.7802198 0.7953795 0.3352692   0.09</code></pre>
+<pre><code>##         AUC       TSS     Kappa Sens      Spec       PCC        D2 thresh
+## 1 0.8941392 0.6912088 0.3837706  0.9 0.7912088 0.8019802 0.3260407    0.1</code></pre>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <p>Use the <code>m_yellowhammer</code> model from the previous exercise
 and assess the TSS, sensitivity, specificity, and AUC.</p>
 <ul>
-<li>The model of which species (<code>m1</code> or
+<li>The model of which species (<code>m_ringouzel</code> or
 <code>m_yellowhammer</code>) has a higher predictive performance?</li>
 </ul>
 </div>
@@ -888,8 +889,8 @@ bio_curr_df &lt;- data.frame(crds(bio_curr),as.points(bio_curr))
 bio_fut_df &lt;- data.frame(crds(bio_fut),as.points(bio_fut))
 
 # Make continuous predictions:
-bio_curr_df$pred_glm &lt;- predict(m1, newdata= bio_curr_df, type=&quot;response&quot;)
-bio_fut_df$pred_glm &lt;- predict(m1, newdata= bio_fut_df, type=&quot;response&quot;)</code></pre>
+bio_curr_df$pred_glm &lt;- predict(m_ringouzel, newdata= bio_curr_df, type=&quot;response&quot;)
+bio_fut_df$pred_glm &lt;- predict(m_ringouzel, newdata= bio_fut_df, type=&quot;response&quot;)</code></pre>
 <p>Of course, we can also plot the predictions:</p>
 <pre class="r"><code>par(mfrow=c(1,2))
 
@@ -972,6 +973,11 @@ values(r_novel_fut)[values(r_mess)&gt;=0] &lt;- NA
 plot(r_novel_fut, axes=F)</code></pre>
 <p><img src="b4_SDM_eval_files/figure-html/unnamed-chunk-24-2.png" width="672" /></p>
 </div>
+</div>
+<div id="homework-prep" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Homework prep</h1>
+<p>As homework, solve the exercises in the blue boxes that you find
+throughout the practical.</p>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>

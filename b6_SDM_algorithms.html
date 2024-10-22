@@ -13,7 +13,7 @@
 
 <title>SDM algorithms</title>
 
-<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -861,19 +861,19 @@ m_rf &lt;- randomForest( x=sp_train[,my_preds], y=sp_train$Emberiza_citrinella,
 # Variable importance:
 importance(m_rf,type=1)</code></pre>
 <pre><code>##        %IncMSE
-## bio12 66.86318
-## bio9  15.75781</code></pre>
+## bio12 71.11887
+## bio9  15.49371</code></pre>
 <pre class="r"><code>varImpPlot(m_rf)</code></pre>
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <pre class="r"><code># Look at single trees:
 head(getTree(m_rf,1,T))</code></pre>
 <pre><code>##   left daughter right daughter split var split point status prediction
-## 1             2              3      bio9    7.140396     -3  0.5829384
-## 2             4              5      bio9    5.345377     -3  0.9298246
-## 3             6              7     bio12 1233.150269     -3  0.4545455
-## 4             0              0      &lt;NA&gt;    0.000000     -1  0.0000000
-## 5             8              9      bio9    5.833994     -3  0.9464286
-## 6            10             11      bio9   11.561926     -3  0.7272727</code></pre>
+## 1             2              3     bio12 1065.103210     -3 0.56398104
+## 2             4              5     bio12  568.039551     -3 0.83458647
+## 3             6              7      bio9   12.342194     -3 0.10256410
+## 4             8              9      bio9    6.123576     -3 0.42857143
+## 5            10             11      bio9    7.524390     -3 0.85714286
+## 6            12             13      bio9    8.596580     -3 0.08333333</code></pre>
 <pre class="r"><code># Now, we plot the response surface:
 xyz$z &lt;- predict(m_rf, xyz, type=&#39;response&#39;)
 wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
@@ -888,7 +888,7 @@ partial_response(m_rf, predictors = sp_train[,my_preds], main=&#39;Random Forest
 <pre class="r"><code># Performance measures of RF
 (perf_rf &lt;- evalSDM(sp_test$Emberiza_citrinella, predict(m_rf, sp_test[,my_preds],  type=&#39;response&#39;) ))</code></pre>
 <pre><code>##         AUC       TSS     Kappa      Sens      Spec       PCC        D2 thresh
-## 1 0.8308532 0.6428571 0.6428571 0.8095238 0.8333333 0.8222222 0.1841478   0.63</code></pre>
+## 1 0.8343254 0.6428571 0.6428571 0.8095238 0.8333333 0.8222222 0.1757222   0.62</code></pre>
 <pre class="r"><code># Map predictions:
 r_rf_bin &lt;- r_rf_pred &lt;- terra::rast(cbind(bio_curr_df[,1:2],
                                  predict(m_rf, bio_curr_df,type=&#39;response&#39;)),
@@ -969,16 +969,16 @@ m_brt &lt;- gbm.step(data = sp_train,
 <pre class="r"><code># Variable importance:
 m_brt$contributions</code></pre>
 <pre><code>##         var   rel.inf
-## bio12 bio12 93.360867
-## bio9   bio9  6.639133</code></pre>
+## bio12 bio12 93.369436
+## bio9   bio9  6.630564</code></pre>
 <pre class="r"><code># Interactions (not very meaningful here with only 2 predictors):
 gbm.interactions(m_brt)$interactions</code></pre>
 <pre><code>##       bio12  bio9
-## bio12     0 22.88
+## bio12     0 24.08
 ## bio9      0  0.00</code></pre>
 <pre class="r"><code>gbm.interactions(m_brt)$rank.list</code></pre>
 <pre><code>##   var1.index var1.names var2.index var2.names int.size
-## 1          2       bio9          1      bio12    22.88
+## 1          2       bio9          1      bio12    24.08
 ## 2          3       &lt;NA&gt;          0                0.00</code></pre>
 <pre class="r"><code># dismo provides some build-in functions for plotting response:
 gbm.plot(m_brt, n.plots=2, write.title = FALSE)</code></pre>
@@ -998,8 +998,8 @@ partial_response(m_brt, predictors = sp_train[,my_preds], main=&#39;BRT&#39;, yl
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-15-5.png" width="672" /></p>
 <pre class="r"><code># Performance measures of BRT
 (perf_brt &lt;- evalSDM(sp_test$Emberiza_citrinella, predict.gbm(m_brt, sp_test[,my_preds], n.trees=m_brt$gbm.call$best.trees, type=&#39;response&#39;) ))</code></pre>
-<pre><code>##         AUC       TSS     Kappa      Sens   Spec       PCC        D2 thresh
-## 1 0.8816964 0.7172619 0.7119645 0.9047619 0.8125 0.8555556 0.3439601  0.585</code></pre>
+<pre><code>##         AUC       TSS     Kappa      Sens      Spec       PCC        D2 thresh
+## 1 0.8831845 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667 0.3442508    0.6</code></pre>
 <pre class="r"><code># Map predictions:
 r_brt_bin &lt;- r_brt_pred &lt;- terra::rast(cbind(bio_curr_df[,1:2],
                                   predict.gbm(m_brt, bio_curr_df,
@@ -1122,28 +1122,32 @@ ensembles in the next tutorial.</p>
 ## glm    0.8903770 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.3702978
 ## gam    0.8859127 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.3654815
 ## cart   0.8196925 0.5922619 0.5958084 0.7380952 0.8541667 0.8000000  0.1693440
-## rf     0.8308532 0.6428571 0.6428571 0.8095238 0.8333333 0.8222222  0.1841478
-## brt    0.8816964 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.3439601
+## rf     0.8343254 0.6428571 0.6428571 0.8095238 0.8333333 0.8222222  0.1757222
+## brt    0.8831845 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667  0.3442508
 ## maxent 0.8774802 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.2581671
 ##        thresh
 ## bc      0.175
 ## glm     0.525
 ## gam     0.530
 ## cart    0.800
-## rf      0.630
-## brt     0.585
+## rf      0.620
+## brt     0.600
 ## maxent  0.410</code></pre>
 <pre class="r"><code># We add a column containing the names of the algorithm
 comp_perf &lt;- data.frame(alg=row.names(comp_perf),comp_perf)
 
 # Adapt the file path to your folder structure
 write.table(comp_perf, file=&#39;data/SDM_alg_performances.txt&#39;, row.names=F)</code></pre>
+</div>
+</div>
+<div id="homework-prep" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Homework prep</h1>
+<p>As homework, solve the exercises in the blue box below.</p>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <p>Use the species-climate data that you prepared for your own species
 (from the previous practical b5) and fit SDMs using at least three
 different algorithms. Compare the models, which one performs best?</p>
-</div>
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">

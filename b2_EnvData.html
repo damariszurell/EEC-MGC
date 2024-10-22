@@ -13,7 +13,7 @@
 
 <title>Environmental data</title>
 
-<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -486,10 +486,9 @@ a1</a>. Do you remember what the 19 bioclimatic variables are? See here:
 class="uri">https://www.worldclim.org/data/bioclim.html</a>. Remember to
 think about your folder structure, where you want to store the climate
 data!</p>
-<pre class="r"><code>library(geodata)</code></pre>
-<pre><code>## Loading required package: terra</code></pre>
-<pre><code>## terra 1.7.46</code></pre>
-<pre class="r"><code># Download global bioclimatic data from worldclim (you may have to set argument &#39;download=T&#39; for first download, if &#39;download=F&#39; it will attempt to read from file):
+<pre class="r"><code>library(geodata)
+
+# Download global bioclimatic data from worldclim (you may have to set argument &#39;download=T&#39; for first download, if &#39;download=F&#39; it will attempt to read from file):
 clim &lt;- geodata::worldclim_global(var = &#39;bio&#39;, res = 10, download = F, path = &#39;data&#39;)
 
 # Now, let&#39;s look at the data:
@@ -570,12 +569,8 @@ names(clim)</code></pre>
 <pre class="r"><code># In this case, let&#39;s keep the names of the future climate layers
 names(clim) &lt;- names(clim_fut)</code></pre>
 <p>You can also write <code>SpatRaster</code> objects to file:</p>
-<pre class="r"><code>terra::writeRaster(clim,filename=&#39;data/bioclim_global_res10.grd&#39;)
-terra::writeRaster(clim_fut,filename=&#39;data/bioclim_fut_global_res10.grd&#39;)</code></pre>
-<p><em>*.grd</em> was the native file format of the <code>raster</code>
-package, the predecessor of <code>terra</code>, which we will also use
-here. It consists of two files, a data file and a header file
-(<em>*.gri</em>).</p>
+<pre class="r"><code>terra::writeRaster(clim,filename=&#39;data/bioclim_global_res10.tif&#39;)
+terra::writeRaster(clim_fut,filename=&#39;data/bioclim_fut_global_res10.tif&#39;)</code></pre>
 </div>
 </div>
 <div id="land-cover-data" class="section level1" number="2">
@@ -658,27 +653,27 @@ gbif_shrew2 &lt;- gbif_shrew_cleaned[,
 # We also extract the cellnumbers as this allows checking for duplicates later.
 head(terra::extract(x = env_cur, 
     y = data.frame(gbif_shrew2[,c(&#39;decimalLongitude&#39;,&#39;decimalLatitude&#39;)]), cells=T ))</code></pre>
-<pre><code>##   ID    bio01    bio02    bio03    bio04    bio05    bio06    bio07      bio08
-## 1  1 6.218458 7.440792 31.85918 605.8054 18.89700 -4.45825 23.35525 13.7589169
-## 2  2 7.154459 8.365458 33.95176 614.9968 20.70625 -3.93300 24.63925  0.8864167
-## 3  3 7.154459 8.365458 33.95176 614.9968 20.70625 -3.93300 24.63925  0.8864167
-## 4  4 2.502896 6.938416 31.54722 566.5660 14.37500 -7.61875 21.99375  9.5671673
-## 5  5 4.237437 7.772583 31.97574 627.9045 17.49875 -6.80900 24.30775 11.9804583
-## 6  6 3.388250 8.198584 33.54644 619.1552 16.30225 -8.13725 24.43950 10.9958334
-##        bio09     bio10     bio11 bio12 bio13 bio14    bio15 bio16 bio17 bio18
-## 1 -0.1909583 13.758917 -0.922375  1636   193   100 23.04582   551   310   551
-## 2 11.7621250 14.922333 -0.062500  1377   138    91 12.41136   385   304   353
-## 3 11.7621250 14.922333 -0.062500  1377   138    91 12.41136   385   304   353
-## 4 -3.6100416  9.567167 -3.906833  1813   200   110 18.72311   573   354   573
-## 5 -3.1796250 11.980458 -3.179625  1009   137    43 38.40795   394   146   394
-## 6 -3.3333752 10.995833 -3.979792  1490   195    76 30.29223   543   262   543
+<pre><code>##   ID    bio01    bio02    bio03    bio04    bio05    bio06    bio07    bio08
+## 1  1 6.505573 8.508604 33.53277 649.9034 19.95200 -5.42200 25.37400 14.46612
+## 2  2 1.040729 6.794708 31.33224 555.2625 12.77975 -8.90625 21.68600  8.04600
+## 3  3 4.859771 7.676000 30.56037 658.7612 18.34825 -6.76925 25.11750 13.04246
+## 4  4 4.533604 7.417666 31.64466 605.9841 17.16425 -6.27625 23.44050 12.00492
+## 5  5 4.533604 7.417666 31.64466 605.9841 17.16425 -6.27625 23.44050 12.00492
+## 6  6 3.988135 7.437687 32.27148 590.9376 16.74625 -6.30100 23.04725 11.39575
+##        bio09     bio10     bio11 bio12 bio13 bio14     bio15 bio16 bio17 bio18
+## 1 -0.3784584 14.466125 -1.351333  1380   188    75 32.609791   522   255   522
+## 2 -5.0278749  8.065542 -5.027875  1610   163    87 19.089666   482   298   476
+## 3 -2.9991250 13.042459 -2.999125  1027   133    43 37.858047   381   136   381
+## 4 -2.5863333 12.004916 -2.586333  1261   166    68 33.134533   476   217   476
+## 5 -2.5863333 12.004916 -2.586333  1261   166    68 33.134533   476   217   476
+## 6 -2.3434584 11.395750 -2.687667  1146   110    83  8.129628   313   267   313
 ##   bio19     trees   cell
-## 1   318 0.4710940 556255
-## 2   369 0.7686102 543289
-## 3   369 0.7686102 543289
-## 4   361 0.3076328 558415
-## 5   146 0.5738233 556269
-## 6   265 0.5509280 551962</code></pre>
+## 1   261 0.7108175 547640
+## 2   298 0.2521183 562734
+## 3   136 0.7270582 564914
+## 4   217 0.6381673 551946
+## 5   217 0.6381673 551946
+## 6   279 0.3275670 562727</code></pre>
 <pre class="r"><code># Finally, we put species and environmental data into the same data frame:
 gbif_shrew2 &lt;- cbind(gbif_shrew2, terra::extract(x = env_cur, y = data.frame(gbif_shrew2[,c(&#39;decimalLongitude&#39;,&#39;decimalLatitude&#39;)]), cells=T ))</code></pre>
 <p>We now have to inspect the data again to see whether we have any
@@ -691,11 +686,19 @@ in a single raster cell. As we have extracted the cell numbers from the
 simple.</p>
 <pre class="r"><code># Check for duplicates - how many duplicates?
 sum(duplicated(gbif_shrew2$cell))</code></pre>
-<pre><code>## [1] 177</code></pre>
-<pre class="r"><code># Only retain non-duplicated cells (will not work in this example as we don&#39;t have duplicates):
+<pre><code>## [1] 209</code></pre>
+<pre class="r"><code># Only retain non-duplicated cells
 gbif_shrew_env &lt;- gbif_shrew2[!duplicated(gbif_shrew2$cell),]
 
-save(gbif_shrew2, gbif_shrew_cleaned,file=&#39;data/gbif_shrew_cleaned.RData&#39;)</code></pre>
+save(gbif_shrew_env, gbif_shrew_cleaned,file=&#39;data/gbif_shrew_cleaned.RData&#39;)</code></pre>
+</div>
+<div id="homework-prep" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Homework prep</h1>
+<p>As homework, solve the exercises in the blue box below. For the
+homework, you may need some SpatRaster objects that you should not
+forget to save to file.</p>
+<pre class="r"><code># Write terra objects to file:
+terra::writeRaster(trees_10min,filename=&#39;data/trees_10min.tif&#39;)</code></pre>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <ul>

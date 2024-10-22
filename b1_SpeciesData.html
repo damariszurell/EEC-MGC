@@ -485,7 +485,7 @@ href="http://rspatial.org" class="uri">http://rspatial.org</a>.</p>
 
 # Check out the number of occurrences found in GBIF:
 occ_count()</code></pre>
-<pre><code>## [1] 3017593553</code></pre>
+<pre><code>## [1] 3017600096</code></pre>
 <pre class="r"><code># number of observations:
 occ_count(basisOfRecord=&#39;OBSERVATION&#39;)</code></pre>
 <pre><code>## [1] 17280868</code></pre>
@@ -596,11 +596,11 @@ the data to those observations that were done by humans:</p>
 ## #   orderKey &lt;int&gt;, familyKey &lt;int&gt;, genusKey &lt;int&gt;, speciesKey &lt;int&gt;,
 ## #   acceptedTaxonKey &lt;int&gt;, acceptedScientificName &lt;chr&gt;, kingdom &lt;chr&gt;, …</code></pre>
 <p>Now, let’s download the records and plot them. We had a bit less than
-600 records for the shrew, and use this as <code>limit</code>. Of
+1600 records for the shrew, and use this as <code>limit</code>. Of
 course, the map will only help us judging the data quality if we have a
 rough idea where the species should occur. So, look up the species on
 the web first!</p>
-<pre class="r"><code>gbif_shrew &lt;- occ_search(scientificName = &quot;Sorex alpinus&quot;, hasCoordinate=T, basisOfRecord=&#39;HUMAN_OBSERVATION&#39;, limit = 600) 
+<pre class="r"><code>gbif_shrew &lt;- occ_search(scientificName = &quot;Sorex alpinus&quot;, hasCoordinate=T, basisOfRecord=&#39;HUMAN_OBSERVATION&#39;, limit = 1600) 
 
 # We are just interested in the data frame containing the records
 gbif_shrew &lt;- gbif_shrew$data
@@ -638,18 +638,18 @@ that you can check in the help pages
 gbif_shrew &lt;- subset(gbif_shrew, !is.na(decimalLatitude))
 
 # We now clean the coordinates and check for outliers - see ?clean_coordinates for more options
-gbif_shrew_cleaned_coord &lt;- clean_coordinates(gbif_shrew, lon=&quot;decimalLongitude&quot;, lat=&quot;decimalLatitude&quot;, countries=&quot;countryCode&quot;, tests=c(&quot;centroids&quot;, &quot;outliers&quot;, &quot;duplicates&quot;, &quot;institutions&quot;), inst_rad = 1000)</code></pre>
+gbif_shrew_cleaned_coord &lt;- clean_coordinates(gbif_shrew, lon=&quot;decimalLongitude&quot;, lat=&quot;decimalLatitude&quot;, countries=&quot;countryCode&quot;, tests=c(&quot;centroids&quot;, &quot;outliers&quot;, &quot;duplicates&quot;, &quot;institutions&quot;), inst_rad = 10000)</code></pre>
 <pre><code>## Testing coordinate validity</code></pre>
 <pre><code>## Flagged 0 records.</code></pre>
 <pre><code>## Testing country centroids</code></pre>
 <pre><code>## Flagged 1 records.</code></pre>
 <pre><code>## Testing geographic outliers</code></pre>
-<pre><code>## Flagged 3 records.</code></pre>
+<pre><code>## Flagged 14 records.</code></pre>
 <pre><code>## Testing biodiversity institutions</code></pre>
-<pre><code>## Flagged 0 records.</code></pre>
+<pre><code>## Flagged 46 records.</code></pre>
 <pre><code>## Testing duplicates</code></pre>
-<pre><code>## Flagged 135 records.</code></pre>
-<pre><code>## Flagged 139 of 600 records, EQ = 0.23.</code></pre>
+<pre><code>## Flagged 204 records.</code></pre>
+<pre><code>## Flagged 256 of 733 records, EQ = 0.35.</code></pre>
 <pre class="r"><code># Plot world map
 maps::map(&#39;world&#39;,xlim=c(5,30), ylim=c(40,55))
 # Plot all gbif points downloaded
@@ -659,6 +659,41 @@ points(gbif_shrew$decimalLongitude[gbif_shrew_cleaned_coord$.summary], gbif_shre
 <p><img src="b1_SpeciesData_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <pre class="r"><code># Store the cleaned point locations in a new object
 gbif_shrew_cleaned &lt;- gbif_shrew[gbif_shrew_cleaned_coord$.summary,]</code></pre>
+<p>The cleaned coordinates actually look slightly suspicious at the
+Slovakian-Polish border where some records are marked as outliers
+although in close vicinity to seemingly valid points. This could result
+from many duplicate records that potentially bias the duplicate test,
+which here relies on quantiles (also see help pages
+<code>?clean_coordinates</code>). We could either set different
+quantiles for the outlier test, set specific outlier distance, or we
+first remove the duplicates before running the other coordinate
+checks.</p>
+<pre class="r"><code># We clean coordinates but without testing for outliers
+gbif_shrew_cleaned_coord_dupl &lt;- clean_coordinates(gbif_shrew, lon=&quot;decimalLongitude&quot;, lat=&quot;decimalLatitude&quot;, countries=&quot;countryCode&quot;, tests=c(&quot;centroids&quot;, &quot;duplicates&quot;, &quot;institutions&quot;), inst_rad = 10000)</code></pre>
+<pre><code>## Testing coordinate validity</code></pre>
+<pre><code>## Flagged 0 records.</code></pre>
+<pre><code>## Testing country centroids</code></pre>
+<pre><code>## Flagged 1 records.</code></pre>
+<pre><code>## Testing biodiversity institutions</code></pre>
+<pre><code>## Flagged 46 records.</code></pre>
+<pre><code>## Testing duplicates</code></pre>
+<pre><code>## Flagged 204 records.</code></pre>
+<pre><code>## Flagged 243 of 733 records, EQ = 0.33.</code></pre>
+<pre class="r"><code># Store the cleaned point locations in a new object
+gbif_shrew_cleaned_coord_init &lt;- gbif_shrew[gbif_shrew_cleaned_coord_dupl$.summary,]
+
+# We now check for and remove outliers - see ?cc_outl
+# note that cc_outl will provide the cleaned coordinates as output rather than providing flags, unless you set the argument value=&#39;flagged&quot;
+gbif_shrew_cleaned &lt;- cc_outl(gbif_shrew_cleaned_coord_init, lon=&quot;decimalLongitude&quot;, lat=&quot;decimalLatitude&quot;)</code></pre>
+<pre><code>## Testing geographic outliers</code></pre>
+<pre><code>## Removed 5 records.</code></pre>
+<pre class="r"><code># Plot world map
+maps::map(&#39;world&#39;,xlim=c(5,30), ylim=c(40,55))
+# Plot all gbif points downloaded
+points(gbif_shrew$decimalLongitude, gbif_shrew$decimalLatitude, col=&#39;red&#39;,  pch=19)
+# Plot all remaining points after cleaning
+points(gbif_shrew_cleaned$decimalLongitude, gbif_shrew_cleaned$decimalLatitude, col=&#39;blue&#39;,  pch=18)</code></pre>
+<p><img src="b1_SpeciesData_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <div class="alert alert-success" role="alert">
 <p><strong>Test yourself</strong></p>
 <p>Look up the options in <code>clean_coordinates()</code> and think
