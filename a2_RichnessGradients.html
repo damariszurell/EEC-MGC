@@ -13,7 +13,7 @@
 
 <title>Species richness gradients</title>
 
-<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -585,10 +585,9 @@ species richness data with climatic data. For convenience, I have
 already processed worldclim data (19 bioclimatic variables) for you such
 that the raster stack is projected in the British National Grid at 10 km
 spatial resolution. You can download the raster stack data <a
-href="data/UK_bioclim.zip">here</a>. Please save it in your
-<em>data</em> folder and unzip it. We can then load the raster data in
-R:</p>
-<pre class="r"><code>clim &lt;- terra::rast(&#39;data/UK_bioclim.grd&#39;)
+href="data/UK_bioclim.tif">here</a>. Please save it in your
+<em>data</em> folder. We can then load the raster data in R:</p>
+<pre class="r"><code>clim &lt;- terra::rast(&#39;data/UK_bioclim.tif&#39;)
 plot(clim)</code></pre>
 <p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>To plot the relationship between species richness and summer
@@ -689,6 +688,14 @@ birds_68$richness68 &lt;- rowSums(birds_68[,spp])
 # Convert to raster data and map:
 plot(terra::rast(birds_68[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness68&#39;)], crs=proj_UK, type = &quot;xyz&quot;))</code></pre>
 <p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+</div>
+<div id="homework-prep" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Homework prep</h1>
+<p>As homework, solve the exercises in the blue box below. For the
+homework, you will need objects that you should have saved earlier,
+e.g. the <code>richness2</code> data, or data sets that you can read
+from file using earlier code, e.g. like reading in the
+<code>bird_dist2</code> data.</p>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <ul>
@@ -715,12 +722,57 @@ ggplot() +
   ) +
   labs(fill = &quot;Richness&quot;)</code></pre>
 <p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
-<p>Latitudinal species richness gradient in UK breeding birds across
-different time periods:</p>
-<p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
-<p>Species-energy relationship of UK breeding birds across different
-time periods:</p>
-<p><img src="a2_RichnessGradients_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<!-- Latitudinal species richness gradient in UK breeding birds across different time periods: -->
+<!-- ```{r echo=F, message=F, warning=F} -->
+<!-- library(ggpubr) -->
+<!-- p1 <- ggplot(data = subset(bird_dist2,period=='1968-72'), mapping = aes(x = NORTHING, y = richness)) +  -->
+<!--   geom_point() +  -->
+<!--   geom_smooth(method="loess") +  -->
+<!--   xlab('Northing') +  -->
+<!--   ylab('Species richness') + -->
+<!--   ggtitle('1968-72') -->
+<!-- p2 <- ggplot(data = subset(bird_dist2,period=='1988-91'), mapping = aes(x = NORTHING, y = richness)) +  -->
+<!--   geom_point() +  -->
+<!--   geom_smooth(method="loess") +  -->
+<!--   xlab('Northing') +  -->
+<!--   ylab('Species richness') + -->
+<!--   ggtitle('1988-91') -->
+<!-- p3 <- ggplot(data = subset(bird_dist2,period=='2008-11'), mapping = aes(x = NORTHING, y = richness)) +  -->
+<!--   geom_point() +  -->
+<!--   geom_smooth(method="loess") +  -->
+<!--   xlab('Northing') +  -->
+<!--   ylab('Species richness') + -->
+<!--   ggtitle('2008-11') -->
+<!-- ggarrange(p1,p2,p3, -->
+<!--                     # labels = c("A", "B", "C"), -->
+<!--                     ncol = 3, nrow = 1) -->
+<!-- ``` -->
+<!-- Species-energy relationship of UK breeding birds across different time periods: -->
+<!-- ```{r echo=F, message=F, warning=F} -->
+<!-- bird_dist2 <- cbind(bird_dist2, extract(clim, bird_dist2[,2:3])) -->
+<!-- # Plot species richness against summer temperature -->
+<!-- p1 <- ggplot(data = subset(bird_dist2,period=='1968-72'), mapping = aes(x = bio12, y = richness)) +  -->
+<!--   geom_point() +  -->
+<!--   geom_smooth(method="loess") +  -->
+<!--   xlab('Annual precipitation') +  -->
+<!--   ylab('Species richness') + -->
+<!--   ggtitle('1968-72') -->
+<!-- p2 <- ggplot(data = subset(bird_dist2,period=='1988-91'), mapping = aes(x = bio12, y = richness)) +  -->
+<!--   geom_point() +  -->
+<!--   geom_smooth(method="loess") +  -->
+<!--   xlab('Annual precipitation') +  -->
+<!--   ylab('Species richness') + -->
+<!--   ggtitle('1988-91') -->
+<!-- p3 <- ggplot(data = subset(bird_dist2,period=='2008-11'), mapping = aes(x = bio12, y = richness)) +  -->
+<!--   geom_point() +  -->
+<!--   geom_smooth(method="loess") +  -->
+<!--   xlab('Annual precipitation') +  -->
+<!--   ylab('Species richness') + -->
+<!--   ggtitle('2008-11') -->
+<!-- ggarrange(p1,p2,p3, -->
+<!--                     # labels = c("A", "B", "C"), -->
+<!--                     ncol = 3, nrow = 1) -->
+<!-- ``` -->
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>

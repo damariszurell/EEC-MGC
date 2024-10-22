@@ -13,7 +13,7 @@
 
 <title>Species range maps</title>
 
-<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -527,7 +527,7 @@ per species, while the range maps of mammals are provided as single
 shapefile that contains all species. Course participants can download
 the mammal shapefile from the moodle course - of course, the license
 agreement by the IUCN apply!</p>
-<pre class="r"><code># Read shapefile for all mammals using the raster package:
+<pre class="r"><code># Read shapefile for all mammals using the terra package:
 mammals &lt;- terra::vect(&#39;data/MAMMTERR.shp&#39;)</code></pre>
 <p>The shapefile contains the range polygons for all described mammal
 species. The attribute table contains information on species’ PRESENCE,
@@ -1071,6 +1071,12 @@ r_artibeus_richness &lt;- sum(r_artibeus_terra,na.rm=T)
 maps::map(&#39;world&#39;)
 plot(r_artibeus_richness, add=T, alpha=0.8)</code></pre>
 <p><img src="a4_RangeMaps_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+</div>
+</div>
+</div>
+<div id="homework-prep" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Homework prep</h1>
+<p>As homework, solve the exercises in the blue box below.</p>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <ul>
@@ -1081,8 +1087,6 @@ genus.</li>
 <li>Plot the latitudinal species richness gradient for this genus.
 Interpret in light of previously discussed patterns.</li>
 </ul>
-</div>
-</div>
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">

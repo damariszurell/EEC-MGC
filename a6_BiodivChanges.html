@@ -13,7 +13,7 @@
 
 <title>Analysing biodiversity changes</title>
 
-<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -530,9 +530,9 @@ changes</h1>
 <p>First, we analyse how species richness has changed between different
 time periods. For this, we first need to compute species richness per
 time period.</p>
-<pre class="r"><code>library(terra)</code></pre>
-<pre><code>## terra 1.7.46</code></pre>
-<pre class="r"><code># The coordinate reference system for the UK National Grid is:
+<pre class="r"><code>library(terra)
+
+# The coordinate reference system for the UK National Grid is:
 proj_UK &lt;- &#39;+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +datum=OSGB36 +units=m +no_defs&#39;
 
 # Extract species occurrences per time period and compute species richness:
@@ -545,13 +545,8 @@ plot(terra::rast(birds_68[,c(&#39;EASTING&#39;,&#39;NORTHING&#39;,&#39;richness6
 continue working with the original data frame and simply add a column
 for species richness. In the latter case, we will have to subset the
 data for mapping.</p>
-<pre class="r"><code>library(tidyterra)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;tidyterra&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:stats&#39;:
-## 
-##     filter</code></pre>
-<pre class="r"><code>library(ggplot2)
+<pre class="r"><code>library(tidyterra)
+library(ggplot2)
 
 # Calculate species richness
 bird_dist$richness &lt;- rowSums(bird_dist[,spp])
@@ -736,13 +731,20 @@ acrocepha_rangesize &lt;- data.frame(expand.grid(period=c(&#39;1968-72&#39;, &#3
 # Loop through all time periods and species to compute range size
 for (t in c(&#39;1968-72&#39;, &#39;1988-91&#39;, &#39;2008-11&#39;)) {
   for (sp in acrocepha_spp) {
+    # compute range size
     rangesize &lt;- sum(subset(bird_dist,period==t)[,sp])*100
+    # save range size in data frame
     acrocepha_rangesize[acrocepha_rangesize$period==t &amp; acrocepha_rangesize$species==sp, &#39;rangesize&#39;] &lt;- rangesize
   }
 }
 
 # plot changes in range size
-ggplot(data = acrocepha_rangesize, mapping = aes(x = rep(c(1968,1988,2008), length(acrocepha_spp)), y = log(rangesize), color=species)) + geom_line() + geom_point() + xlab(&#39;Year&#39;) + ylab(&#39;log(Range size [km^2])&#39;)</code></pre>
+ggplot(data = acrocepha_rangesize, 
+       mapping = aes(x = rep(c(1968,1988,2008), length(acrocepha_spp)), y = log(rangesize), color=species)) + 
+  geom_line() + 
+  geom_point() + 
+  xlab(&#39;Year&#39;) + 
+  ylab(&#39;log(Range size [km^2])&#39;)</code></pre>
 <p><img src="a6_BiodivChanges_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>We can also look at positions of range centres or boundaries. For
 simplicity, let’s analyses only the latitudinal (south-north)
@@ -811,16 +813,28 @@ a little trick and recode all <code>1</code> in the more recent data set
 as <code>2</code>. That way, we can sum up the maps and get distinct
 codes for absence, extinction, colonisation, and stable occurrences:</p>
 <table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+</th>
+</tr>
+</thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
 </td>
 <td style="text-align:left;">
 </td>
-<td style="text-align:left;background-color: #FFFFFF !important;">
+<td style="text-align:left;color: white !important;background-color: rgba(255, 255, 255, 255) !important;">
 Time period 2
 </td>
-<td style="text-align:left;background-color: #FFFFFF !important;">
+<td style="text-align:left;color: white !important;background-color: rgba(255, 255, 255, 255) !important;">
 </td>
 </tr>
 <tr>
@@ -828,10 +842,10 @@ Time period 2
 </td>
 <td style="text-align:left;">
 </td>
-<td style="text-align:left;background-color: #FFFFFF !important;">
+<td style="text-align:left;color: white !important;background-color: rgba(255, 255, 255, 255) !important;">
 0
 </td>
-<td style="text-align:left;background-color: #FFFFFF !important;">
+<td style="text-align:left;color: white !important;background-color: rgba(255, 255, 255, 255) !important;">
 2
 </td>
 </tr>
@@ -842,10 +856,10 @@ Time period 1
 <td style="text-align:left;">
 0
 </td>
-<td style="text-align:left;background-color: rgba(0, 0, 4, 0.2) !important;">
+<td style="text-align:left;color: white !important;background-color: rgba(0, 0, 4, 51) !important;">
 0 = absent
 </td>
-<td style="text-align:left;background-color: rgba(247, 111, 92, 0.2) !important;">
+<td style="text-align:left;color: white !important;background-color: rgba(182, 54, 121, 51) !important;">
 2 = colonisation
 </td>
 </tr>
@@ -855,10 +869,10 @@ Time period 1
 <td style="text-align:left;">
 1
 </td>
-<td style="text-align:left;background-color: rgba(100, 26, 128, 0.2) !important;">
+<td style="text-align:left;color: white !important;background-color: rgba(21, 14, 55, 51) !important;">
 1 = extinction
 </td>
-<td style="text-align:left;background-color: rgba(252, 253, 191, 0.2) !important;">
+<td style="text-align:left;color: white !important;background-color: rgba(254, 206, 145, 51) !important;">
 3 = stable
 </td>
 </tr>
@@ -892,12 +906,24 @@ class="uri">https://dieghernan.github.io/tidyterra/articles/palettes.html</a>.</
 <li>Map the range changes across all time periods. Interpret.</li>
 </ul>
 </div>
+</div>
+</div>
+<div id="homework-prep" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Homework prep</h1>
+<p>As homework, solve the exercises in the blue boxes. For the homework,
+you will need data sets that you can read from file using earlier code,
+e.g. reading in <code>redlist_status</code> and <code>bird_dist</code>.
+Additionally, you may want to save some objects created throughout the
+practical:</p>
+<pre class="r"><code># Save other (non-terra) objects from the workspace:
+save(proj_UK, spp_names, cols_diff_palette, cols.diff, file=&#39;data/a6_BiodivChanges.RData&#39;)
+
+# note that brks.diff should be defined depending on the magnitude of richness changes that you want to map</code></pre>
 <div class="alert alert-info">
 <p><strong>Exercise: </strong></p>
 <ul>
 <li>Pick another species and map range changes. Interpret.</li>
 </ul>
-</div>
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">

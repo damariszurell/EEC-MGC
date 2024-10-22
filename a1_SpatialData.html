@@ -766,23 +766,19 @@ raster layer represents the mean annual in temperature [°C * 10].</p>
 ## max value   : 112.00000</code></pre>
 <pre class="r"><code>plot(temp)</code></pre>
 <p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
-<p>Second, download the <a href="data/UK_bioclim.zip">zip folder</a>
+<p>Second, download the <a href="data/UK_bioclim.tif">geotiff file</a>
 containing multi-layer raster data for 19 bioclimatic variables of UK,
-and unzip in your data folder. It contains two files. The file ending
-“*.grd” represents the natural file ending for files created using the
-<code>raster</code> package. It needs to be accompanied by a file ending
-on “*.gri”, which contains all the cell attributes. The bioclimatic
-variables are explained <a href="">here</a><a
-href="https://www.worldclim.org/data/bioclim.html"
-class="uri">https://www.worldclim.org/data/bioclim.html</a>.</p>
+and put it into your data folder. The bioclimatic variables are
+explained <a
+href="https://www.worldclim.org/data/bioclim.html">here</a>.</p>
 <pre class="r"><code># Reading multi-layer SpatRaster data from file uses the same command as for single-layer data:
-(bioclim &lt;- terra::rast(&#39;data/UK_bioclim.grd&#39;))</code></pre>
+(bioclim &lt;- terra::rast(&#39;data/UK_bioclim.tif&#39;))</code></pre>
 <pre><code>## class       : SpatRaster 
 ## dimensions  : 122, 66, 19  (nrow, ncol, nlyr)
 ## resolution  : 10000, 10000  (x, y)
 ## extent      : 0, 660000, 0, 1220000  (xmin, xmax, ymin, ymax)
-## coord. ref. : +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +towgs84=446.448,-125.157,542.06,0.1502,0.247,0.8421,-20.48939999999 +units=m +no_defs 
-## source      : UK_bioclim.grd 
+## coord. ref. : +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +units=m +no_defs 
+## source      : UK_bioclim.tif 
 ## names       :      bio1,     bio2, bio3,     bio4,     bio5,      bio6, ... 
 ## min values  :  35.71785, 41.00000,   30, 3060.245, 134.0000, -55.48918, ... 
 ## max values  : 112.00000, 82.64219,   40, 5321.534, 231.5805,  43.00000, ...</code></pre>

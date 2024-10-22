@@ -13,7 +13,7 @@
 
 <title>Species richness regression</title>
 
-<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -914,7 +914,7 @@ rcorr.cens(m_step$fitted.values, UK_birdrichness_clim$richness)[1]</code></pre>
 <pre class="r"><code># On cross-validated data
 rcorr.cens(preds_cv, UK_birdrichness_clim$richness)[1]</code></pre>
 <pre><code>##   C Index 
-## 0.6905208</code></pre>
+## 0.6899465</code></pre>
 <p>The C-index looks very similar between predictions on training data
 and on cross-validation folds and reaches c. 0.7. This indicates that if
 we take two random observations from our data, then in 70% of the cases
@@ -931,7 +931,7 @@ layers.</p>
 <pre class="r"><code>library(terra)
 
 # Load climate data
-clim &lt;- terra::rast(&#39;data/UK_bioclim.grd&#39;)
+clim &lt;- terra::rast(&#39;data/UK_bioclim.tif&#39;)
 
 # Prepare climate data frames
 clim_df &lt;- terra::as.data.frame(clim, xy = TRUE)
@@ -965,6 +965,17 @@ head(clim_df)</code></pre>
 r_pred_richness &lt;- terra::rast(clim_df[,c(&#39;x&#39;,&#39;y&#39;,&#39;pred_richness&#39;)], type = &#39;xyz&#39;)
 plot(r_pred_richness, axes=F, main=&#39;Predicted species richness&#39;)</code></pre>
 <p><img src="a3_RichnessRegression_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+</div>
+</div>
+<div id="homework-prep" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Homework prep</h1>
+<p>As homework, solve the exercises in the blue box below. For the
+homework, you will need data sets that you can read from file using
+earlier code, e.g. reading in the <code>UK_birdrichness_clim</code> data
+and the <code>clim</code> SpatRaster. Additionally, you may want to save
+the correlation matrix and the regression model:</p>
+<pre class="r"><code># Save other (non-terra) objects from the workspace:
+save(cor_mat, m_step, file=&#39;data/a3_RichnessRegression.RData&#39;)</code></pre>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <ul>
@@ -974,7 +985,6 @@ analyses.</li>
 calculate a richness regression model for another time period (60s or
 80s). Compare response curves and predictions.</li>
 </ul>
-</div>
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">
