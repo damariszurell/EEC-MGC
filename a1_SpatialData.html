@@ -13,7 +13,7 @@
 
 <title>Spatial data in R</title>
 
-<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -946,6 +946,21 @@ na.exclude(capitals_clim)</code></pre>
 <!-- ```{r} -->
 <!-- terra::spatSample(temp_eur, size = 10, method = 'random', replace = F, xy = T, values = T) -->
 <!-- ``` -->
+</div>
+</div>
+<div id="homework-prep" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Homework prep</h1>
+<p>For the homework, you will need several objects that you should not
+forget to save.</p>
+<pre class="r"><code># Write terra objects to file:
+terra::writeRaster(temp_eur, &#39;data/temp_eur.tif&#39;)
+terra::writeRaster(temp_eur_onedeg, &#39;data/temp_eur_onedeg.tif&#39;)
+terra::writeRaster(temp_eur_twodeg, &#39;data/temp_eur_twodeg.tif&#39;)
+# You will also need the SpatRaster &quot;clim&quot; but this was directly downloaded from geodata package, so is already on file
+
+# Save other (non-terra) objects from the workspace:
+save(capitals, file=&#39;data/a1_SpatialData.RData&#39;)</code></pre>
+<p>As homework, solve all the exercises in the blue boxes.</p>
 <div class="alert alert-info">
 <p><em><strong>Exercise:</strong></em></p>
 <ul>
@@ -967,7 +982,6 @@ of your choice) and extract the climate values</li>
 <!-- - Reproject `temp_eur` to a different CRS following instructions on above-mentioned website -->
 <!-- - When is reprojection useful? -->
 <!-- </div> -->
-</div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
