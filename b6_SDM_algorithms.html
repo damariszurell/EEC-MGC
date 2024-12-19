@@ -13,7 +13,7 @@
 
 <title>SDM algorithms</title>
 
-<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -605,10 +605,10 @@ corresponding partial response plots. The <code>predicts</code> package
 offers a function <code>partialResponse()</code> to calculate the
 partial response.</p>
 <pre class="r"><code># Plot partial response curves:
-par(mfrow=c(1,2)) 
-plot(partialResponse(m_bc, var=1,nsteps=50),type=&#39;l&#39;, main=&#39;BIOCLIM&#39;, ylab=&#39;Occurrence probability&#39;, xlab=my_preds[1], ylim=c(0,1))
-plot(partialResponse(m_bc, var=2,nsteps=50),type=&#39;l&#39;, main=&#39;BIOCLIM&#39;, ylab=&#39;Occurrence probability&#39;, xlab=my_preds[2], ylim=c(0,1))</code></pre>
+partialResponse(m_bc, var=1, nsteps=50)</code></pre>
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>partialResponse(m_bc, var=2, nsteps=50)</code></pre>
+<p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
 <p>Last, we validate model performance on the hold-out test data.</p>
 <pre class="r"><code># We use the default MaxSens+Spec threshold:
 (perf_bc &lt;- evalSDM(sp_test$Emberiza_citrinella, predict(m_bc, sp_test[,my_preds])))</code></pre>
@@ -861,19 +861,19 @@ m_rf &lt;- randomForest( x=sp_train[,my_preds], y=sp_train$Emberiza_citrinella,
 # Variable importance:
 importance(m_rf,type=1)</code></pre>
 <pre><code>##        %IncMSE
-## bio12 71.11887
-## bio9  15.49371</code></pre>
+## bio12 71.91932
+## bio9  14.32720</code></pre>
 <pre class="r"><code>varImpPlot(m_rf)</code></pre>
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <pre class="r"><code># Look at single trees:
 head(getTree(m_rf,1,T))</code></pre>
 <pre><code>##   left daughter right daughter split var split point status prediction
-## 1             2              3     bio12 1065.103210     -3 0.56398104
-## 2             4              5     bio12  568.039551     -3 0.83458647
-## 3             6              7      bio9   12.342194     -3 0.10256410
-## 4             8              9      bio9    6.123576     -3 0.42857143
-## 5            10             11      bio9    7.524390     -3 0.85714286
-## 6            12             13      bio9    8.596580     -3 0.08333333</code></pre>
+## 1             2              3     bio12  875.805450     -3 0.52132701
+## 2             4              5     bio12  814.995850     -3 0.82692308
+## 3             6              7      bio9    9.851603     -3 0.22429907
+## 4             8              9     bio12  708.464630     -3 0.85393258
+## 5            10             11     bio12  827.776489     -3 0.66666667
+## 6            12             13      bio9    8.726742     -3 0.09090909</code></pre>
 <pre class="r"><code># Now, we plot the response surface:
 xyz$z &lt;- predict(m_rf, xyz, type=&#39;response&#39;)
 wireframe(z ~ bio12 + bio9, data = xyz, zlab = list(&quot;Occurrence prob.&quot;, rot=90), 
@@ -887,8 +887,8 @@ partial_response(m_rf, predictors = sp_train[,my_preds], main=&#39;Random Forest
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-14-3.png" width="672" /></p>
 <pre class="r"><code># Performance measures of RF
 (perf_rf &lt;- evalSDM(sp_test$Emberiza_citrinella, predict(m_rf, sp_test[,my_preds],  type=&#39;response&#39;) ))</code></pre>
-<pre><code>##         AUC       TSS     Kappa      Sens      Spec       PCC        D2 thresh
-## 1 0.8343254 0.6428571 0.6428571 0.8095238 0.8333333 0.8222222 0.1757222   0.62</code></pre>
+<pre><code>##         AUC       TSS     Kappa      Sens   Spec       PCC        D2 thresh
+## 1 0.8298611 0.6220238 0.6210996 0.8095238 0.8125 0.8111111 0.1915055   0.61</code></pre>
 <pre class="r"><code># Map predictions:
 r_rf_bin &lt;- r_rf_pred &lt;- terra::rast(cbind(bio_curr_df[,1:2],
                                  predict(m_rf, bio_curr_df,type=&#39;response&#39;)),
@@ -969,16 +969,16 @@ m_brt &lt;- gbm.step(data = sp_train,
 <pre class="r"><code># Variable importance:
 m_brt$contributions</code></pre>
 <pre><code>##         var   rel.inf
-## bio12 bio12 93.369436
-## bio9   bio9  6.630564</code></pre>
+## bio12 bio12 93.506567
+## bio9   bio9  6.493433</code></pre>
 <pre class="r"><code># Interactions (not very meaningful here with only 2 predictors):
 gbm.interactions(m_brt)$interactions</code></pre>
 <pre><code>##       bio12  bio9
-## bio12     0 24.08
+## bio12     0 24.24
 ## bio9      0  0.00</code></pre>
 <pre class="r"><code>gbm.interactions(m_brt)$rank.list</code></pre>
 <pre><code>##   var1.index var1.names var2.index var2.names int.size
-## 1          2       bio9          1      bio12    24.08
+## 1          2       bio9          1      bio12    24.24
 ## 2          3       &lt;NA&gt;          0                0.00</code></pre>
 <pre class="r"><code># dismo provides some build-in functions for plotting response:
 gbm.plot(m_brt, n.plots=2, write.title = FALSE)</code></pre>
@@ -998,8 +998,8 @@ partial_response(m_brt, predictors = sp_train[,my_preds], main=&#39;BRT&#39;, yl
 <p><img src="b6_SDM_algorithms_files/figure-html/unnamed-chunk-15-5.png" width="672" /></p>
 <pre class="r"><code># Performance measures of BRT
 (perf_brt &lt;- evalSDM(sp_test$Emberiza_citrinella, predict.gbm(m_brt, sp_test[,my_preds], n.trees=m_brt$gbm.call$best.trees, type=&#39;response&#39;) ))</code></pre>
-<pre><code>##         AUC       TSS     Kappa      Sens      Spec       PCC        D2 thresh
-## 1 0.8831845 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667 0.3442508    0.6</code></pre>
+<pre><code>##         AUC       TSS     Kappa      Sens   Spec       PCC        D2 thresh
+## 1 0.8812004 0.7172619 0.7119645 0.9047619 0.8125 0.8555556 0.3428637  0.585</code></pre>
 <pre class="r"><code># Map predictions:
 r_brt_bin &lt;- r_brt_pred &lt;- terra::rast(cbind(bio_curr_df[,1:2],
                                   predict.gbm(m_brt, bio_curr_df,
@@ -1122,16 +1122,16 @@ ensembles in the next tutorial.</p>
 ## glm    0.8903770 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.3702978
 ## gam    0.8859127 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.3654815
 ## cart   0.8196925 0.5922619 0.5958084 0.7380952 0.8541667 0.8000000  0.1693440
-## rf     0.8343254 0.6428571 0.6428571 0.8095238 0.8333333 0.8222222  0.1757222
-## brt    0.8831845 0.7380952 0.7337278 0.9047619 0.8333333 0.8666667  0.3442508
+## rf     0.8298611 0.6220238 0.6210996 0.8095238 0.8125000 0.8111111  0.1915055
+## brt    0.8812004 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.3428637
 ## maxent 0.8774802 0.7172619 0.7119645 0.9047619 0.8125000 0.8555556  0.2581671
 ##        thresh
 ## bc      0.175
 ## glm     0.525
 ## gam     0.530
 ## cart    0.800
-## rf      0.620
-## brt     0.600
+## rf      0.610
+## brt     0.585
 ## maxent  0.410</code></pre>
 <pre class="r"><code># We add a column containing the names of the algorithm
 comp_perf &lt;- data.frame(alg=row.names(comp_perf),comp_perf)
