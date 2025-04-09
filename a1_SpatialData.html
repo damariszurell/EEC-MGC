@@ -13,7 +13,7 @@
 
 <title>Spatial data in R</title>
 
-<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -680,13 +680,16 @@ on geometry and attributes.</p>
 ##         citation source dist_comm (and 17 more)
 ##            &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;              
 ##  IUCN (Internat~     NA        NA</code></pre>
-<pre class="r"><code># Plot Central Europe
+<pre class="r"><code># Plot the range of the Alpine Shrew
+plot(shrew, col=&#39;red&#39;)</code></pre>
+<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<pre class="r"><code># Plot Central Europe as background map
 library(maps)
 map(&#39;world&#39;,xlim=c(5,30), ylim=c(40,55))
 
 # Overlay the range of the Alpine Shrew
-terra::plot(shrew, col=&#39;red&#39;, add=T)</code></pre>
-<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+plot(shrew, col=&#39;red&#39;, add=T)</code></pre>
+<p><img src="a1_SpatialData_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
 </div>
 </div>
 <div id="raster-data-in-r" class="section level1" number="3">
